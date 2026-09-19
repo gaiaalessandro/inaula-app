@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frequenza lezioni</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF3F4;--sf:#fff;--ink:#10232B;--mu:#5B707A;--ln:#D3DEE2;--ok:#0B7A75;--no:#C23B5A;--wa:#A86F00;--rs:#D3DEE2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A1F;--sf:#15262D;--ink:#E6EFF2;--mu:#93A9B2;--ln:#263B44;--ok:#3CC1B8;--no:#EE6C88;--wa:#E8B547;--rs:#2A3F48;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A1F;--sf:#15262D;--ink:#E6EFF2;--mu:#93A9B2;--ln:#263B44;--ok:#3CC1B8;--no:#EE6C88;--wa:#E8B547;--rs:#2A3F48;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 'Bricolage Grotesque',system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:22px 16px 64px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);margin:0;letter-spacing:-.02em;line-height:1.05}
+.sub{color:var(--mu);margin:6px 0 0;max-width:52ch;font-size:.95rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:7px 9px;width:100%}
+.btn{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:8px 13px;cursor:pointer}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:is(.btn,input,select,textarea,summary,.dot,.x):focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+.thr{display:flex;align-items:center;gap:6px;color:var(--mu);font-size:.9rem;margin:0}
+.thr input{width:64px}
+.warn{margin-top:16px;padding:10px 14px;border-radius:10px;border:1px solid var(--wa);border-left-width:6px;background:var(--sf);font-size:.92rem}
+.today{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 14px;margin-top:16px}
+.today h2{font-size:1.1rem;margin:0 0 4px}
+.today p{margin:6px 0 2px}
+#sync{margin:4px 0 0}
+.legend{color:var(--mu);font-size:.85rem;margin:16px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 5px 0 0}
+.legend span{margin-right:14px;white-space:nowrap}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.card{background:var(--sf);border:1px solid var(--ln);border-left:6px solid var(--st);border-radius:10px;padding:14px 14px 10px}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.top h2{font-size:1.15rem;margin:0;line-height:1.2}
+.meta{color:var(--mu);font-size:.85rem}
+.body{display:flex;gap:16px;align-items:center;margin:12px 0}
+.pie{width:108px;height:108px;flex:none}
+.stats{font-size:.92rem;display:grid;gap:2px}
+.verdict{font-weight:700;color:var(--st);font-size:1rem}
+details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
+.ls{list-style:none;margin:4px 0;padding:0;max-height:340px;overflow:auto}
+.ls li{display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--ln);font-size:.9rem;cursor:pointer}
+.dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--mu);background:none;cursor:pointer;flex:none;padding:0;color:#fff;font-weight:700}
+.dot.on{background:var(--ok);border-color:var(--ok)}
+.dot.abs{border-color:var(--no)}
+.lt{flex:1}.lt small{color:var(--mu);margin-left:6px}
+.tag{font-size:.78rem;color:var(--no)}
+.x{background:none;border:0;color:var(--mu);cursor:pointer;padding:6px 8px}
+.add{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.add input{width:auto;flex:1 1 110px}
+.empty{grid-column:1/-1;text-align:center;padding:40px 16px;color:var(--mu)}
+.empty .bar{justify-content:center;margin-top:14px}
+dialog{border:1px solid var(--ln);border-radius:12px;background:var(--sf);color:var(--ink);max-width:540px;width:calc(100% - 32px);padding:18px;max-height:88vh}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h3{margin:0 0 6px;font-size:1.2rem}
+label{display:grid;gap:4px;margin:10px 0;font-size:.9rem;color:var(--mu)}
+label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.map{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--ln)}
+[hidden]{display:none!important}
+.loginbox{max-width:380px;margin-top:18px}
+.lnk{border:0;background:none;text-decoration:underline;padding:8px 0;color:var(--mu);cursor:pointer}
+</style>
+</head>
+<body>
+<main id="app" hidden>
+<header>
+  <div>
+    <h1>Frequenza lezioni</h1>
+    <p class="sub">Primo semestre. Tocca una lezione per segnarla come frequentata: quelle già svolte e non spuntate contano come assenze.</p>
+    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span></p>
+  </div>
+  <div class="bar">
+    <label class="thr">Soglia <input id="thr" type="number" min="1" max="100" value="66"> %</label>
+    <button class="btn" data-act="imp">Importa calendario</button>
+    <button class="btn pri" data-act="new">Nuovo insegnamento</button>
+    <button class="btn" id="out">Esci</button>
+  </div>
+</header>
+<div id="warn"></div>
+<section class="today" id="today"></section>
+<p class="legend"><span><i style="background:var(--ok)"></i>Presenze</span><span><i style="background:var(--no)"></i>Assenze già fatte</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
+<div class="grid" id="grid"></div>
+</main>
+<main id="auth">
+  <h1>Frequenza lezioni</h1>
+  <p class="sub">Accedi per ritrovare le tue presenze da qualsiasi dispositivo.</p>
+  <div class="loginbox">
+    <label>Email<input id="em" type="email" autocomplete="username"></label>
+    <label>Password<input id="pw" type="password" autocomplete="current-password"></label>
+    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off"></label>
+    <p id="amsg" class="meta" role="alert"></p>
+    <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go">Accedi</button><button class="btn" id="sw">Crea un account</button></div>
+    <button class="lnk" id="fg">Password dimenticata?</button>
+  </div>
+</main>
+<dialog id="dlg"></dialog>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
+const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
+// ⬆⬆ FINE ⬆⬆
+const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
+const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+const KEY='presenze-v1';
+let S={thr:66,courses:[]},pending=null;
+let ref=null,unsub=null,dirty=false,writing=false,timer=null;
+const clone=v=>JSON.parse(JSON.stringify(v));
+const canon=v=>JSON.stringify(v,(k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort()):x);
+const SYNC={ok:'Sincronizzato',pending:'Salvataggio…',off:'Offline: le modifiche partiranno appena torni online',err:'Sincronizzazione non riuscita, riprovo…'};
+const setSync=k=>{const e=document.getElementById('sync');if(e)e.textContent=SYNC[k]};
+function save(){if(!ref)return;dirty=true;clearTimeout(timer);timer=setTimeout(flush,400);setSync('pending')}
+async function flush(){
+  if(writing||!dirty||!ref)return;
+  const r=ref;writing=true;dirty=false;let ok=true;
+  try{await setDoc(r,clone(S))}catch(e){ok=false;dirty=true}
+  writing=false;setSync(ok?(dirty?'pending':'ok'):'err');
+  if(dirty&&ref)setTimeout(flush,ok?0:8000);
+}
+function adopt(d){
+  const n={thr:d.thr||66,courses:clone(d.courses||[])};
+  if(canon(n)===canon(S))return;
+  S=n;render();
+}
+const $=id=>document.getElementById(id),dlg=$('dlg'),openSet=new Set();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0');
+const ymd=D=>`${D.getFullYear()}-${p2(D.getMonth()+1)}-${p2(D.getDate())}`;
+const hm=D=>p2(D.getHours())+':'+p2(D.getMinutes());
+const fmtD=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+const ended=(l,now)=>new Date(l.d+'T'+(l.e||'23:59'))<now;
+
+function calc(c){
+  const now=new Date(),L=c.lessons,T=Math.max(c.total||0,L.length);
+  const x=S.thr*T,M=Math.min(T,Math.ceil(x/100)),maxA=T-M,P=L.filter(l=>l.p).length;
+  const A=L.filter(l=>!l.p&&ended(l,now)).length;
+  return{T,M,maxA,P,A,R:T-P-A,margin:maxA-A};
+}
+function status(k){
+  if(!k.T)return{c:'var(--mu)',t:'Aggiungi le lezioni'};
+  if(k.P>=k.M)return{c:'var(--ok)',t:'Soglia raggiunta'};
+  if(k.margin<0)return{c:'var(--no)',t:'Soglia non più raggiungibile'};
+  if(k.margin===0)return{c:'var(--wa)',t:'Non puoi più saltare lezioni'};
+  if(k.margin===1)return{c:'var(--wa)',t:'Ti resta 1 assenza'};
+  if(k.margin===2)return{c:'var(--wa)',t:'Ti restano solo 2 assenze'};
+  return{c:'var(--ok)',t:`Ti restano ${k.margin} assenze`};
+}
+function pie(k){
+  const r=40,C=2*Math.PI*r,T=k.T||1;let off=0,s='';
+  for(const[n,col]of[[k.P,'var(--ok)'],[k.A,'var(--no)'],[k.R,'var(--rs)']]){
+    const len=C*n/T;
+    if(n>0)s+=`<circle cx="50" cy="50" r="${r}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"/>`;
+    off+=len;
+  }
+  if(!k.T)s=`<circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--rs)" stroke-width="16"/>`;
+  const a=(k.T?k.M/k.T:S.thr/100)*2*Math.PI,sn=Math.sin(a),cs=Math.cos(a);
+  const pct=k.T?Math.round(k.P/k.T*1000)/10:0;
+  return`<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="${pct}% di presenze">${s}<line x1="${50+31*sn}" y1="${50-31*cs}" x2="${50+49*sn}" y2="${50-49*cs}" stroke="var(--ink)" stroke-width="2.5"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="700" fill="currentColor">${pct}%</text></svg>`;
+}
+function card(c){
+  const k=calc(c),st=status(k),now=new Date();
+  const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
+  const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt">${fmtD(l.d)}${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
+  const missing=k.T>c.lessons.length?` (${k.T-c.lessons.length} non ancora in calendario)`:'';
+  return`<article class="card" data-card="${c.id}" style="--st:${st.c}">
+<div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
+<div class="body">${pie(k)}<div class="stats"><div class="verdict">${st.t}</div>
+<div>Presenze <b>${k.P}</b> su minimo <b>${k.M}</b></div>
+<div>Assenze <b>${k.A}</b> su massimo <b>${k.maxA}</b></div>
+<div class="meta">${k.T} lezioni totali${missing}, ${k.R} restanti</div></div></div>
+<details data-c="${c.id}"${openSet.has(c.id)?' open':''}><summary>Lezioni (${c.lessons.length})</summary><ul class="ls">${rows}</ul>
+<div class="add"><input type="date" class="nd" aria-label="Data"><input type="time" class="ns" aria-label="Inizio"><input type="time" class="ne" aria-label="Fine"><button class="btn" data-act="add" data-c="${c.id}">Aggiungi lezione</button></div></details>
+</article>`;
+}
+function renderTop(){
+  const now=new Date(),td=ymd(now),items=[],w=[];
+  for(const c of S.courses){
+    c.lessons.forEach(l=>{if(l.d===td)items.push({c,l})});
+    const k=calc(c);
+    if(k.T&&k.P<k.M&&k.margin<=2)w.push(`<div><b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
+  }
+  items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
+  $('warn').innerHTML=w.length?`<div class="warn">${w.join('')}</div>`:'';
+  const rows=items.map(({c,l})=>{const ab=!l.p&&ended(l,now);
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b>${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
+  $('today').innerHTML=`<h2>Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
+}
+function render(){
+  $('thr').value=S.thr;renderTop();
+  $('grid').innerHTML=S.courses.length?S.courses.map(card).join(''):`<div class="empty"><p>Non c'è ancora nessun insegnamento.<br>Importa il calendario o aggiungine uno a mano.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+}
+function renderCard(id){
+  const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
+  const sc=el.querySelector('.ls')?.scrollTop||0,t=document.createElement('div');
+  t.innerHTML=card(S.courses.find(c=>c.id===id));
+  const n=t.firstElementChild;el.replaceWith(n);
+  const l=n.querySelector('.ls');if(l)l.scrollTop=sc;
+  renderTop();
+}
+function courseDlg(c){
+  dlg.innerHTML=`<h3>${c?'Modifica insegnamento':'Nuovo insegnamento'}</h3>
+<label>Nome<input id="fn" value="${esc(c?.name||'')}"></label>
+<label>CFU<input id="fc" type="number" min="0" value="${c?.cfu||''}"></label>
+<label class="ck"><input id="fa" type="checkbox"${c?.annual?' checked':''}> Insegnamento annuale</label>
+<label>Totale lezioni previste (facoltativo)<input id="ft" type="number" min="0" value="${c?.total||''}"></label>
+<p class="meta">Per gli annuali, finché non hai il calendario del secondo semestre, inserisci qui il totale dell'anno: minimo e assenze massime saranno calcolati su quel numero.</p>
+<div class="row">${c?`<button class="btn" data-act="delc" data-c="${c.id}">Elimina</button>`:''}<button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savec" data-c="${c?.id||''}">Salva</button></div>`;
+  dlg.showModal();
+}
+function importDlg(){
+  dlg.innerHTML=`<h3>Importa calendario</h3>
+<p class="meta">Scarica il file .ics dal calendario dell'università e sceglilo qui: viene letto solo nel tuo browser. Il link iCal può contenere un accesso personale, quindi meglio non incollarlo altrove.</p>
+<label>File .ics<input type="file" id="ff" accept=".ics,text/calendar"></label>
+<label>Oppure incolla il contenuto del file<textarea id="ft2" rows="3"></textarea></label>
+<div id="imp"></div><div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`;
+  dlg.showModal();
+}
+function pdt(v){
+  const m=v.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?(Z)?/);if(!m)return{d:'',t:''};
+  const[,y,mo,d,h,mi,z]=m;
+  if(h===undefined)return{d:`${y}-${mo}-${d}`,t:''};
+  if(z){const D=new Date(Date.UTC(+y,mo-1,+d,+h,+mi));return{d:ymd(D),t:hm(D)}}
+  return{d:`${y}-${mo}-${d}`,t:`${h}:${mi}`};
+}
+function parseICS(t){
+  t=t.replace(/\r?\n[ \t]/g,'');const ev=[];let rr=0;
+  for(const b of t.split('BEGIN:VEVENT').slice(1)){
+    const blk=b.split('END:VEVENT')[0];
+    const line=k=>{const m=blk.match(new RegExp('^'+k+'(?:;[^:\\r\\n]*)?:(.*)$','m'));return m?m[1].trim():null};
+    const s=line('DTSTART'),e=line('DTEND'),n=line('SUMMARY');
+    if(!s||!n)continue;
+    if(/^RRULE/m.test(blk))rr++;
+    const ps=pdt(s),pe=e?pdt(e):null;
+    if(!ps.d)continue;
+    ev.push({n:n.replace(/\\([,;])/g,'$1').replace(/\\n/gi,' ').trim(),d:ps.d,s:ps.t,e:pe&&pe.d===ps.d?pe.t:''});
+  }
+  return{ev,rr};
+}
+function showMap(text){
+  const{ev,rr}=parseICS(text),g={},imp=$('imp');
+  ev.forEach(x=>(g[x.n]=g[x.n]||[]).push(x));
+  const names=Object.keys(g).sort();pending={names,g};
+  if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
+  imp.innerHTML=`<p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
+  names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low));
+    return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
+  `<div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,c=S.courses.find(x=>x.id===b.dataset.c);
+  if(a==='tog'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l){l.p=!l.p;save();renderCard(c.id)}}
+  else if(a==='dl'&&c){c.lessons=c.lessons.filter(x=>x.id!==b.dataset.l);save();renderCard(c.id)}
+  else if(a==='add'&&c){
+    const k=b.closest('.card'),d=k.querySelector('.nd').value;
+    if(!d){k.querySelector('.nd').focus();return}
+    c.lessons.push({id:uid(),d,s:k.querySelector('.ns').value,e:k.querySelector('.ne').value,p:false});
+    openSet.add(c.id);save();renderCard(c.id);
+  }
+  else if(a==='edit'&&c)courseDlg(c);
+  else if(a==='new')courseDlg();
+  else if(a==='imp')importDlg();
+  else if(a==='cancel')dlg.close();
+  else if(a==='savec'){
+    const name=$('fn').value.trim();if(!name){$('fn').focus();return}
+    const v={name,cfu:+$('fc').value||0,annual:$('fa').checked,total:+$('ft').value||0};
+    if(c)Object.assign(c,v);else S.courses.push({id:uid(),...v,lessons:[]});
+    save();dlg.close();render();
+  }
+  else if(a==='delc'&&c){
+    if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Conferma eliminazione';return}
+    S.courses=S.courses.filter(x=>x!==c);save();dlg.close();render();
+  }
+  else if(a==='doimp'&&pending){
+    let add=0;
+    dlg.querySelectorAll('select[data-i]').forEach(s=>{
+      if(s.value==='skip')return;
+      const n=pending.names[+s.dataset.i];
+      let t=S.courses.find(x=>x.id===s.value);
+      if(!t){t={id:uid(),name:n,cfu:0,annual:false,total:0,lessons:[]};S.courses.push(t)}
+      const seen=new Set(t.lessons.map(l=>l.d+'|'+l.s));
+      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false});add++});
+    });
+    save();render();pending=null;
+    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b> Puoi chiudere questa finestra.</p>`;
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
+  else if(t.id==='ff'&&t.files[0])t.files[0].text().then(showMap);
+  else if(t.id==='ft2')showMap(t.value);
+});
+document.addEventListener('toggle',e=>{
+  const d=e.target;if(!d.matches||!d.matches('details[data-c]'))return;
+  d.open?openSet.add(d.dataset.c):openSet.delete(d.dataset.c);
+},true);
+const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Codice di invito non valido.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
+let mode='in';
+function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
+$('sw').onclick=()=>authMode(mode==='up'?'in':'up');
+$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').click()};
+$('go').onclick=async()=>{
+  const em=$('em').value.trim(),pw=$('pw').value,msg=$('amsg');
+  if(!em||pw.length<6){msg.textContent='Inserisci email e una password di almeno 6 caratteri.';return}
+  $('go').disabled=true;msg.textContent='';
+  try{
+    if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
+    else{
+      const cr=await createUserWithEmailAndPassword(auth,em,pw);
+      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],code:$('cd').value.trim()})}
+      catch(e){await cr.user.delete();throw{code:'bad-code'}}
+    }
+  }catch(e){msg.textContent=ERR[e.code]||'Qualcosa non ha funzionato. Riprova.'}
+  $('go').disabled=false;
+};
+$('fg').onclick=async()=>{
+  const em=$('em').value.trim(),msg=$('amsg');
+  if(!em){msg.textContent='Scrivi la tua email qui sopra, poi premi di nuovo.';return}
+  try{await sendPasswordResetEmail(auth,em);msg.textContent='Email inviata: controlla la posta (anche lo spam).'}
+  catch(e){msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email.'}
+};
+$('out').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,u=>{
+  if(unsub){unsub();unsub=null}
+  ref=null;dirty=false;clearTimeout(timer);
+  $('auth').hidden=!!u;$('app').hidden=!u;
+  if(!u){S={thr:66,courses:[]};return}
+  $('who').textContent=u.email+' ·';
+  ref=doc(fs,'users',u.uid);setSync('pending');
+  unsub=onSnapshot(ref,sn=>{
+    const pend=dirty||writing||sn.metadata.hasPendingWrites;
+    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}}
+    setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
+  },()=>setSync('err'));
+});
+render();
+</script>
+</body>
+</html>
