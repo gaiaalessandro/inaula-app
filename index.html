@@ -168,7 +168,7 @@ function card(c){
   const k=calc(c),st=status(k),now=new Date();
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
   const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt">${fmtD(l.d)}${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt">${fmtD(l.d)}${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
   const missing=k.T>c.lessons.length?` (${k.T-c.lessons.length} non ancora in calendario)`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c}">
 <div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
@@ -190,7 +190,7 @@ function renderTop(){
   items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
   $('warn').innerHTML=w.length?`<div class="warn">${w.join('')}</div>`:'';
   const rows=items.map(({c,l})=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b>${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b>${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}${l.m?`<small>${esc(l.m)}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
   $('today').innerHTML=`<h2>Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
 }
 function render(){
@@ -224,8 +224,8 @@ function importDlg(){
   dlg.showModal();
 }
 function pdt(v){
-  const m=v.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2}))?(Z)?/);if(!m)return{d:'',t:''};
-  const[,y,mo,d,h,mi,z]=m;
+  const m=v.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?)?(Z)?/);if(!m)return{d:'',t:''};
+  const[,y,mo,d,h,mi,,z]=m;
   if(h===undefined)return{d:`${y}-${mo}-${d}`,t:''};
   if(z){const D=new Date(Date.UTC(+y,mo-1,+d,+h,+mi));return{d:ymd(D),t:hm(D)}}
   return{d:`${y}-${mo}-${d}`,t:`${h}:${mi}`};
@@ -244,21 +244,54 @@ function parseICS(t){
   }
   return{ev,rr};
 }
-function showMap(text){
+const SM=new Set(['e','ed','di','del','della','dello','dell','dei','degli','delle','da','in','con','per','a','al','alla','ai','nel','nella','sul']);
+const nice=s=>s!==s.toUpperCase()?s:s.replace(/\p{L}+/gu,(w,i)=>{const l=w.toLowerCase();if(SM.has(l)&&i>0)return l;if(w.length<=3&&!SM.has(l))return w;return w[0]+l.slice(1)});
+const grp=(x,by)=>{const i=by?x.n.indexOf(' - '):-1;return i>0?{g:x.n.slice(0,i).trim(),m:x.n.slice(i+3).trim()}:{g:x.n,m:''}};
+let icsText='';
+function showMap(text,by){
+  icsText=text;if(by===undefined)by=true;
   const{ev,rr}=parseICS(text),g={},imp=$('imp');
-  ev.forEach(x=>(g[x.n]=g[x.n]||[]).push(x));
+  ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m})});
   const names=Object.keys(g).sort();pending={names,g};
   if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
-  imp.innerHTML=`<p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
+  imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<label class="ck"><input type="checkbox" id="grp"${by?' checked':''}> Raggruppa per insegnamento (testo prima di " - ")</label>`:'')+`<p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
   names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low));
     return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
   `<div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
+}
+const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
+function delLesson(c,id){
+  const l=c.lessons.find(x=>x.id===id);if(!l)return;
+  c.rm=[...new Set([...(c.rm||[]),l.d+'|'+l.s,...(l.o?[l.o]:[])])];
+  c.lessons=c.lessons.filter(x=>x.id!==id);save();renderCard(c.id);
+}
+function lessonDlg(c,l){
+  dlg.innerHTML=`<h3>Modifica lezione</h3><p class="meta">${esc(c.name)}. La modifica riguarda solo il tuo account.</p>
+<label>Data<input id="ld" type="date" value="${l.d}"></label>
+<label>Inizio<input id="ls" type="time" value="${l.s||''}"></label>
+<label>Fine<input id="le" type="time" value="${l.e||''}"></label>
+<label>Modulo (facoltativo)<input id="lm" value="${esc(l.m||'')}"></label>
+<div class="row"><button class="btn" data-act="dl2" data-c="${c.id}" data-l="${l.id}">Elimina lezione</button><button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savel" data-c="${c.id}" data-l="${l.id}">Salva</button></div>`;
+  dlg.showModal();
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,c=S.courses.find(x=>x.id===b.dataset.c);
   if(a==='tog'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l){l.p=!l.p;save();renderCard(c.id)}}
-  else if(a==='dl'&&c){c.lessons=c.lessons.filter(x=>x.id!==b.dataset.l);save();renderCard(c.id)}
+  else if(a==='dl'&&c)delLesson(c,b.dataset.l);
+  else if(a==='el'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)lessonDlg(c,l)}
+  else if(a==='savel'&&c){
+    const l=c.lessons.find(x=>x.id===b.dataset.l),d=$('ld').value;
+    if(!l)return;if(!d){$('ld').focus();return}
+    const s=$('ls').value,e2=$('le').value,m=$('lm').value.trim();
+    if(!l.o&&(d!==l.d||s!==(l.s||'')))l.o=l.d+'|'+(l.s||'');
+    Object.assign(l,{d,s,e:e2});if(m)l.m=m;else delete l.m;
+    save();dlg.close();renderCard(c.id);
+  }
+  else if(a==='dl2'&&c){
+    if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Conferma eliminazione';return}
+    dlg.close();delLesson(c,b.dataset.l);
+  }
   else if(a==='add'&&c){
     const k=b.closest('.card'),d=k.querySelector('.nd').value;
     if(!d){k.querySelector('.nd').focus();return}
@@ -285,9 +318,9 @@ document.addEventListener('click',e=>{
       if(s.value==='skip')return;
       const n=pending.names[+s.dataset.i];
       let t=S.courses.find(x=>x.id===s.value);
-      if(!t){t={id:uid(),name:n,cfu:0,annual:false,total:0,lessons:[]};S.courses.push(t)}
-      const seen=new Set(t.lessons.map(l=>l.d+'|'+l.s));
-      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false});add++});
+      if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,lessons:[]};S.courses.push(t)}
+      const seen=keysOf(t);
+      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false,...(x.m?{m:nice(x.m)}:{})});add++});
     });
     save();render();pending=null;
     $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b> Puoi chiudere questa finestra.</p>`;
@@ -298,6 +331,7 @@ document.addEventListener('change',e=>{
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
   else if(t.id==='ff'&&t.files[0])t.files[0].text().then(showMap);
   else if(t.id==='ft2')showMap(t.value);
+  else if(t.id==='grp')showMap(icsText,t.checked);
 });
 document.addEventListener('toggle',e=>{
   const d=e.target;if(!d.matches||!d.matches('details[data-c]'))return;
