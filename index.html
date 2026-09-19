@@ -92,7 +92,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
   <div class="loginbox">
     <label>Email<input id="em" type="email" autocomplete="username"></label>
     <label>Password<input id="pw" type="password" autocomplete="current-password"></label>
-    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off"></label>
+    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
     <p id="amsg" class="meta" role="alert"></p>
     <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go">Accedi</button><button class="btn" id="sw">Crea un account</button></div>
     <button class="lnk" id="fg">Password dimenticata?</button>
@@ -303,7 +303,7 @@ document.addEventListener('toggle',e=>{
   const d=e.target;if(!d.matches||!d.matches('details[data-c]'))return;
   d.open?openSet.add(d.dataset.c):openSet.delete(d.dataset.c);
 },true);
-const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Codice di invito non valido.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
+const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
 let mode='in';
 function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
 $('sw').onclick=()=>authMode(mode==='up'?'in':'up');
@@ -317,9 +317,9 @@ $('go').onclick=async()=>{
     else{
       const cr=await createUserWithEmailAndPassword(auth,em,pw);
       try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],code:$('cd').value.trim()})}
-      catch(e){await cr.user.delete();throw{code:'bad-code'}}
+      catch(e){try{await cr.user.delete()}catch(_){}throw{code:e.code==='permission-denied'?'bad-code':'fs/'+(e.code||'errore')}}
     }
-  }catch(e){msg.textContent=ERR[e.code]||'Qualcosa non ha funzionato. Riprova.'}
+  }catch(e){msg.textContent=ERR[e.code]||('Errore: '+(e.code||e.message||'sconosciuto'))}
   $('go').disabled=false;
 };
 $('fg').onclick=async()=>{
@@ -336,7 +336,7 @@ onAuthStateChanged(auth,u=>{
   if(!u){S={thr:66,courses:[]};return}
   $('who').textContent=u.email+' ·';
   ref=doc(fs,'users',u.uid);setSync('pending');
-  unsub=onSnapshot(ref,sn=>{
+  unsub=onSnapshot(ref,{includeMetadataChanges:true},sn=>{
     const pend=dirty||writing||sn.metadata.hasPendingWrites;
     if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}}
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
