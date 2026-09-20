@@ -64,7 +64,9 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .dt{white-space:nowrap}
 .foot{margin:26px 0 0;font-size:.85rem;color:var(--mu);text-align:center}
 #auth .foot{text-align:left}
-.fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:11px 18px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer}
+.fabs{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.fab.fb{background:var(--sf);color:var(--ink);box-shadow:0 3px 12px rgba(11,43,74,.22)}
+.fab{position:static;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:11px 18px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer}
 .empty.start{text-align:left;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:18px}
 .start h2{margin:0 0 6px;font-size:1.25rem}
 .start ol{padding-left:22px;margin:8px 0 14px;line-height:1.7}
@@ -103,7 +105,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .map{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--ln)}
 [hidden]{display:none!important}
-@media (max-width:520px){main{padding:18px 14px 90px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
+@media (max-width:520px){main{padding:18px 14px 130px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
 .loginbox{max-width:380px;margin-top:18px}
 .lnk{border:0;background:none;text-decoration:underline;padding:8px 0;color:var(--mu);cursor:pointer}
 body{background:var(--bgimg),var(--bg);background-attachment:fixed}
@@ -154,6 +156,11 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 .au,.nt{white-space:normal}
 .today .lt .au,.today .lt .dc,.today .lt .nt{display:block;margin-left:0}
 .dc{color:var(--mu)}
+.fbcard{margin-top:26px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,color-mix(in srgb,#6DB3AB 22%,var(--sf)),color-mix(in srgb,#A29CDB 22%,var(--sf)));border-radius:22px;padding:16px 18px;box-shadow:var(--sh)}
+.fbcard .btn{flex:none}
+dialog h4{margin:14px 0 4px;font-size:1rem}
+.rd{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0}
+.rd label{margin:0;flex-direction:row}
 </style>
 </head>
 <body>
@@ -168,6 +175,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
     <label class="thr">Soglia <input id="thr" type="number" min="1" max="100" value="66"> %</label>
     <button class="btn" data-act="imp">Importa calendario</button>
     <button class="btn pri" data-act="new">Nuovo insegnamento</button>
+    <button class="btn" data-act="upd" id="updb" hidden>🔄 Aggiorna orario</button>
   </div>
 </header>
 <div id="warn"></div>
@@ -175,8 +183,9 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <p class="legend"><span><i style="background:conic-gradient(#6DB3AB,#A29CDB,#7FB0DC,#E2BC7C,#98C08E,#6DB3AB)"></i>Presenze (nel colore dell'insegnamento)</span><span><i style="background:var(--no)"></i>Assenze segnate</span><span><i style="background:var(--wa);opacity:.5"></i>Da segnare</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
-<p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
-<button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button>
+<div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
+<p class="foot"><button class="lnk" data-act="fb">Suggerimenti</button> · <button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
+<div class="fabs"><button class="fab fb" data-act="fb">💬 Scrivici</button><button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button></div>
 </main>
 <main id="auth">
   <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
@@ -204,6 +213,8 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <p><b>Titolare del trattamento.</b> Gaia Alessandro. Contatto: <span class="ce"></span>. InAula è un progetto personale, gratuito e senza scopo di lucro, non affiliato all'Università di Torino né a Cineca.</p>
 <p><b>Quali dati tratta.</b></p>
 <ul class="sub"><li>Email e nome che inserisci alla registrazione. La password è gestita dal servizio di accesso di Google (Firebase Authentication): il gestore di InAula non la vede né la conosce.</li>
+<li>I messaggi che ci invii dal modulo Suggerimenti (con nome ed email solo se scegli di ricevere una risposta).</li>
+<li>Il link del tuo orario, solo se scegli di ricordarlo per aggiornare l'orario (puoi scollegarlo dal menu Account).</li>
 <li>I dati che inserisci o importi: insegnamenti, CFU, lezioni con date e orari, aule e docenti indicati nel calendario, presenze e assenze, note, impostazioni (soglia, colori).</li>
 <li>Dati tecnici di connessione (per esempio l'indirizzo IP) registrati dai fornitori del servizio per farlo funzionare e proteggerlo.</li></ul>
 <p>Non chiediamo dati sulla salute né su altre persone: ti invitiamo a non scriverli nelle note.</p>
@@ -227,7 +238,8 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <li><b>Legge applicabile.</b> Legge italiana.</li></ul>
 </div></details>
 <details class="gs" id="ls_c"><summary>Contatti</summary><div class="gb">
-<p>Per domande, richieste sui tuoi dati o segnalazioni scrivi a <span class="ce"></span>.</p>
+<p><button class="btn pri" data-act="fb">Scrivi dal sito</button></p>
+<p>Per domande, richieste sui tuoi dati o segnalazioni puoi anche scrivere a <span class="ce"></span>.</p>
 <p>Titolare del trattamento: Gaia Alessandro.</p>
 </div></details>
 </div>
@@ -266,6 +278,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 </ol>
 <div class="note"><b>Come scegliere?</b> Guarda nel regolamento del tuo corso, alla voce frequenza obbligatoria: dice se la percentuale è sull'insegnamento o sul modulo, e sulle ore o sulle lezioni. Se tutte le lezioni durano uguale, lezioni e ore danno lo stesso risultato.</div>
 <div class="note">Importare lo stesso orario due volte non crea doppioni.</div>
+<div class="note"><b>Ricorda il link:</b> lasciando la spunta "Ricorda il link", in alto compare <b>🔄 Aggiorna orario</b> per rileggere l'orario quando l'università lo cambia (vedi sezione 5).</div>
 </div></details>
 
 <details class="gs" id="gs3"><summary>3. Segnare le presenze e vedere le lezioni di oggi</summary><div class="gb">
@@ -289,7 +302,8 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 </div></details>
 
 <details class="gs" id="gs5"><summary>5. Modificare o spostare una lezione</summary><div class="gb">
-<p>Se un professore sposta o annulla una lezione, apri l'elenco con <b>Lezioni</b> e usa:</p>
+<p><b>Se è l'università a cambiare l'orario</b>, premi <b>🔄 Aggiorna orario</b> (in alto, appare se hai lasciato la spunta "Ricorda il link"): InAula confronta il calendario con il tuo e ti mostra le lezioni <b>nuove</b>, <b>spostate</b> o <b>non più in calendario</b>. Scegli tu cosa applicare, e le presenze che hai già segnato restano. Una volta al giorno, quando apri il sito, controlla da solo e ti avvisa.</p>
+<p>Se invece è un cambio solo tuo, apri l'elenco con <b>Lezioni</b> e usa:</p>
 <img class="gimg" src="guida-9.png" width="780" height="1260" alt="Elenco delle lezioni con il pulsante modifica e il pulsante Aggiungi lezione evidenziati" loading="lazy">
 <ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche scrivere l'<b>aula</b>, i <b>docenti</b> e una <b>nota</b> per quella lezione (per esempio "portare il camice"), oppure <b>eliminare</b> la lezione: se ti sbagli, subito dopo compare <b>Annulla</b>.</li>
 <li><b>Aggiungi lezione</b> per inserirne una nuova con data e orari.</li></ol>
@@ -312,18 +326,19 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <ul class="sub"><li><b>Accesso:</b> email e password. Sul tuo telefono o computer lascia la spunta "Ricordami"; su un computer condiviso toglila e premi sempre <b>Esci</b>. <b>Password dimenticata?</b> è sotto il pulsante Accedi.</li>
 <li><b>Account</b> (in alto, accanto a Esci): puoi cambiare il nome, la password e l'email, <b>scaricare una copia dei tuoi dati</b> oppure <b>eliminare il tuo account</b> con tutti i tuoi dati (serve la password e l'operazione non si annulla).</li>
 <li><b>Ognuno vede solo i propri dati</b>: gli altri utenti non possono vedere le tue presenze.</li>
-<li>Il sito salva solo il tuo nome, la tua email e i dati che inserisci, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario non viene salvato: per leggerlo il sito può passare da un servizio di appoggio gratuito, che non conserva niente.</li>
+<li>Il sito salva solo il tuo nome, la tua email e i dati che inserisci, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario viene salvato solo se lasci la spunta "Ricorda il link" (per usare <b>Aggiorna orario</b>): lo scolleghi da Account. Per leggerlo il sito può passare da un servizio di appoggio gratuito, che non conserva niente.</li>
 <li>In fondo alla pagina trovi <b>Privacy</b>, <b>Termini</b> e <b>Contatti</b>. InAula è uno strumento personale e non ufficiale: fanno fede solo i registri delle presenze dell'università.</li>
 <li>Puoi usare lo stesso account da telefono e computer: i dati si sincronizzano. Sull'iPhone il collegamento in Home ti chiede l'accesso la prima volta.</li></ul>
 </div></details>
 
 <details class="gs" id="gs8"><summary>8. Domande frequenti</summary><div class="gb">
+<details class="q"><summary>Come scrivo un suggerimento o segnalo un problema?</summary><p>Premi <b>💬 Scrivici</b> in basso a destra, oppure la scheda "Scrivi un messaggio" in fondo alla pagina. Il messaggio arriva direttamente a chi gestisce InAula.</p></details>
 <details class="q"><summary>Non vedo aula e docenti</summary><p>Importa di nuovo il calendario (incolla il link): le lezioni già presenti vengono aggiornate con aula e docenti, senza duplicati.</p></details>
 <details class="q"><summary>Il link non viene letto</summary><p>Controlla di aver copiato tutto il link (inizia con https://). Se non funziona, usa il file .ics dal computer (sezione 1).</p></details>
 <details class="q"><summary>Mancano delle lezioni</summary><p>Controlla che la data di inizio del link fosse giusta (sezione 1). Le lezioni mancanti si aggiungono a mano con "Aggiungi lezione".</p></details>
 <details class="q"><summary>Gli orari sono sfasati di un'ora</summary><p>Controlla che l'ora e il fuso orario del telefono o del computer siano quelli italiani.</p></details>
 <details class="q"><summary>Ho importato per sbaglio o ho troppi insegnamenti</summary><p>Apri <b>Modifica</b> sull'insegnamento e premi <b>Elimina</b> (due clic). Poi importa di nuovo scegliendo l'opzione giusta.</p></details>
-<details class="q"><summary>L'università ha cambiato l'orario</summary><p>Incolla di nuovo il link in Importa calendario: le lezioni nuove si aggiungono. Quelle tolte o spostate vanno eliminate a mano con ✕.</p></details>
+<details class="q"><summary>L'università ha cambiato l'orario</summary><p>Premi <b>🔄 Aggiorna orario</b> in alto (se non lo vedi, incolla di nuovo il link in Importa calendario lasciando la spunta "Ricorda il link"). Se preferisci fare a mano: incolla di nuovo il link in Importa calendario: le lezioni nuove si aggiungono. Quelle tolte o spostate vanno eliminate a mano con ✕.</p></details>
 <details class="q"><summary>Mi chiede sempre la password</summary><p>Non usare la finestra privata, lascia la spunta "Ricordami" e non premere Esci se non serve.</p></details>
 <details class="q"><summary>La mia soglia non è il 66%</summary><p>Cambia il numero accanto a "Soglia" in alto nella pagina.</p></details>
 </div></details>
@@ -332,7 +347,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,EmailAuthProvider,reauthenticateWithCredential,updatePassword,verifyBeforeUpdateEmail,deleteUser,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,deleteDoc,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,deleteDoc,addDoc,collection,serverTimestamp,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
 // ⬆⬆ FINE ⬆⬆
@@ -340,6 +355,7 @@ const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomai
 const IMPORT_PROXY="";
 // Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
 const CONTACT_EMAIL="";
+const APP_VER="2026-09-20-c3";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const KEY='presenze-v1';
@@ -360,7 +376,7 @@ async function flush(){
   if(dirty&&ref)setTimeout(flush,ok?0:8000);
 }
 function adopt(d){
-  const n={thr:d.thr||66,courses:clone(d.courses||[]),name:d.name||''};
+  const n={thr:d.thr||66,courses:clone(d.courses||[]),name:d.name||'',lk:d.lk||null};
   if(canon(n)===canon(S))return;
   S=n;render();
 }
@@ -451,7 +467,7 @@ function renderTop(){
   }
   items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
   let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
-  $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'');
+  $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'')+(updDiff&&updDiff.items.some(x=>x.t!=='inf')?`<div class="warn" style="margin-top:8px">🔄 L'università ha modificato l'orario (${updDiff.items.filter(x=>x.t!=='inf').length} differenze). <button class="btn" data-act="upd" data-s="rev" style="margin-left:6px">Rivedi</button></div>`:'');
   const rows=items.map(({c,l})=>{const x=sx(l),pend=x===0&&ended(l,now);
     return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,true)}</span></li>`}).join('');
   const nT=items.filter(({l})=>sx(l)===0).length;
@@ -465,6 +481,7 @@ let archOpen=false;
 function migrate(){let ch=false;S.courses.forEach(c=>c.lessons.forEach(l=>{if('p' in l){if(l.x===undefined)l.x=l.p?1:0;delete l.p;ch=true}}));if(ch)save()}
 function render(){
   migrate();ensureColors();
+  $('updb').hidden=!(S.lk&&S.lk.u);
   $('thr').value=S.thr;renderTop();
   const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
   $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>🗂️ Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
@@ -504,13 +521,13 @@ async function readLink(){
   const u=inp.value.trim().replace(/^webcal:/i,'https:');
   if(!/^https:\/\/\S+$/i.test(u)){imp.innerHTML='<p class="note">Incolla un link che inizia con https://</p>';return}
   btn.disabled=true;btn.textContent='Leggo…';imp.innerHTML='';
-  try{showMap(await loadLink(u))}
+  try{const t=await loadLink(u);srcLink=u;showMap(t)}
   catch(e){imp.innerHTML='<p class="note">Non riesco a leggere questo link da qui. Controlla di averlo copiato tutto, oppure usa il file .ics (dal computer). <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Guarda la guida</button></p>'}
   btn.disabled=false;btn.textContent='Leggi il link';
 }
 function importDlg(){
   dlg.innerHTML=`<h3>Importa calendario</h3>
-<p class="meta">Incolla il link dell'orario copiato dal sito dell'università: viene letto e non viene salvato. <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Non sai come? Guarda la guida</button></p>
+<p class="meta">Incolla il link dell'orario copiato dal sito dell'università: viene letto e, se vuoi, puoi ricordarlo per aggiornare l'orario in seguito. <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Non sai come? Guarda la guida</button></p>
 <label>Link dell'orario<input id="il" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…"></label>
 <div class="row" style="justify-content:flex-start;margin:0 0 6px"><button class="btn pri" type="button" id="gl" data-act="lnk">Leggi il link</button></div>
 <details class="alt"><summary>Hai il file .ics? Usalo qui</summary>
@@ -543,7 +560,7 @@ function parseICS(t){
 const SM=new Set(['e','ed','di','del','della','dello','dell','dei','degli','delle','da','in','con','per','a','al','alla','ai','nel','nella','sul']);
 const nice=s=>s!==s.toUpperCase()?s:s.replace(/\p{L}+/gu,(w,i)=>{const l=w.toLowerCase();if(SM.has(l)&&i>0)return l;if(w.length<=3&&!SM.has(l))return w;return w[0]+l.slice(1)});
 const grp=(x,by)=>{const i=by?x.n.indexOf(' - '):-1;return i>0?{g:x.n.slice(0,i).trim(),m:x.n.slice(i+3).trim()}:{g:x.n,m:''}};
-let icsText='';
+let icsText='',srcLink='',curBy=true,updDiff=null,daily=false;
 function archCands(){
   const touched=new Set();
   document.querySelectorAll('select[data-i]').forEach(s=>{if(s.value!=='skip'&&s.value!=='new')touched.add(s.value)});
@@ -556,15 +573,15 @@ function refreshArch(on){
   box.innerHTML=L.length?`<label class="ck" style="align-items:flex-start"><input type="checkbox" id="arch"${on?' checked':''}> <span>Archivia gli insegnamenti del semestre precedente (non annuali e non presenti in questo calendario): <b>${L.map(c=>esc(c.name)).join(', ')}</b>. Restano consultabili nell'Archivio, ma non contano più in "Oggi" e negli avvisi.</span></label>`:'';
 }
 function showMap(text,by){
-  icsText=text;if(by===undefined)by=true;
-  const{ev,rr}=parseICS(text),g={},imp=$('imp'),iu=($('iu')||{}).value||'l',arcOn=$('arch')?$('arch').checked:true;
+  icsText=text;if(by===undefined)by=true;curBy=by;
+  const{ev,rr}=parseICS(text),g={},imp=$('imp'),iu=($('iu')||{}).value||'l',arcOn=$('arch')?$('arch').checked:true,rlOn=$('rl')?$('rl').checked:true;
   ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m})});
   const names=Object.keys(g).sort();pending={names,g};
   if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
   imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<p class="meta" style="margin:10px 0 2px"><b>Come conti la frequenza?</b></p><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="c"${by?' checked':''}> Per insegnamento intero: le lezioni di tutti i moduli si sommano e la soglia vale sul totale</label><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="m"${by?'':' checked'}> Per singoli moduli: ogni modulo è un insegnamento a sé, con la propria soglia</label>`:'')+`<label>Conta le presenze in<select id="iu"><option value="l"${iu==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${iu==='h'?' selected':''}>Ore di lezione</option></select></label><p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
   names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>!c.arch&&(low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low)));
     return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.filter(c=>!c.arch).map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
-  `<div id="archbox"></div><div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
+  (srcLink?`<label class="ck" style="align-items:flex-start"><input type="checkbox" id="rl"${rlOn?' checked':''}> <span>Ricorda il link, per poter aggiornare l'orario quando l'università lo cambia.</span></label>`:'')+`<div id="archbox"></div><div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
   refreshArch(arcOn);
 }
 function openGuide(s){
@@ -591,6 +608,7 @@ function accountDlg(){
 <label>Nome<input id="an" value="${esc(S.name||'')}" maxlength="40" autocomplete="given-name"></label>
 <div class="row" style="justify-content:flex-start;margin:0 0 6px"><button class="btn" type="button" data-act="savename">Salva il nome</button></div>
 <p class="meta">Email: <b>${esc(u.email)}</b></p>
+<p class="meta">Orario collegato: ${S.lk&&S.lk.u?'sì (il link è ricordato in questo account) <button class="lnk" type="button" data-act="unlink" style="padding:0">Scollega</button>':'no'}</p>
 <div id="am" class="note" role="alert" hidden></div>
 <details class="alt"><summary>Cambia password</summary>
 <label>Password attuale<input id="cp0" type="password" autocomplete="current-password"></label>
@@ -623,6 +641,89 @@ async function acctAct(a){
     else if(a==='chem'){const p0=$('ce0').value,e1=$('ce1').value.trim();if(!p0||!e1)return amsg('Inserisci la password attuale e la nuova email.');await reauth(p0);await verifyBeforeUpdateEmail(auth.currentUser,e1);amsg('Ti ho inviato una email di conferma al nuovo indirizzo: la email cambia dopo che clicchi il link (controlla anche lo spam).',1)}
     else if(a==='dela'){const p0=$('cd0').value;if(!p0)return amsg('Inserisci la password per confermare.');await reauth(p0);clearTimeout(timer);dirty=false;await deleteDoc(ref);await deleteUser(auth.currentUser);try{await terminate(fs);await clearIndexedDbPersistence(fs)}catch(_){}location.reload()}
   }catch(e){amsg(AERR[e.code]||('Operazione non riuscita: '+(e.code||e.message||'errore')))}
+}
+function feedbackDlg(t){
+  dlg.innerHTML=`<h3>Scrivici</h3>
+<p class="meta">Cosa vorresti che InAula facesse per te? Scrivi una funzione che ti sarebbe utile, oppure segnala un problema.</p>
+<div class="rd"><label class="ck"><input type="radio" name="ft" value="suggerimento"${t==='problema'?'':' checked'}> Suggerimento</label><label class="ck"><input type="radio" name="ft" value="problema"${t==='problema'?' checked':''}> Segnala un problema</label></div>
+<label>Messaggio<textarea id="fx" rows="6" maxlength="1000" placeholder="Scrivi qui…"></textarea></label>
+<div class="meta" id="fc">0 / 1000</div>
+<label class="ck" style="align-items:flex-start"><input type="checkbox" id="fe"> <span>Voglio una risposta: includi il mio nome e la mia email.</span></label>
+<p class="meta">Non scrivere dati sulla salute o su altre persone. Il messaggio arriva solo a chi gestisce InAula.</p>
+<div id="fm" class="note" hidden role="alert"></div>
+<div class="row"><button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="fsend">Invia</button></div>`;
+  dlg.showModal();
+}
+async function sendFb(){
+  const txt=$('fx').value.trim(),m=$('fm'),btn=document.querySelector('[data-act="fsend"]');
+  if(txt.length<5){m.hidden=false;m.textContent='Scrivi almeno qualche parola.';return}
+  const u=auth.currentUser;if(!u)return;
+  const d={type:document.querySelector('input[name=ft]:checked').value,text:txt,uid:u.uid,ver:APP_VER,ua:navigator.userAgent.slice(0,140),createdAt:serverTimestamp()};
+  if($('fe').checked){d.email=u.email;d.name=(S.name||'').slice(0,40)}
+  btn.disabled=true;btn.textContent='Invio…';m.hidden=true;
+  const slow=setTimeout(()=>{m.hidden=false;m.style.borderLeftColor='var(--mu)';m.textContent='Se non hai rete, il messaggio partirà appena torni online.'},6000);
+  try{await addDoc(collection(fs,'feedback'),d);clearTimeout(slow);dlg.innerHTML='<h3>Grazie!</h3><p>Il tuo messaggio è stato inviato.</p><div class="row"><button class="btn pri" data-act="cancel">Chiudi</button></div>'}
+  catch(e){clearTimeout(slow);btn.disabled=false;btn.textContent='Invia';m.hidden=false;m.style.borderLeftColor='var(--no)';m.textContent=e.code==='permission-denied'?'Non riesco a inviare il messaggio in questo momento. Riprova più tardi.':'Invio non riuscito: '+(e.code||'errore')}
+}
+function diffCal(text){
+  const{ev}=parseICS(text),by=S.lk?S.lk.by:true,g={};
+  ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m?nice(k.m):''})});
+  const items=[],today=ymd(new Date()),ds=ev.map(x=>x.d).sort(),minD=ds[0]||'',maxD=ds[ds.length-1]||'';
+  S.courses.forEach(c=>{
+    if(c.arch||!c.gk)return;
+    const E=g[c.gk]||[];if(!E.length)return;
+    const seen=keysOf(c),evKeys=new Set(E.map(x=>x.d+'|'+x.s)),L=c.lessons.filter(l=>!l.mn);
+    const unL=L.filter(l=>!evKeys.has(l.d+'|'+l.s)&&!(l.o&&evKeys.has(l.o))&&l.d>=today&&l.d>=minD&&l.d<=maxD);
+    const unE=E.filter(x=>!seen.has(x.d+'|'+x.s)),used=new Set();
+    unL.forEach(l=>{
+      let best=null,bd=99;
+      unE.forEach((x,i)=>{if(used.has(i)||(l.m||'')!==(x.m||''))return;const dd=Math.abs((new Date(l.d)-new Date(x.d))/864e5);if(dd<=7&&dd<bd){bd=dd;best=i}});
+      if(best!==null){used.add(best);items.push({t:'mov',cid:c.id,lid:l.id,ev:unE[best]})}else items.push({t:'del',cid:c.id,lid:l.id});
+    });
+    unE.forEach((x,i)=>{if(!used.has(i))items.push({t:'add',cid:c.id,ev:x})});
+    const byK=new Map(L.map(l=>[l.d+'|'+l.s,l]));
+    E.forEach(x=>{const l=byK.get(x.d+'|'+x.s);if(l&&((x.e&&l.e&&x.e!==l.e)||(x.au&&l.au&&x.au!==l.au)||(x.dc&&l.dc&&x.dc.slice(0,200)!==l.dc)))items.push({t:'inf',cid:c.id,lid:l.id,ev:x})});
+  });
+  return{items};
+}
+function renderUpd(){
+  const it=updDiff.items,cn=id=>(S.courses.find(c=>c.id===id)||{}).name||'',lo=x=>{const c=S.courses.find(z=>z.id===x.cid);return c&&c.lessons.find(l=>l.id===x.lid)||{}};
+  const fl=l=>`${fmtD(l.d)}${l.s?' '+l.s+(l.e?'–'+l.e:''):''}`,room=x=>x.au?' · '+esc(x.au.split(' - ')[0]):'';
+  const row=(i,on,html)=>`<label class="ck" style="align-items:flex-start"><input type="checkbox" data-u="${i}"${on?' checked':''}><span>${html}</span></label>`;
+  const sec=(t,title,f)=>{const a=it.map((x,i)=>[x,i]).filter(([x])=>x.t===t);return a.length?`<h4>${title} (${a.length})</h4>`+a.map(([x,i])=>f(x,i)).join(''):''};
+  const body=sec('add','Nuove lezioni',(x,i)=>row(i,true,`<b>${esc(cn(x.cid))}</b>: ${fl(x.ev)}${room(x.ev)}`))
+   +sec('mov','Spostate',(x,i)=>{const l=lo(x);return row(i,true,`<b>${esc(cn(x.cid))}</b>: da ${fl(l)} a <b>${fl(x.ev)}</b>${sx(l)?' (il tuo segno resta)':''}`)})
+   +sec('del','Non più in calendario',(x,i)=>{const l=lo(x);return row(i,sx(l)===0,`<b>${esc(cn(x.cid))}</b>: ${fl(l)}${sx(l)?' <span class="pend">(hai già segnato presenza o assenza)</span>':''}`)})
+   +sec('inf','Aula, orario di fine o docenti cambiati',(x,i)=>{const l=lo(x);return row(i,true,`<b>${esc(cn(x.cid))}</b>: ${fl(l)}${x.ev.au&&x.ev.au!==l.au?' · aula '+esc(x.ev.au.split(' - ')[0]):''}${x.ev.e&&x.ev.e!==l.e?' · fine '+x.ev.e:''}`)});
+  const last=S.lk&&S.lk.at?`<p class="meta">Ultimo controllo: ${fmtLast(new Date(S.lk.at))}.</p>`:'';
+  dlg.innerHTML=`<h3>Aggiorna orario</h3>`+(it.length?`<p class="meta">Ecco cosa è cambiato rispetto a InAula. Togli la spunta a ciò che non vuoi applicare.</p>${body}${last}<div class="row"><button class="btn" data-act="cancel">Più tardi</button><button class="btn pri" data-act="upapply">Applica</button></div>`:`<p><b>L'orario è aggiornato.</b> Non ci sono differenze.</p>${last}<div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`);
+  if(!dlg.open)dlg.showModal();
+}
+async function updateNow(){
+  if(!S.lk)return;
+  dlg.innerHTML='<h3>Aggiorna orario</h3><p class="meta">Controllo l\'orario dell\'università…</p><div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>';
+  if(!dlg.open)dlg.showModal();
+  let txt;try{txt=await loadLink(S.lk.u)}catch(e){dlg.querySelector('p').outerHTML='<p class="note">Non riesco a leggere l\'orario in questo momento. Riprova più tardi, oppure importa di nuovo il calendario.</p>';return}
+  S.lk.t=ymd(new Date());S.lk.at=Date.now();save();
+  updDiff=diffCal(txt);renderUpd();renderTop();
+}
+function applyUpd(sel){
+  undoSnap=clone(S);
+  updDiff.items.forEach((it,i)=>{
+    if(!sel.has(i))return;
+    const c=S.courses.find(x=>x.id===it.cid);if(!c)return;
+    if(it.t==='add'){const v=it.ev;c.lessons.push({id:uid(),d:v.d,s:v.s,e:v.e,...(v.m?{m:v.m}:{}),...(v.au?{au:v.au}:{}),...(v.dc?{dc:v.dc.slice(0,200)}:{})});return}
+    const l=c.lessons.find(x=>x.id===it.lid);if(!l)return;
+    if(it.t==='del'){c.rm=[...new Set([...(c.rm||[]),l.d+'|'+l.s,...(l.o?[l.o]:[])])];c.lessons=c.lessons.filter(x=>x!==l)}
+    else if(it.t==='mov'){if(!l.o)l.o=l.d+'|'+l.s;Object.assign(l,{d:it.ev.d,s:it.ev.s,e:it.ev.e});if(it.ev.au)l.au=it.ev.au;if(it.ev.dc)l.dc=it.ev.dc.slice(0,200)}
+    else if(it.t==='inf'){if(it.ev.e)l.e=it.ev.e;if(it.ev.au)l.au=it.ev.au;if(it.ev.dc)l.dc=it.ev.dc.slice(0,200)}
+  });
+  updDiff=null;save();render();showToast('Orario aggiornato');
+}
+async function checkDaily(){
+  if(!S.lk||!S.lk.u||!ref)return;
+  const td=ymd(new Date());if(S.lk.t===td)return;
+  try{const txt=await loadLink(S.lk.u);S.lk.t=td;S.lk.at=Date.now();save();const d=diffCal(txt);updDiff=d.items.some(x=>x.t!=='inf')?d:null;renderTop()}catch(_){}
 }
 const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
 function delLesson(c,id){
@@ -670,7 +771,7 @@ document.addEventListener('click',e=>{
   else if(a==='add'&&c){
     const k=b.closest('.card'),d=k.querySelector('.nd').value;
     if(!d){k.querySelector('.nd').focus();return}
-    c.lessons.push({id:uid(),d,s:k.querySelector('.ns').value,e:k.querySelector('.ne').value});
+    c.lessons.push({id:uid(),d,s:k.querySelector('.ns').value,e:k.querySelector('.ne').value,mn:1});
     openSet.add(c.id);save();renderCard(c.id);
   }
   else if(a==='edit'&&c)courseDlg(c);
@@ -684,6 +785,11 @@ document.addEventListener('click',e=>{
     save();dlg.close();render();
   }
   else if(a==='lnk')readLink();
+  else if(a==='fb'){feedbackDlg(b.dataset.s);if(!dlg.open)dlg.showModal()}
+  else if(a==='fsend')sendFb();
+  else if(a==='upd'){if(b.dataset.s==='rev'&&updDiff)renderUpd();else updateNow()}
+  else if(a==='upapply'){const sel=new Set([...dlg.querySelectorAll('input[data-u]:checked')].map(x=>+x.dataset.u));dlg.close();applyUpd(sel)}
+  else if(a==='unlink'){S.lk=null;updDiff=null;S.courses.forEach(c=>{delete c.gk});save();render();amsg('Orario scollegato.',1)}
   else if(a==='guide')openGuide(b.dataset.s);
   else if(a==='legal')openLegal(b.dataset.s);
   else if(a==='lclose')$('lg').close();
@@ -697,27 +803,31 @@ document.addEventListener('click',e=>{
   }
   else if(a==='doimp'&&pending){
     let add=0,enr=0;
+    const linkOn=!!($('rl')&&$('rl').checked&&srcLink);
     const toArc=$('arch')&&$('arch').checked?archCands():[];
     dlg.querySelectorAll('select[data-i]').forEach(s=>{
       if(s.value==='skip')return;
       const n=pending.names[+s.dataset.i];
       let t=S.courses.find(x=>x.id===s.value);
       if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,unit:$('iu').value,hd:2,lessons:[]};S.courses.push(t)}
+      if(linkOn)t.gk=n;
       const seen=keysOf(t),byKey=new Map(t.lessons.map(l=>[l.d+'|'+l.s,l]));
       pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key)){const ex=byKey.get(key);if(ex){let up=false;if(!ex.au&&x.au){ex.au=x.au;up=true}if(!ex.dc&&x.dc){ex.dc=x.dc.slice(0,200);up=true}if(!ex.m&&x.m){ex.m=nice(x.m);up=true}if(up)enr++}return}seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,...(x.m?{m:nice(x.m)}:{}),...(x.au?{au:x.au}:{}),...(x.dc?{dc:x.dc.slice(0,200)}:{})});add++});
     });
     toArc.forEach(c=>{c.arch=true});
+    if(linkOn)S.lk={u:srcLink,by:curBy,t:ymd(new Date())};
     save();render();pending=null;
-    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${enr?` Aggiornate ${enr} lezioni con aula e docenti.`:''}${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
+    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${linkOn?' Link ricordato: ora puoi usare <b>Aggiorna orario</b>.':''}${enr?` Aggiornate ${enr} lezioni con aula e docenti.`:''}${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
   }
 });
+document.addEventListener('input',e=>{if(e.target.id==='fx'){const c=$('fc');if(c)c.textContent=e.target.value.length+' / 1000'}});
 document.addEventListener('keydown',e=>{if(e.target.id==='il'&&e.key==='Enter'){e.preventDefault();readLink()}});
 document.addEventListener('paste',e=>{if(e.target.id==='il')setTimeout(readLink,60)});
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
-  else if(t.id==='ff'&&t.files[0])t.files[0].text().then(showMap);
-  else if(t.id==='ft2')showMap(t.value);
+  else if(t.id==='ff'&&t.files[0]){srcLink='';t.files[0].text().then(showMap)}
+  else if(t.id==='ft2'){srcLink='';showMap(t.value)}
   else if(t.dataset&&t.dataset.i!==undefined)refreshArch();
   else if(t.name==='gm')showMap(icsText,t.value==='c');
   else if(t.id==='fu'){$('ftt').textContent=(t.value==='h'?'Totale ore previste':'Totale lezioni previste')+' (facoltativo)';$('fdr').hidden=t.value!=='h';$('ft').value=''}
@@ -769,7 +879,7 @@ onAuthStateChanged(auth,u=>{
   ref=doc(fs,'users',u.uid);setSync('pending');
   unsub=onSnapshot(ref,{includeMetadataChanges:true},sn=>{
     const pend=dirty||writing||sn.metadata.hasPendingWrites;
-    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}}
+    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}if(sn.exists()&&!daily&&!sn.metadata.fromCache){daily=true;setTimeout(checkDaily,1200)}}
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
   },()=>setSync('err'));
 });
