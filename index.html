@@ -133,6 +133,22 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 .sw span{display:block;width:34px;height:34px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--ln);cursor:pointer}
 .sw input:checked+span{border-color:var(--sf);box-shadow:0 0 0 3px var(--ink)}
 .sw input:focus-visible+span{outline:2px solid var(--ok);outline-offset:3px}
+.mk{display:flex;gap:6px;flex:none}
+.pb,.ab{width:34px;height:34px;border-radius:50%;border:2px solid;background:none;cursor:pointer;padding:0;font-weight:700;line-height:1;display:grid;place-items:center;font-size:.95rem}
+.pb{border-color:color-mix(in srgb,var(--cc,var(--mu)) var(--dotpct),var(--dotmix));color:color-mix(in srgb,var(--cc,var(--mu)) var(--dotpct),var(--dotmix))}
+.pb:not(.on){opacity:.6}
+.pb.on{background:color-mix(in srgb,var(--cc,var(--ok)) var(--dotpct),var(--dotmix));color:var(--dotck)}
+.ab{border-color:color-mix(in srgb,var(--no) 50%,var(--sf));color:var(--no)}
+.ab:not(.on){opacity:.6}
+.ab.on{background:var(--no);border-color:var(--no);color:#fff}
+.ls li{cursor:default}
+.pend{color:var(--wa);font-weight:600}
+.bulk{margin:4px 0 8px}
+.sim>summary{cursor:pointer;color:var(--ink);font-weight:600;padding:6px 0}
+.simb p{margin:8px 0;font-size:.92rem}
+#toast{position:fixed;left:14px;right:122px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:7;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:.92rem}
+#toast[hidden]{display:none}
+#toast .lnk{color:inherit;font-weight:700;padding:4px 6px}
 </style>
 </head>
 <body>
@@ -140,7 +156,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <header>
   <div>
     <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
-    <p class="sub">Primo semestre. Tocca una lezione per segnarla come frequentata: quelle già svolte e non spuntate contano come assenze.</p>
+    <p class="sub">Segna ogni lezione con ✓ (c'ero) o ✕ (non c'ero). Quelle che non segni restano "da segnare" e non contano come assenze.</p>
     <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span> · <button class="lnk" id="out">Esci</button></p>
   </div>
   <div class="bar">
@@ -151,7 +167,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 </header>
 <div id="warn"></div>
 <section class="today" id="today"></section>
-<p class="legend"><span><i style="background:conic-gradient(#6DB3AB,#A29CDB,#7FB0DC,#E2BC7C,#98C08E,#6DB3AB)"></i>Presenze (nel colore dell'insegnamento)</span><span><i style="background:var(--no)"></i>Assenze già fatte</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
+<p class="legend"><span><i style="background:conic-gradient(#6DB3AB,#A29CDB,#7FB0DC,#E2BC7C,#98C08E,#6DB3AB)"></i>Presenze (nel colore dell'insegnamento)</span><span><i style="background:var(--no)"></i>Assenze segnate</span><span><i style="background:var(--wa);opacity:.5"></i>Da segnare</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
 <button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button>
@@ -169,11 +185,12 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
 </main>
+<div id="toast" role="status" hidden></div>
 <dialog id="dlg"></dialog>
 <dialog id="gd" aria-labelledby="gdt">
 <div class="gh"><h2 id="gdt">Guida</h2><button class="btn" data-act="gclose">Chiudi</button></div>
 <div class="gc">
-<div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) tocchi le lezioni a cui vai. Il resto lo calcola il sito.</div>
+<div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) segni ✓ le lezioni a cui vai. Il resto lo calcola il sito.</div>
 
 <details class="gs" id="gs1" open><summary>1. Copiare il link dell'orario</summary><div class="gb">
 <p>Si fa una volta a semestre e richiede 2 minuti, anche dal telefono. <b>Non serve scaricare nessun file.</b></p>
@@ -207,27 +224,28 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 </div></details>
 
 <details class="gs" id="gs3"><summary>3. Segnare le presenze e vedere le lezioni di oggi</summary><div class="gb">
-<p><b>Tocca il cerchio</b> accanto alla lezione a cui vai: diventa verde con la spunta. Toccalo di nuovo per annullare.</p>
-<img class="gimg" src="guida-7.png" width="780" height="762" alt="Vista Oggi con l'elenco delle lezioni e il cerchio da toccare evidenziato" loading="lazy">
-<ul class="sub"><li><b>Oggi</b>, in alto, mostra le lezioni della giornata: le spunti da lì.</li>
-<li>Le lezioni già finite e non spuntate contano come <b>assenze</b> (cerchio rosso e scritta "assente").</li>
-<li>Puoi spuntare anche dalla scheda dell'insegnamento: tocca <b>Lezioni</b> per aprire l'elenco.</li></ul>
+<p>Accanto a ogni lezione ci sono due pulsanti: <b>✓</b> (c'ero) e <b>✕</b> (non c'ero). Toccane uno per segnare la lezione; toccalo di nuovo per togliere il segno.</p>
+<img class="gimg" src="guida-7.png" width="780" height="925" alt="Vista Oggi con le lezioni della giornata e i pulsanti presente e assente evidenziati" loading="lazy">
+<ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li></ol>
+<ul class="sub"><li><b>Oggi</b>, in alto, mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo.</li>
+<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in alto.</li>
+<li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
+<li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
 </div></details>
 
-<details class="gs" id="gs4"><summary>4. Leggere il grafico e la soglia</summary><div class="gb">
-<img class="gimg" src="guida-8.png" width="780" height="549" alt="Scheda di un insegnamento con grafico ad anello, messaggio e numeri evidenziati" loading="lazy">
-<ol class="sub"><li><b>L'anello</b>: il colore dell'insegnamento = presenze, rosso = assenze già fatte, grigio chiaro = lezioni che restano. Al centro c'è la percentuale di presenze sul totale. La <b>tacca</b> scura sull'anello segna il minimo da raggiungere.</li>
-<li><b>Il messaggio</b> dice quante assenze ti restano. Verde: sei tranquillo. Marrone: te ne restano pochissime (2 lezioni o meno). Rosso: la soglia non è più raggiungibile.</li>
-<li><b>I numeri</b>: presenze fatte e minimo richiesto, assenze fatte e massimo consentito.</li>
-<li><b>Lezioni</b> apre l'elenco delle lezioni.</li></ol>
+<details class="gs" id="gs4"><summary>4. Leggere il grafico, la soglia e il simulatore</summary><div class="gb">
+<img class="gimg" src="guida-8.png" width="780" height="631" alt="Scheda di un insegnamento con grafico ad anello, messaggio, numeri e simulatore evidenziati" loading="lazy">
+<ol class="sub"><li><b>L'anello</b>: il colore dell'insegnamento = presenze, rosso = assenze segnate, beige = da segnare, grigio chiaro = lezioni che restano. Al centro c'è la percentuale di presenze sul totale. La <b>tacca</b> scura sull'anello segna il minimo da raggiungere.</li>
+<li><b>Il messaggio</b> dice quante assenze ti restano (contano solo quelle che hai segnato con ✕). Verde: sei tranquillo. Marrone: te ne restano pochissime (2 lezioni o meno). Rosso: la soglia non è più raggiungibile.</li>
+<li><b>I numeri</b>: presenze segnate e minimo richiesto, assenze segnate e massimo consentito, lezioni ancora da segnare.</li>
+<li><b>Simulatore</b>: risponde a "Posso saltare la prossima lezione?", "Quante ne posso ancora saltare?" e "Se frequento tutte le prossime, a quanto arrivo?".</li></ol>
 <p>In alto compare un riquadro con gli insegnamenti a rischio. La percentuale minima (66%) si cambia accanto a "Soglia", in alto. Il minimo è sempre arrotondato per eccesso. Il colore di ogni insegnamento si sceglie da <b>Modifica</b>.</p>
 </div></details>
 
 <details class="gs" id="gs5"><summary>5. Modificare o spostare una lezione</summary><div class="gb">
 <p>Se un professore sposta o annulla una lezione, apri l'elenco con <b>Lezioni</b> e usa:</p>
-<img class="gimg" src="guida-9.png" width="780" height="1095" alt="Elenco delle lezioni con i pulsanti modifica, elimina e aggiungi lezione evidenziati" loading="lazy">
-<ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche eliminare la lezione.</li>
-<li><b>✕</b> per eliminarla subito.</li>
+<img class="gimg" src="guida-9.png" width="780" height="1260" alt="Elenco delle lezioni con il pulsante modifica e il pulsante Aggiungi lezione evidenziati" loading="lazy">
+<ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche <b>eliminare</b> la lezione: se ti sbagli, subito dopo compare <b>Annulla</b>.</li>
 <li><b>Aggiungi lezione</b> per inserirne una nuova con data e orari.</li></ol>
 <p>Le modifiche sono solo tue: i compagni non vedono niente. Se importi di nuovo il calendario, le lezioni che hai spostato o eliminato non tornano.</p>
 </div></details>
@@ -280,7 +298,9 @@ let ref=null,unsub=null,dirty=false,writing=false,timer=null;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const canon=v=>JSON.stringify(v,(k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort()):x);
 const SYNC={ok:'Sincronizzato',pending:'Salvataggio…',off:'Offline: le modifiche partiranno appena torni online',err:'Sincronizzazione non riuscita, riprovo…'};
-const setSync=k=>{const e=document.getElementById('sync');if(e)e.textContent=SYNC[k]};
+let lastSync=null;
+const fmtLast=d=>{const t=new Date(),y=new Date(t);y.setDate(t.getDate()-1);const hh=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return d.toDateString()===t.toDateString()?`oggi alle ${hh}`:d.toDateString()===y.toDateString()?`ieri alle ${hh}`:`${d.toLocaleDateString('it-IT',{day:'numeric',month:'short'})} alle ${hh}`};
+const setSync=k=>{const e=document.getElementById('sync');if(!e)return;if(k==='ok')lastSync=new Date();const ls=lastSync?` Ultima sincronizzazione: ${fmtLast(lastSync)}.`:'';e.textContent=k==='ok'?`Ultima sincronizzazione: ${fmtLast(lastSync)}`:SYNC[k]+(k==='pending'?'':ls)};
 function save(){if(!ref)return;dirty=true;clearTimeout(timer);timer=setTimeout(flush,400);setSync('pending')}
 async function flush(){
   if(writing||!dirty||!ref)return;
@@ -301,6 +321,7 @@ const p2=n=>String(n).padStart(2,'0');
 const ymd=D=>`${D.getFullYear()}-${p2(D.getMonth()+1)}-${p2(D.getDate())}`;
 const hm=D=>p2(D.getHours())+':'+p2(D.getMinutes());
 const fmtD=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+const sx=l=>l.x!==undefined?l.x:(l.p?1:0);   // 1 presente, 2 assente, 0 da segnare
 const ended=(l,now)=>new Date(l.d+'T'+(l.e||'23:59'))<now;
 
 const durMin=(l,c)=>{if(l.s&&l.e){const f=x=>{const[a,b]=x.split(':');return+a*60+ +b},d=f(l.e)-f(l.s);if(d>0)return d}return Math.round((c.hd||2)*60)};
@@ -311,9 +332,9 @@ function calc(c){
   const sm=a=>a.reduce((s,l)=>s+w(l),0),Sc=sm(L);
   const T=Math.max(h?Math.round((c.total||0)*60):(c.total||0),Sc);
   const x=S.thr*T,M=Math.min(T,h?Math.ceil(x/6000)*60:Math.ceil(x/100)),maxA=T-M;
-  const P=sm(L.filter(l=>l.p)),A=sm(L.filter(l=>!l.p&&ended(l,now)));
+  const P=sm(L.filter(l=>sx(l)===1)),A=sm(L.filter(l=>sx(l)===2)),U=sm(L.filter(l=>sx(l)===0&&ended(l,now)));
   const warn=h?2*(L.length?Sc/L.length:(c.hd||2)*60):2;
-  return{h,T,M,maxA,P,A,R:T-P-A,margin:maxA-A,S:Sc,n:L.length,warn};
+  return{h,T,M,maxA,P,A,U,R:T-P-A-U,margin:maxA-A,S:Sc,n:L.length,warn};
 }
 function status(k){
   if(!k.T)return{c:'var(--mu)',t:'Aggiungi le lezioni'};
@@ -331,9 +352,9 @@ function statusArch(k){
 }
 function pie(k){
   const r=40,C=2*Math.PI*r,T=k.T||1;let off=0,s='';
-  for(const[n,col]of[[k.P,'var(--ok)'],[k.A,'var(--no)'],[k.R,'var(--rs)']]){
+  for(const[n,col,op]of[[k.P,'var(--ok)'],[k.A,'var(--no)'],[k.U,'var(--wa)',.5],[k.R,'var(--rs)']]){
     const len=C*n/T;
-    if(n>0)s+=`<circle cx="50" cy="50" r="${r}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"/>`;
+    if(n>0)s+=`<circle cx="50" cy="50" r="${r}" fill="none" stroke="${col}" stroke-width="16"${op?` stroke-opacity="${op}"`:''} stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"/>`;
     off+=len;
   }
   if(!k.T)s=`<circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--rs)" stroke-width="16"/>`;
@@ -341,20 +362,31 @@ function pie(k){
   const pct=k.T?Math.round(k.P/k.T*1000)/10:0;
   return`<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="${pct}% di presenze">${s}<line x1="${50+31*sn}" y1="${50-31*cs}" x2="${50+49*sn}" y2="${50-49*cs}" stroke="var(--ink)" stroke-width="2.5"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="700" fill="currentColor">${pct}%</text></svg>`;
 }
+function sim(c,k){
+  const now=new Date(),f=v=>fv(k,v),n=v=>k.h?fh(v):`${v} ${v===1?'lezione':'lezioni'}`,w=l=>k.h?durMin(l,c):1,pc=v=>(Math.round(v/k.T*1000)/10)+'%';
+  const up=c.lessons.filter(l=>sx(l)===0&&!ended(l,now)).sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')))[0];
+  let o='';
+  if(up){const m2=k.margin-w(up);o+=`<p><b>Posso saltare la prossima (${fmtD(up.d)}${up.s?', '+up.s:''})?</b><br>${m2<0?'No: supereresti il massimo di assenze.':m2===0?'Sì, ma sarebbe l\'ultima che puoi saltare.':(k.h?`Sì: ti resterebbero ${f(m2)} di assenza.`:`Sì: ti resterebbe${m2===1?' 1 assenza':'ro '+m2+' assenze'}.`)}</p>`}
+  o+=`<p><b>Quante ne posso ancora saltare?</b><br>${k.margin<0?'Nessuna: la soglia non è più raggiungibile.':k.margin===0?'Nessuna: hai già raggiunto il massimo.':n(k.margin)+'.'}</p>`;
+  const fin=k.P+k.R;
+  o+=`<p><b>Se frequento tutte le prossime, a quanto arrivo?</b><br>${pc(fin)} (${f(fin)} su ${f(k.T)}), ${fin>=k.M?'sopra':'sotto'} il minimo di ${f(k.M)}.${k.U?` Se segni presenti anche quelle da segnare (${f(k.U)}) arrivi a ${pc(fin+k.U)}.`:''}</p>`;
+  return o;
+}
 function card(c){
   const arch=!!c.arch,k=calc(c),st=arch?statusArch(k):status(k),now=new Date();
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
   const my=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{month:'short',year:'numeric'}),rg=arch&&L.length?`, archiviato (${my(L[0].d)} – ${my(L[L.length-1].d)})`:'';
-  const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
-  const f=v=>fv(k,v),missing=k.T>k.S?`, di cui ${f(k.T-k.S)} non ancora in calendario`:'';
+  const rows=L.map(l=>{const x=sx(l),pend=x===0&&ended(l,now);
+    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button></li>`}).join('');
+  const nP=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length,f=v=>fv(k,v),missing=k.T>k.S?`, di cui ${f(k.T-k.S)} non ancora in calendario`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c};--cc:${cc(c)}">
 <div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}${c.unit==='h'?', conteggio in ore':''}${rg}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
 <div class="body">${pie(k)}<div class="stats"><div class="verdict">${st.t}</div>
 <div>Presenze <b>${f(k.P)}</b> su minimo <b>${f(k.M)}</b></div>
 <div>Assenze <b>${f(k.A)}</b> su massimo <b>${f(k.maxA)}</b></div>
-<div class="meta">${k.h?`${f(k.T)} totali (${k.n} lezioni)`:`${k.T} lezioni totali`}${missing}${arch?'':`, ${f(k.R)} restanti`}</div></div></div>
-<details data-c="${c.id}"${openSet.has(c.id)?' open':''}><summary>Lezioni (${c.lessons.length})</summary><ul class="ls">${rows}</ul>
+<div class="meta">${k.h?`${f(k.T)} totali (${k.n} lezioni)`:`${k.T} lezioni totali`}${missing}${arch?'':`, ${f(k.R)} restanti`}</div>${k.U?`<div class="meta"><b class="pend">${f(k.U)}</b> da segnare</div>`:''}</div></div>
+${arch||!k.T?'':`<details class="sim" data-c="${c.id}"${openSet.has('s'+c.id)?' open':''}><summary>🧮 Simulatore</summary><div class="simb">${sim(c,k)}</div></details>`}
+<details data-c="${c.id}"${openSet.has(c.id)?' open':''}><summary>Lezioni (${c.lessons.length})</summary>${nP?`<div class="bulk"><button class="btn" data-act="bp" data-c="${c.id}">Segna presenti le ${nP} passate da segnare</button></div>`:''}<ul class="ls">${rows}</ul>
 <div class="add"><input type="date" class="nd" aria-label="Data"><input type="time" class="ns" aria-label="Inizio"><input type="time" class="ne" aria-label="Fine"><button class="btn" data-act="add" data-c="${c.id}">Aggiungi lezione</button></div></details>
 </article>`;
 }
@@ -367,22 +399,25 @@ function renderTop(){
     if(k.T&&k.P<k.M&&k.margin<=k.warn)w.push(`<div>⚠️ <b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
   }
   items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
-  $('warn').innerHTML=w.length?`<div class="warn">${w.join('')}</div>`:'';
-  const rows=items.map(({c,l})=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
-  $('today').innerHTML=`<h2>📅 Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
+  let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
+  $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'');
+  const rows=items.map(({c,l})=>{const x=sx(l),pend=x===0&&ended(l,now);
+    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}</span></li>`}).join('');
+  const nT=items.filter(({l})=>sx(l)===0).length;
+  $('today').innerHTML=`<h2>📅 Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>${nT?`<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>`:''}`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
 }
 const PAL=[['Verde acqua','#6DB3AB'],['Lilla','#A29CDB'],['Azzurro','#7FB0DC'],['Sabbia','#E2BC7C'],['Salvia','#98C08E'],['Orchidea','#BE9BD6'],['Pesca','#E0A48F'],['Ardesia','#8FB0BF']];
 function nextColor(){const n=PAL.map(()=>0);S.courses.forEach(c=>{if(n[c.ci]!==undefined)n[c.ci]++});return n.indexOf(Math.min(...n))}
 function ensureColors(){let ch=false;S.courses.forEach(c=>{if(!PAL[c.ci]){c.ci=nextColor();ch=true}});if(ch)save()}
 const cc=c=>(PAL[c.ci]||PAL[0])[1];
 let archOpen=false;
+function migrate(){let ch=false;S.courses.forEach(c=>c.lessons.forEach(l=>{if('p' in l){if(l.x===undefined)l.x=l.p?1:0;delete l.p;ch=true}}));if(ch)save()}
 function render(){
-  ensureColors();
+  migrate();ensureColors();
   $('thr').value=S.thr;renderTop();
   const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
   $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>🗂️ Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
-  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Tocca le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
 }
 function renderCard(id){
   const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
@@ -487,11 +522,15 @@ function openGuide(s){
   if(!g.open)g.showModal();
   g.querySelector('.gc').scrollTop=0;
 }
+let undoSnap=null,toastT=null;
+function showToast(msg){const t=$('toast');t.innerHTML=`<span>${esc(msg)}</span><button class="lnk" data-act="undo" type="button">Annulla</button>`;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true;undoSnap=null},6000)}
+function mark(c,l,v){undoSnap=clone(S);l.x=sx(l)===v?0:v;delete l.p;save();renderCard(c.id);showToast(l.x===1?'Segnata come presente':l.x===2?'Segnata come assente':'Segno rimosso')}
 const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
 function delLesson(c,id){
   const l=c.lessons.find(x=>x.id===id);if(!l)return;
+  undoSnap=clone(S);
   c.rm=[...new Set([...(c.rm||[]),l.d+'|'+l.s,...(l.o?[l.o]:[])])];
-  c.lessons=c.lessons.filter(x=>x.id!==id);save();renderCard(c.id);
+  c.lessons=c.lessons.filter(x=>x.id!==id);save();renderCard(c.id);showToast('Lezione eliminata');
 }
 function lessonDlg(c,l){
   dlg.innerHTML=`<h3>Modifica lezione</h3><p class="meta">${esc(c.name)}. La modifica riguarda solo il tuo account.</p>
@@ -505,7 +544,10 @@ function lessonDlg(c,l){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,c=S.courses.find(x=>x.id===b.dataset.c);
-  if(a==='tog'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l){l.p=!l.p;save();renderCard(c.id)}}
+  if((a==='mp'||a==='ma')&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)mark(c,l,a==='mp'?1:2)}
+  else if(a==='bp'&&c){undoSnap=clone(S);const now=new Date();let n=0;c.lessons.forEach(l=>{if(sx(l)===0&&ended(l,now)){l.x=1;delete l.p;n++}});save();renderCard(c.id);showToast(`${n} lezioni segnate come presenti`)}
+  else if(a==='bt'){undoSnap=clone(S);const td=ymd(new Date());let n=0;S.courses.forEach(c=>{if(!c.arch)c.lessons.forEach(l=>{if(l.d===td&&sx(l)===0){l.x=1;delete l.p;n++}})});save();render();showToast(`${n} lezioni segnate come presenti`)}
+  else if(a==='undo'){if(undoSnap){S=undoSnap;undoSnap=null;$('toast').hidden=true;save();render()}}
   else if(a==='dl'&&c)delLesson(c,b.dataset.l);
   else if(a==='el'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)lessonDlg(c,l)}
   else if(a==='savel'&&c){
@@ -523,7 +565,7 @@ document.addEventListener('click',e=>{
   else if(a==='add'&&c){
     const k=b.closest('.card'),d=k.querySelector('.nd').value;
     if(!d){k.querySelector('.nd').focus();return}
-    c.lessons.push({id:uid(),d,s:k.querySelector('.ns').value,e:k.querySelector('.ne').value,p:false});
+    c.lessons.push({id:uid(),d,s:k.querySelector('.ns').value,e:k.querySelector('.ne').value});
     openSet.add(c.id);save();renderCard(c.id);
   }
   else if(a==='edit'&&c)courseDlg(c);
@@ -553,7 +595,7 @@ document.addEventListener('click',e=>{
       let t=S.courses.find(x=>x.id===s.value);
       if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,unit:$('iu').value,hd:2,lessons:[]};S.courses.push(t)}
       const seen=keysOf(t);
-      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false,...(x.m?{m:nice(x.m)}:{})});add++});
+      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,...(x.m?{m:nice(x.m)}:{})});add++});
     });
     toArc.forEach(c=>{c.arch=true});
     save();render();pending=null;
@@ -572,7 +614,7 @@ document.addEventListener('change',e=>{
   else if(t.id==='fu'){$('ftt').textContent=(t.value==='h'?'Totale ore previste':'Totale lezioni previste')+' (facoltativo)';$('fdr').hidden=t.value!=='h';$('ft').value=''}
 });
 document.addEventListener('toggle',e=>{
-  const d=e.target;if(d.matches&&d.matches('details.archv')){archOpen=d.open;return}if(!d.matches||!d.matches('details[data-c]'))return;
+  const d=e.target;if(d.matches&&d.matches('details.sim')){d.open?openSet.add('s'+d.dataset.c):openSet.delete('s'+d.dataset.c);return}if(d.matches&&d.matches('details.archv')){archOpen=d.open;return}if(!d.matches||!d.matches('details[data-c]'))return;
   d.open?openSet.add(d.dataset.c):openSet.delete(d.dataset.c);
 },true);
 const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
