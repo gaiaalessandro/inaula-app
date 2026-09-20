@@ -152,17 +152,24 @@ const hm=D=>p2(D.getHours())+':'+p2(D.getMinutes());
 const fmtD=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
 const ended=(l,now)=>new Date(l.d+'T'+(l.e||'23:59'))<now;
 
+const durMin=(l,c)=>{if(l.s&&l.e){const f=x=>{const[a,b]=x.split(':');return+a*60+ +b},d=f(l.e)-f(l.s);if(d>0)return d}return Math.round((c.hd||2)*60)};
+const fh=m=>{const H=Math.floor(m/60),r=Math.round(m%60);return r===0?`${H} h`:r===30?`${H},5 h`:H?`${H} h ${r} min`:`${r} min`};
+const fv=(k,v)=>k.h?fh(v):String(v);
 function calc(c){
-  const now=new Date(),L=c.lessons,T=Math.max(c.total||0,L.length);
-  const x=S.thr*T,M=Math.min(T,Math.ceil(x/100)),maxA=T-M,P=L.filter(l=>l.p).length;
-  const A=L.filter(l=>!l.p&&ended(l,now)).length;
-  return{T,M,maxA,P,A,R:T-P-A,margin:maxA-A};
+  const now=new Date(),L=c.lessons,h=c.unit==='h',w=l=>h?durMin(l,c):1;
+  const sm=a=>a.reduce((s,l)=>s+w(l),0),Sc=sm(L);
+  const T=Math.max(h?Math.round((c.total||0)*60):(c.total||0),Sc);
+  const x=S.thr*T,M=Math.min(T,h?Math.ceil(x/6000)*60:Math.ceil(x/100)),maxA=T-M;
+  const P=sm(L.filter(l=>l.p)),A=sm(L.filter(l=>!l.p&&ended(l,now)));
+  const warn=h?2*(L.length?Sc/L.length:(c.hd||2)*60):2;
+  return{h,T,M,maxA,P,A,R:T-P-A,margin:maxA-A,S:Sc,n:L.length,warn};
 }
 function status(k){
   if(!k.T)return{c:'var(--mu)',t:'Aggiungi le lezioni'};
   if(k.P>=k.M)return{c:'var(--ok)',t:'Soglia raggiunta'};
   if(k.margin<0)return{c:'var(--no)',t:'Soglia non più raggiungibile'};
-  if(k.margin===0)return{c:'var(--wa)',t:'Non puoi più saltare lezioni'};
+  if(k.margin===0)return{c:'var(--wa)',t:k.h?'Non puoi più saltare ore':'Non puoi più saltare lezioni'};
+  if(k.h)return k.margin<=k.warn?{c:'var(--wa)',t:`Ti restano solo ${fh(k.margin)} di assenza`}:{c:'var(--ok)',t:`Ti restano ${fh(k.margin)} di assenza`};
   if(k.margin===1)return{c:'var(--wa)',t:'Ti resta 1 assenza'};
   if(k.margin===2)return{c:'var(--wa)',t:'Ti restano solo 2 assenze'};
   return{c:'var(--ok)',t:`Ti restano ${k.margin} assenze`};
@@ -184,13 +191,13 @@ function card(c){
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
   const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
     return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
-  const missing=k.T>c.lessons.length?` (${k.T-c.lessons.length} non ancora in calendario)`:'';
+  const f=v=>fv(k,v),missing=k.T>k.S?`, di cui ${f(k.T-k.S)} non ancora in calendario`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c}">
-<div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
+<div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}${c.unit==='h'?', conteggio in ore':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
 <div class="body">${pie(k)}<div class="stats"><div class="verdict">${st.t}</div>
-<div>Presenze <b>${k.P}</b> su minimo <b>${k.M}</b></div>
-<div>Assenze <b>${k.A}</b> su massimo <b>${k.maxA}</b></div>
-<div class="meta">${k.T} lezioni totali${missing}, ${k.R} restanti</div></div></div>
+<div>Presenze <b>${f(k.P)}</b> su minimo <b>${f(k.M)}</b></div>
+<div>Assenze <b>${f(k.A)}</b> su massimo <b>${f(k.maxA)}</b></div>
+<div class="meta">${k.h?`${f(k.T)} totali (${k.n} lezioni)`:`${k.T} lezioni totali`}${missing}, ${f(k.R)} restanti</div></div></div>
 <details data-c="${c.id}"${openSet.has(c.id)?' open':''}><summary>Lezioni (${c.lessons.length})</summary><ul class="ls">${rows}</ul>
 <div class="add"><input type="date" class="nd" aria-label="Data"><input type="time" class="ns" aria-label="Inizio"><input type="time" class="ne" aria-label="Fine"><button class="btn" data-act="add" data-c="${c.id}">Aggiungi lezione</button></div></details>
 </article>`;
@@ -200,7 +207,7 @@ function renderTop(){
   for(const c of S.courses){
     c.lessons.forEach(l=>{if(l.d===td)items.push({c,l})});
     const k=calc(c);
-    if(k.T&&k.P<k.M&&k.margin<=2)w.push(`<div><b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
+    if(k.T&&k.P<k.M&&k.margin<=k.warn)w.push(`<div><b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
   }
   items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
   $('warn').innerHTML=w.length?`<div class="warn">${w.join('')}</div>`:'';
@@ -225,7 +232,9 @@ function courseDlg(c){
 <label>Nome<input id="fn" value="${esc(c?.name||'')}"></label>
 <label>CFU<input id="fc" type="number" min="0" value="${c?.cfu||''}"></label>
 <label class="ck"><input id="fa" type="checkbox"${c?.annual?' checked':''}> Insegnamento annuale</label>
-<label>Totale lezioni previste (facoltativo)<input id="ft" type="number" min="0" value="${c?.total||''}"></label>
+<label>Conta la frequenza in<select id="fu"><option value="l"${c?.unit==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${c?.unit==='h'?' selected':''}>Ore di lezione</option></select></label>
+<label><span id="ftt">${c?.unit==='h'?'Totale ore previste':'Totale lezioni previste'} (facoltativo)</span><input id="ft" type="number" min="0" step="any" value="${c?.total||''}"></label>
+<label id="fdr"${c?.unit==='h'?'':' hidden'}>Durata predefinita (ore) per le lezioni senza orario<input id="fd" type="number" min="0.5" step="0.5" value="${c?.hd||2}"></label>
 <p class="meta">Per gli annuali, finché non hai il calendario del secondo semestre, inserisci qui il totale dell'anno: minimo e assenze massime saranno calcolati su quel numero.</p>
 <div class="row">${c?`<button class="btn" data-act="delc" data-c="${c.id}">Elimina</button>`:''}<button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savec" data-c="${c?.id||''}">Salva</button></div>`;
   dlg.showModal();
@@ -265,11 +274,11 @@ const grp=(x,by)=>{const i=by?x.n.indexOf(' - '):-1;return i>0?{g:x.n.slice(0,i)
 let icsText='';
 function showMap(text,by){
   icsText=text;if(by===undefined)by=true;
-  const{ev,rr}=parseICS(text),g={},imp=$('imp');
+  const{ev,rr}=parseICS(text),g={},imp=$('imp'),iu=($('iu')||{}).value||'l';
   ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m})});
   const names=Object.keys(g).sort();pending={names,g};
   if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
-  imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<label class="ck"><input type="checkbox" id="grp"${by?' checked':''}> Raggruppa per insegnamento (testo prima di " - ")</label>`:'')+`<p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
+  imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<p class="meta" style="margin:10px 0 2px"><b>Come conti la frequenza?</b></p><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="c"${by?' checked':''}> Per insegnamento intero: le lezioni di tutti i moduli si sommano e la soglia vale sul totale</label><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="m"${by?'':' checked'}> Per singoli moduli: ogni modulo è un insegnamento a sé, con la propria soglia</label>`:'')+`<label>Conta le presenze in<select id="iu"><option value="l"${iu==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${iu==='h'?' selected':''}>Ore di lezione</option></select></label><p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
   names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low));
     return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
   `<div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
@@ -319,7 +328,7 @@ document.addEventListener('click',e=>{
   else if(a==='cancel')dlg.close();
   else if(a==='savec'){
     const name=$('fn').value.trim();if(!name){$('fn').focus();return}
-    const v={name,cfu:+$('fc').value||0,annual:$('fa').checked,total:+$('ft').value||0};
+    const v={name,cfu:+$('fc').value||0,annual:$('fa').checked,total:+$('ft').value||0,unit:$('fu').value,hd:+$('fd').value||2};
     if(c)Object.assign(c,v);else S.courses.push({id:uid(),...v,lessons:[]});
     save();dlg.close();render();
   }
@@ -333,7 +342,7 @@ document.addEventListener('click',e=>{
       if(s.value==='skip')return;
       const n=pending.names[+s.dataset.i];
       let t=S.courses.find(x=>x.id===s.value);
-      if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,lessons:[]};S.courses.push(t)}
+      if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,unit:$('iu').value,hd:2,lessons:[]};S.courses.push(t)}
       const seen=keysOf(t);
       pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false,...(x.m?{m:nice(x.m)}:{})});add++});
     });
@@ -346,7 +355,8 @@ document.addEventListener('change',e=>{
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
   else if(t.id==='ff'&&t.files[0])t.files[0].text().then(showMap);
   else if(t.id==='ft2')showMap(t.value);
-  else if(t.id==='grp')showMap(icsText,t.checked);
+  else if(t.name==='gm')showMap(icsText,t.value==='c');
+  else if(t.id==='fu'){$('ftt').textContent=(t.value==='h'?'Totale ore previste':'Totale lezioni previste')+' (facoltativo)';$('fdr').hidden=t.value!=='h';$('ft').value=''}
 });
 document.addEventListener('toggle',e=>{
   const d=e.target;if(!d.matches||!d.matches('details[data-c]'))return;
