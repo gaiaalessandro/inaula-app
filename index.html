@@ -62,6 +62,9 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .lt{flex:1;min-width:0}.lt small{color:var(--mu);margin-left:2px}
 .lt small.t{white-space:nowrap}
 .dt{white-space:nowrap}
+.archv{margin-top:26px}
+.archv>summary{font-weight:600;color:var(--ink);font-size:1rem;padding:8px 0}
+.archv .grid{margin-top:10px}
 .tag{font-size:.78rem;color:var(--no)}
 .x{background:none;border:0;color:var(--mu);cursor:pointer;padding:6px 8px}
 .add{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
@@ -99,6 +102,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 <section class="today" id="today"></section>
 <p class="legend"><span><i style="background:var(--ok)"></i>Presenze</span><span><i style="background:var(--no)"></i>Assenze già fatte</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
+<div id="archive"></div>
 </main>
 <main id="auth">
   <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
@@ -174,6 +178,10 @@ function status(k){
   if(k.margin===2)return{c:'var(--wa)',t:'Ti restano solo 2 assenze'};
   return{c:'var(--ok)',t:`Ti restano ${k.margin} assenze`};
 }
+function statusArch(k){
+  if(!k.T)return{c:'var(--mu)',t:'Nessuna lezione'};
+  return k.P>=k.M?{c:'var(--ok)',t:'Soglia raggiunta'}:{c:'var(--no)',t:'Soglia non raggiunta'};
+}
 function pie(k){
   const r=40,C=2*Math.PI*r,T=k.T||1;let off=0,s='';
   for(const[n,col]of[[k.P,'var(--ok)'],[k.A,'var(--no)'],[k.R,'var(--rs)']]){
@@ -187,17 +195,18 @@ function pie(k){
   return`<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="${pct}% di presenze">${s}<line x1="${50+31*sn}" y1="${50-31*cs}" x2="${50+49*sn}" y2="${50-49*cs}" stroke="var(--ink)" stroke-width="2.5"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="700" fill="currentColor">${pct}%</text></svg>`;
 }
 function card(c){
-  const k=calc(c),st=status(k),now=new Date();
+  const arch=!!c.arch,k=calc(c),st=arch?statusArch(k):status(k),now=new Date();
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
+  const my=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{month:'short',year:'numeric'}),rg=arch&&L.length?`, archiviato (${my(L[0].d)} – ${my(L[L.length-1].d)})`:'';
   const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
     return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
   const f=v=>fv(k,v),missing=k.T>k.S?`, di cui ${f(k.T-k.S)} non ancora in calendario`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c}">
-<div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}${c.unit==='h'?', conteggio in ore':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
+<div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}${c.unit==='h'?', conteggio in ore':''}${rg}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
 <div class="body">${pie(k)}<div class="stats"><div class="verdict">${st.t}</div>
 <div>Presenze <b>${f(k.P)}</b> su minimo <b>${f(k.M)}</b></div>
 <div>Assenze <b>${f(k.A)}</b> su massimo <b>${f(k.maxA)}</b></div>
-<div class="meta">${k.h?`${f(k.T)} totali (${k.n} lezioni)`:`${k.T} lezioni totali`}${missing}, ${f(k.R)} restanti</div></div></div>
+<div class="meta">${k.h?`${f(k.T)} totali (${k.n} lezioni)`:`${k.T} lezioni totali`}${missing}${arch?'':`, ${f(k.R)} restanti`}</div></div></div>
 <details data-c="${c.id}"${openSet.has(c.id)?' open':''}><summary>Lezioni (${c.lessons.length})</summary><ul class="ls">${rows}</ul>
 <div class="add"><input type="date" class="nd" aria-label="Data"><input type="time" class="ns" aria-label="Inizio"><input type="time" class="ne" aria-label="Fine"><button class="btn" data-act="add" data-c="${c.id}">Aggiungi lezione</button></div></details>
 </article>`;
@@ -205,6 +214,7 @@ function card(c){
 function renderTop(){
   const now=new Date(),td=ymd(now),items=[],w=[];
   for(const c of S.courses){
+    if(c.arch)continue;
     c.lessons.forEach(l=>{if(l.d===td)items.push({c,l})});
     const k=calc(c);
     if(k.T&&k.P<k.M&&k.margin<=k.warn)w.push(`<div><b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
@@ -215,9 +225,12 @@ function renderTop(){
     return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
   $('today').innerHTML=`<h2>Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
 }
+let archOpen=false;
 function render(){
   $('thr').value=S.thr;renderTop();
-  $('grid').innerHTML=S.courses.length?S.courses.map(card).join(''):`<div class="empty"><p>Non c'è ancora nessun insegnamento.<br>Importa il calendario o aggiungine uno a mano.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+  const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
+  $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
+  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty"><p>Non c'è ancora nessun insegnamento.<br>Importa il calendario o aggiungine uno a mano.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
 }
 function renderCard(id){
   const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
@@ -236,7 +249,7 @@ function courseDlg(c){
 <label><span id="ftt">${c?.unit==='h'?'Totale ore previste':'Totale lezioni previste'} (facoltativo)</span><input id="ft" type="number" min="0" step="any" value="${c?.total||''}"></label>
 <label id="fdr"${c?.unit==='h'?'':' hidden'}>Durata predefinita (ore) per le lezioni senza orario<input id="fd" type="number" min="0.5" step="0.5" value="${c?.hd||2}"></label>
 <p class="meta">Per gli annuali, finché non hai il calendario del secondo semestre, inserisci qui il totale dell'anno: minimo e assenze massime saranno calcolati su quel numero.</p>
-<div class="row">${c?`<button class="btn" data-act="delc" data-c="${c.id}">Elimina</button>`:''}<button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savec" data-c="${c?.id||''}">Salva</button></div>`;
+<div class="row">${c?`<button class="btn" data-act="delc" data-c="${c.id}">Elimina</button><button class="btn" data-act="arc" data-c="${c.id}">${c.arch?'Ripristina':'Archivia'}</button>`:''}<button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savec" data-c="${c?.id||''}">Salva</button></div>`;
   dlg.showModal();
 }
 function importDlg(){
@@ -272,16 +285,28 @@ const SM=new Set(['e','ed','di','del','della','dello','dell','dei','degli','dell
 const nice=s=>s!==s.toUpperCase()?s:s.replace(/\p{L}+/gu,(w,i)=>{const l=w.toLowerCase();if(SM.has(l)&&i>0)return l;if(w.length<=3&&!SM.has(l))return w;return w[0]+l.slice(1)});
 const grp=(x,by)=>{const i=by?x.n.indexOf(' - '):-1;return i>0?{g:x.n.slice(0,i).trim(),m:x.n.slice(i+3).trim()}:{g:x.n,m:''}};
 let icsText='';
+function archCands(){
+  const touched=new Set();
+  document.querySelectorAll('select[data-i]').forEach(s=>{if(s.value!=='skip'&&s.value!=='new')touched.add(s.value)});
+  return S.courses.filter(c=>!c.arch&&!c.annual&&!touched.has(c.id));
+}
+function refreshArch(on){
+  const box=$('archbox');if(!box)return;
+  const was=$('arch');if(on===undefined)on=was?was.checked:true;
+  const L=archCands();
+  box.innerHTML=L.length?`<label class="ck" style="align-items:flex-start"><input type="checkbox" id="arch"${on?' checked':''}> <span>Archivia gli insegnamenti del semestre precedente (non annuali e non presenti in questo calendario): <b>${L.map(c=>esc(c.name)).join(', ')}</b>. Restano consultabili nell'Archivio, ma non contano più in "Oggi" e negli avvisi.</span></label>`:'';
+}
 function showMap(text,by){
   icsText=text;if(by===undefined)by=true;
-  const{ev,rr}=parseICS(text),g={},imp=$('imp'),iu=($('iu')||{}).value||'l';
+  const{ev,rr}=parseICS(text),g={},imp=$('imp'),iu=($('iu')||{}).value||'l',arcOn=$('arch')?$('arch').checked:true;
   ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m})});
   const names=Object.keys(g).sort();pending={names,g};
   if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
   imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<p class="meta" style="margin:10px 0 2px"><b>Come conti la frequenza?</b></p><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="c"${by?' checked':''}> Per insegnamento intero: le lezioni di tutti i moduli si sommano e la soglia vale sul totale</label><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="m"${by?'':' checked'}> Per singoli moduli: ogni modulo è un insegnamento a sé, con la propria soglia</label>`:'')+`<label>Conta le presenze in<select id="iu"><option value="l"${iu==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${iu==='h'?' selected':''}>Ore di lezione</option></select></label><p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
-  names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low));
-    return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
-  `<div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
+  names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>!c.arch&&(low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low)));
+    return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.filter(c=>!c.arch).map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
+  `<div id="archbox"></div><div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
+  refreshArch(arcOn);
 }
 const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
 function delLesson(c,id){
@@ -332,12 +357,14 @@ document.addEventListener('click',e=>{
     if(c)Object.assign(c,v);else S.courses.push({id:uid(),...v,lessons:[]});
     save();dlg.close();render();
   }
+  else if(a==='arc'&&c){c.arch=!c.arch;save();dlg.close();render()}
   else if(a==='delc'&&c){
     if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Conferma eliminazione';return}
     S.courses=S.courses.filter(x=>x!==c);save();dlg.close();render();
   }
   else if(a==='doimp'&&pending){
     let add=0;
+    const toArc=$('arch')&&$('arch').checked?archCands():[];
     dlg.querySelectorAll('select[data-i]').forEach(s=>{
       if(s.value==='skip')return;
       const n=pending.names[+s.dataset.i];
@@ -346,8 +373,9 @@ document.addEventListener('click',e=>{
       const seen=keysOf(t);
       pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,p:false,...(x.m?{m:nice(x.m)}:{})});add++});
     });
+    toArc.forEach(c=>{c.arch=true});
     save();render();pending=null;
-    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b> Puoi chiudere questa finestra.</p>`;
+    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
   }
 });
 document.addEventListener('change',e=>{
@@ -355,11 +383,12 @@ document.addEventListener('change',e=>{
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
   else if(t.id==='ff'&&t.files[0])t.files[0].text().then(showMap);
   else if(t.id==='ft2')showMap(t.value);
+  else if(t.dataset&&t.dataset.i!==undefined)refreshArch();
   else if(t.name==='gm')showMap(icsText,t.value==='c');
   else if(t.id==='fu'){$('ftt').textContent=(t.value==='h'?'Totale ore previste':'Totale lezioni previste')+' (facoltativo)';$('fdr').hidden=t.value!=='h';$('ft').value=''}
 });
 document.addEventListener('toggle',e=>{
-  const d=e.target;if(!d.matches||!d.matches('details[data-c]'))return;
+  const d=e.target;if(d.matches&&d.matches('details.archv')){archOpen=d.open;return}if(!d.matches||!d.matches('details[data-c]'))return;
   d.open?openSet.add(d.dataset.c):openSet.delete(d.dataset.c);
 },true);
 const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
