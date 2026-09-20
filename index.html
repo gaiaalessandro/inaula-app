@@ -3,18 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#EFF3F4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1B2B" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="InAula">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>InAula</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#EEF3F4;--sf:#fff;--ink:#10232B;--mu:#5B707A;--ln:#D3DEE2;--ok:#0B7A75;--no:#C23B5A;--wa:#A86F00;--rs:#D3DEE2;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A1F;--sf:#15262D;--ink:#E6EFF2;--mu:#93A9B2;--ln:#263B44;--ok:#3CC1B8;--no:#EE6C88;--wa:#E8B547;--rs:#2A3F48;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0E1A1F;--sf:#15262D;--ink:#E6EFF2;--mu:#93A9B2;--ln:#263B44;--ok:#3CC1B8;--no:#EE6C88;--wa:#E8B547;--rs:#2A3F48;color-scheme:dark}
+:root{--bg:#EFF3F4;--sf:#fff;--ink:#082A46;--mu:#5A6F80;--ln:#D5DEE3;--ok:#3B7A76;--no:#B8425A;--wa:#9A6427;--rs:#C9D3D9;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1B2B;--sf:#12283D;--ink:#E6EEF4;--mu:#95A9BA;--ln:#233A50;--ok:#5FB3AD;--no:#EE7C93;--wa:#D9A05B;--rs:#2A4258;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1B2B;--sf:#12283D;--ink:#E6EEF4;--mu:#95A9BA;--ln:#233A50;--ok:#5FB3AD;--no:#EE7C93;--wa:#D9A05B;--rs:#2A4258;color-scheme:dark}
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 'Bricolage Grotesque',system-ui,sans-serif}
 main{max-width:1100px;margin:0 auto;padding:22px 16px 64px}
 header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between}
 h1{font-size:clamp(1.7rem,4.5vw,2.4rem);margin:0;letter-spacing:-.02em;line-height:1.05}
+.brand{margin:0;line-height:0}
+.logo{height:76px;width:auto;max-width:100%;border-radius:14px;display:block}
+#auth .logo{height:150px}
 .sub{color:var(--mu);margin:6px 0 0;max-width:52ch;font-size:.95rem}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -31,11 +42,12 @@ input,select,textarea{background:var(--sf);border:1px solid var(--ln);border-rad
 #sync{margin:4px 0 0}
 .legend{color:var(--mu);font-size:.85rem;margin:16px 0}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 5px 0 0}
-.legend span{margin-right:14px;white-space:nowrap}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.legend span{margin-right:14px;display:inline-block}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(310px,100%),1fr))}
 .card{background:var(--sf);border:1px solid var(--ln);border-left:6px solid var(--st);border-radius:10px;padding:14px 14px 10px}
 .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.top h2{font-size:1.15rem;margin:0;line-height:1.2}
+.top>div{min-width:0}
+.top h2{overflow-wrap:anywhere;font-size:1.15rem;margin:0;line-height:1.2}
 .meta{color:var(--mu);font-size:.85rem}
 .body{display:flex;gap:16px;align-items:center;margin:12px 0}
 .pie{width:108px;height:108px;flex:none}
@@ -47,11 +59,13 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--mu);background:none;cursor:pointer;flex:none;padding:0;color:#fff;font-weight:700}
 .dot.on{background:var(--ok);border-color:var(--ok)}
 .dot.abs{border-color:var(--no)}
-.lt{flex:1}.lt small{color:var(--mu);margin-left:6px}
+.lt{flex:1;min-width:0}.lt small{color:var(--mu);margin-left:2px}
+.lt small.t{white-space:nowrap}
+.dt{white-space:nowrap}
 .tag{font-size:.78rem;color:var(--no)}
 .x{background:none;border:0;color:var(--mu);cursor:pointer;padding:6px 8px}
 .add{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.add input{width:auto;flex:1 1 110px}
+.add input{width:auto;min-width:0;flex:1 1 110px}
 .empty{grid-column:1/-1;text-align:center;padding:40px 16px;color:var(--mu)}
 .empty .bar{justify-content:center;margin-top:14px}
 dialog{border:1px solid var(--ln);border-radius:12px;background:var(--sf);color:var(--ink);max-width:540px;width:calc(100% - 32px);padding:18px;max-height:88vh}
@@ -62,6 +76,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .map{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--ln)}
 [hidden]{display:none!important}
+@media (max-width:520px){main{padding:18px 14px 56px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
 .loginbox{max-width:380px;margin-top:18px}
 .lnk{border:0;background:none;text-decoration:underline;padding:8px 0;color:var(--mu);cursor:pointer}
 </style>
@@ -70,15 +85,14 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 <main id="app" hidden>
 <header>
   <div>
-    <h1>InAula</h1>
+    <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
     <p class="sub">Primo semestre. Tocca una lezione per segnarla come frequentata: quelle già svolte e non spuntate contano come assenze.</p>
-    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span></p>
+    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span> · <button class="lnk" id="out">Esci</button></p>
   </div>
   <div class="bar">
     <label class="thr">Soglia <input id="thr" type="number" min="1" max="100" value="66"> %</label>
     <button class="btn" data-act="imp">Importa calendario</button>
     <button class="btn pri" data-act="new">Nuovo insegnamento</button>
-    <button class="btn" id="out">Esci</button>
   </div>
 </header>
 <div id="warn"></div>
@@ -87,22 +101,23 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 <div class="grid" id="grid"></div>
 </main>
 <main id="auth">
-  <h1>InAula</h1>
+  <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
   <p class="sub">Accedi per ritrovare le tue presenze da qualsiasi dispositivo.</p>
-  <div class="loginbox">
-    <label>Email<input id="em" type="email" autocomplete="username"></label>
-    <label>Password<input id="pw" type="password" autocomplete="current-password"></label>
+  <form class="loginbox" id="lf" novalidate>
+    <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
+    <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
     <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
+    <label class="ck"><input id="rem" type="checkbox" checked> Ricordami su questo dispositivo</label>
     <p id="amsg" class="meta" role="alert"></p>
-    <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go">Accedi</button><button class="btn" id="sw">Crea un account</button></div>
-    <button class="lnk" id="fg">Password dimenticata?</button>
-  </div>
+    <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go" type="submit">Accedi</button><button class="btn" id="sw" type="button">Crea un account</button></div>
+    <button class="lnk" id="fg" type="button">Password dimenticata?</button>
+  </form>
 </main>
 <dialog id="dlg"></dialog>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
 // ⬆⬆ FINE ⬆⬆
@@ -168,7 +183,7 @@ function card(c){
   const k=calc(c),st=status(k),now=new Date();
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
   const rows=L.map(l=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt">${fmtD(l.d)}${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}${ab?'<span class="tag">assente</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button><button class="x" data-act="dl" data-c="${c.id}" data-l="${l.id}" aria-label="Elimina lezione">✕</button></li>`}).join('');
   const missing=k.T>c.lessons.length?` (${k.T-c.lessons.length} non ancora in calendario)`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c}">
 <div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
@@ -190,7 +205,7 @@ function renderTop(){
   items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
   $('warn').innerHTML=w.length?`<div class="warn">${w.join('')}</div>`:'';
   const rows=items.map(({c,l})=>{const ab=!l.p&&ended(l,now);
-    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b>${l.s?`<small>${l.s}${l.e?'–'+l.e:''}</small>`:''}${l.m?`<small>${esc(l.m)}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
+    return`<li data-act="tog" data-c="${c.id}" data-l="${l.id}"><button class="dot${l.p?' on':''}${ab?' abs':''}" aria-pressed="${l.p}" aria-label="Presente">${l.p?'✓':''}</button><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}</span>${ab?'<span class="tag">assente</span>':''}</li>`}).join('');
   $('today').innerHTML=`<h2>Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
 }
 function render(){
@@ -341,12 +356,13 @@ const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wron
 let mode='in';
 function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
 $('sw').onclick=()=>authMode(mode==='up'?'in':'up');
-$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').click()};
-$('go').onclick=async()=>{
+$('lf').onsubmit=async e=>{
+  e.preventDefault();
   const em=$('em').value.trim(),pw=$('pw').value,msg=$('amsg');
   if(!em||pw.length<6){msg.textContent='Inserisci email e una password di almeno 6 caratteri.';return}
   $('go').disabled=true;msg.textContent='';
   try{
+    try{await setPersistence(auth,$('rem').checked?browserLocalPersistence:browserSessionPersistence)}catch(_){}
     if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
     else{
       const cr=await createUserWithEmailAndPassword(auth,em,pw);
@@ -362,7 +378,13 @@ $('fg').onclick=async()=>{
   try{await sendPasswordResetEmail(auth,em);msg.textContent='Email inviata: controlla la posta (anche lo spam).'}
   catch(e){msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email.'}
 };
-$('out').onclick=()=>signOut(auth);
+$('out').onclick=async()=>{
+  try{clearTimeout(timer);if(dirty)await Promise.race([flush(),new Promise(r=>setTimeout(r,3000))])}catch(_){}
+  const safe=!dirty&&!writing;
+  try{await signOut(auth)}catch(_){}
+  if(safe){try{await terminate(fs);await clearIndexedDbPersistence(fs)}catch(_){}}
+  location.reload();
+};
 onAuthStateChanged(auth,u=>{
   if(unsub){unsub();unsub=null}
   ref=null;dirty=false;clearTimeout(timer);
