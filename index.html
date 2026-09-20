@@ -62,6 +62,28 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .lt{flex:1;min-width:0}.lt small{color:var(--mu);margin-left:2px}
 .lt small.t{white-space:nowrap}
 .dt{white-space:nowrap}
+.fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:11px 18px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer}
+.empty.start{text-align:left;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:18px}
+.start h2{margin:0 0 6px;font-size:1.25rem}
+.start ol{padding-left:22px;margin:8px 0 14px;line-height:1.7}
+.empty.start .bar{justify-content:flex-start}
+#gd{max-width:680px;padding:0;max-height:92vh;overflow:hidden}
+#gd[open]{display:flex;flex-direction:column}
+#gd .gh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--ln)}
+#gd .gh h2{margin:0;font-size:1.25rem}
+#gd .gc{overflow-y:auto;padding:4px 16px 24px;flex:1}
+#gd p{margin:8px 0}
+.tl{background:var(--bg);border-radius:10px;padding:10px 14px;margin:12px 0}
+.gs{border-top:1px solid var(--ln)}
+.gs>summary{cursor:pointer;font-weight:700;font-size:1.05rem;padding:14px 0;color:var(--ink)}
+.gb{padding:0 0 12px}
+.st{list-style:none;counter-reset:s;padding:0;margin:8px 0}
+.st>li{counter-increment:s;position:relative;padding:0 0 18px 42px}
+.st>li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700}
+.gimg{display:block;max-width:100%;height:auto;margin:10px 0 0;border:1px solid var(--ln);border-radius:10px}
+.sub{margin:8px 0;padding-left:22px}.sub li{margin:6px 0}
+.note{border-left:4px solid var(--wa);background:var(--bg);padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.92rem}
+.q{border-top:1px solid var(--ln)}.q>summary{cursor:pointer;padding:10px 0;font-weight:600;font-size:1rem;color:var(--ink)}.q p{margin:0 0 10px}
 .archv{margin-top:26px}
 .archv>summary{font-weight:600;color:var(--ink);font-size:1rem;padding:8px 0}
 .archv .grid{margin-top:10px}
@@ -79,7 +101,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .map{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--ln)}
 [hidden]{display:none!important}
-@media (max-width:520px){main{padding:18px 14px 56px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
+@media (max-width:520px){main{padding:18px 14px 90px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
 .loginbox{max-width:380px;margin-top:18px}
 .lnk{border:0;background:none;text-decoration:underline;padding:8px 0;color:var(--mu);cursor:pointer}
 </style>
@@ -103,6 +125,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 <p class="legend"><span><i style="background:var(--ok)"></i>Presenze</span><span><i style="background:var(--no)"></i>Assenze già fatte</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
+<button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button>
 </main>
 <main id="auth">
   <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
@@ -118,6 +141,99 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
   </form>
 </main>
 <dialog id="dlg"></dialog>
+<dialog id="gd" aria-labelledby="gdt">
+<div class="gh"><h2 id="gdt">Guida</h2><button class="btn" data-act="gclose">Chiudi</button></div>
+<div class="gc">
+<div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) tocchi le lezioni a cui vai. Il resto lo calcola il sito.</div>
+
+<details class="gs" id="gs1" open><summary>1. Copiare il link dell'orario</summary><div class="gb">
+<p>Si fa una volta a semestre e richiede 2 minuti, anche dal telefono. <b>Non serve scaricare nessun file.</b></p>
+<ol class="st">
+<li><b>Apri l'orario del tuo corso</b> (il link che ti hanno dato) e clicca l'icona di <b>download</b> nella <b>barra rossa</b> in alto a destra (non quella del browser).<img class="gimg" src="guida-1.png" width="900" height="444" alt="Barra rossa dell'orario con l'icona di download evidenziata in alto a destra" loading="lazy"></li>
+<li>Nella finestra "Crea iCal Link" premi <b>CREA ICAL LINK</b>.<img class="gimg" src="guida-2.png" width="900" height="781" alt="Finestra Crea iCal Link con il pulsante CREA ICAL LINK evidenziato" loading="lazy"><div class="note">Di solito la data di inizio proposta è quella di oggi: se vuoi contare anche lezioni già fatte, cambiala con il primo giorno di lezione.</div></li>
+<li>Compare un link: premi <b>COPIA LINK</b>.<img class="gimg" src="guida-3.png" width="900" height="854" alt="Finestra con il link creato e il pulsante COPIA LINK evidenziato" loading="lazy"></li>
+<li>Torna su InAula, premi <b>Importa calendario</b> e <b>incolla il link</b> nel primo campo: l'orario viene letto da solo (sezione 2).</li>
+</ol>
+<div class="note"><b>Non aprire il link</b>: basta copiarlo. Se per errore si apre l'app Calendario, chiudila senza aggiungere niente. Da telefono i pulsanti sono gli stessi ma possono trovarsi in un altro punto della pagina.</div>
+<details class="q"><summary>Il link non viene letto? Usa il file .ics (dal computer)</summary>
+<ol class="st">
+<li>Apri una nuova scheda del browser, incolla il link e premi Invio. Su Mac si apre il programma Calendario: premi <b>Annulla</b>, non serve aggiungere niente.<img class="gimg" src="guida-4.png" width="900" height="698" alt="Finestra del Calendario del Mac con il pulsante Annulla evidenziato" loading="lazy"></li>
+<li>Nella cartella <b>Download</b> trovi il file <b>impegniICal.ics</b>. In InAula, dentro "Importa calendario", apri <b>Hai il file .ics? Usalo qui</b> e sceglilo.</li>
+</ol>
+<p class="note">Questo metodo funziona solo da computer: sul telefono il file non si scarica.</p></details>
+</div></details>
+
+<details class="gs" id="gs2"><summary>2. Importare il calendario in InAula</summary><div class="gb">
+<ol class="st">
+<li>Premi <b>Importa calendario</b> in alto.<img class="gimg" src="guida-5.png" width="780" height="800" alt="Intestazione di InAula con il pulsante Importa calendario evidenziato" loading="lazy"></li>
+<li>Nella finestra che si apre segui i numeri:<img class="gimg" src="guida-6.png" width="780" height="1562" alt="Finestra Importa calendario con quattro punti numerati" loading="lazy">
+<ol class="sub"><li><b>Incolla il link</b> copiato dall'università: si legge da solo. (Se non parte, premi <b>Leggi il link</b>.)</li>
+<li>Scegli come contare la frequenza: <b>per insegnamento intero</b> (la soglia vale sul totale dei moduli) oppure <b>per singoli moduli</b> (ogni modulo ha la sua soglia).</li>
+<li>Scegli se contare in <b>numero di lezioni</b> o in <b>ore</b>.</li>
+<li>Lascia "Crea nuovo insegnamento" su tutte le materie e premi <b>Importa</b>.</li></ol></li>
+<li>Compaiono le schede degli insegnamenti. Con <b>Modifica</b> puoi aggiungere i CFU.</li>
+</ol>
+<div class="note"><b>Come scegliere?</b> Guarda nel regolamento del tuo corso, alla voce frequenza obbligatoria: dice se la percentuale è sull'insegnamento o sul modulo, e sulle ore o sulle lezioni. Se tutte le lezioni durano uguale, lezioni e ore danno lo stesso risultato.</div>
+<div class="note">Importare lo stesso orario due volte non crea doppioni.</div>
+</div></details>
+
+<details class="gs" id="gs3"><summary>3. Segnare le presenze e vedere le lezioni di oggi</summary><div class="gb">
+<p><b>Tocca il cerchio</b> accanto alla lezione a cui vai: diventa verde con la spunta. Toccalo di nuovo per annullare.</p>
+<img class="gimg" src="guida-7.png" width="780" height="510" alt="Vista Oggi con l'elenco delle lezioni e il cerchio da toccare evidenziato" loading="lazy">
+<ul class="sub"><li><b>Oggi</b>, in alto, mostra le lezioni della giornata: le spunti da lì.</li>
+<li>Le lezioni già finite e non spuntate contano come <b>assenze</b> (cerchio rosso e scritta "assente").</li>
+<li>Puoi spuntare anche dalla scheda dell'insegnamento: tocca <b>Lezioni</b> per aprire l'elenco.</li></ul>
+</div></details>
+
+<details class="gs" id="gs4"><summary>4. Leggere il grafico e la soglia</summary><div class="gb">
+<img class="gimg" src="guida-8.png" width="780" height="529" alt="Scheda di un insegnamento con grafico ad anello, messaggio e numeri evidenziati" loading="lazy">
+<ol class="sub"><li><b>L'anello</b>: verde = presenze, rosso = assenze già fatte, grigio = lezioni che restano. Al centro c'è la percentuale di presenze sul totale. La <b>tacca</b> scura sull'anello segna il minimo da raggiungere.</li>
+<li><b>Il messaggio</b> dice quante assenze ti restano. Verde: sei tranquillo. Marrone: te ne restano pochissime (2 lezioni o meno). Rosso: la soglia non è più raggiungibile.</li>
+<li><b>I numeri</b>: presenze fatte e minimo richiesto, assenze fatte e massimo consentito.</li>
+<li><b>Lezioni</b> apre l'elenco delle lezioni.</li></ol>
+<p>In alto compare un riquadro con gli insegnamenti a rischio. La percentuale minima (66%) si cambia accanto a "Soglia", in alto. Il minimo è sempre arrotondato per eccesso.</p>
+</div></details>
+
+<details class="gs" id="gs5"><summary>5. Modificare o spostare una lezione</summary><div class="gb">
+<p>Se un professore sposta o annulla una lezione, apri l'elenco con <b>Lezioni</b> e usa:</p>
+<img class="gimg" src="guida-9.png" width="780" height="1096" alt="Elenco delle lezioni con i pulsanti modifica, elimina e aggiungi lezione evidenziati" loading="lazy">
+<ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche eliminare la lezione.</li>
+<li><b>✕</b> per eliminarla subito.</li>
+<li><b>Aggiungi lezione</b> per inserirne una nuova con data e orari.</li></ol>
+<p>Le modifiche sono solo tue: i compagni non vedono niente. Se importi di nuovo il calendario, le lezioni che hai spostato o eliminato non tornano.</p>
+</div></details>
+
+<details class="gs" id="gs6"><summary>6. Materie annuali, secondo semestre e Archivio</summary><div class="gb">
+<ol class="st">
+<li>Prima di importare il secondo semestre, apri <b>Modifica</b> sulle materie annuali e spunta <b>Insegnamento annuale</b>.</li>
+<li>Copia il nuovo link dell'orario (sezione 1) e incollalo in Importa calendario (sezione 2), con la <b>stessa scelta</b> del primo semestre (insegnamento intero o moduli).</li>
+<li>Le materie annuali si abbinano da sole a quelle già presenti: controlla il menu di ogni materia. Le materie nuove restano su "Crea nuovo insegnamento".</li>
+<li>In fondo compare <b>Archivia gli insegnamenti del semestre precedente</b>: lascia la spunta e premi <b>Importa</b>.</li>
+</ol>
+<ul class="sub"><li>Le <b>annuali</b> restano nel quadro con le lezioni del secondo semestre aggiunte: il conteggio è sull'intero anno e le presenze già segnate non si perdono.</li>
+<li>Le materie <b>archiviate</b> vanno nell'<b>Archivio</b>, in fondo alla pagina: le puoi consultare, ma non contano più in "Oggi" né negli avvisi.</li>
+<li>Da <b>Modifica</b> puoi archiviare o ripristinare una materia quando vuoi.</li></ul>
+</div></details>
+
+<details class="gs" id="gs7"><summary>7. Account e dati</summary><div class="gb">
+<ul class="sub"><li><b>Accesso:</b> email e password. Sul tuo telefono o computer lascia la spunta "Ricordami"; su un computer condiviso toglila e premi sempre <b>Esci</b>.</li>
+<li><b>Password dimenticata?</b> Il collegamento è sotto il pulsante Accedi.</li>
+<li><b>Ognuno vede solo i propri dati</b>: gli altri utenti non possono vedere le tue presenze.</li>
+<li>Il sito salva solo la tua email e le tue presenze, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario non viene salvato: per leggerlo il sito può passare da un servizio di appoggio gratuito (Cloudflare), che non conserva niente.</li>
+<li>Puoi usare lo stesso account da telefono e computer: i dati si sincronizzano. Sull'iPhone il collegamento in Home ti chiede l'accesso la prima volta.</li></ul>
+</div></details>
+
+<details class="gs" id="gs8"><summary>8. Domande frequenti</summary><div class="gb">
+<details class="q"><summary>Il link non viene letto</summary><p>Controlla di aver copiato tutto il link (inizia con https://). Se non funziona, usa il file .ics dal computer (sezione 1).</p></details>
+<details class="q"><summary>Mancano delle lezioni</summary><p>Controlla che la data di inizio del link fosse giusta (sezione 1). Le lezioni mancanti si aggiungono a mano con "Aggiungi lezione".</p></details>
+<details class="q"><summary>Gli orari sono sfasati di un'ora</summary><p>Controlla che l'ora e il fuso orario del telefono o del computer siano quelli italiani.</p></details>
+<details class="q"><summary>Ho importato per sbaglio o ho troppi insegnamenti</summary><p>Apri <b>Modifica</b> sull'insegnamento e premi <b>Elimina</b> (due clic). Poi importa di nuovo scegliendo l'opzione giusta.</p></details>
+<details class="q"><summary>L'università ha cambiato l'orario</summary><p>Incolla di nuovo il link in Importa calendario: le lezioni nuove si aggiungono. Quelle tolte o spostate vanno eliminate a mano con ✕.</p></details>
+<details class="q"><summary>Mi chiede sempre la password</summary><p>Non usare la finestra privata, lascia la spunta "Ricordami" e non premere Esci se non serve.</p></details>
+<details class="q"><summary>La mia soglia non è il 66%</summary><p>Cambia il numero accanto a "Soglia" in alto nella pagina.</p></details>
+</div></details>
+</div>
+</dialog>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -125,6 +241,8 @@ import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc
 // ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
 // ⬆⬆ FINE ⬆⬆
+// Indirizzo del servizio di appoggio per leggere il link dell'orario (facoltativo, vedi guida di configurazione). Lascia vuoto se non serve.
+const IMPORT_PROXY="";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const KEY='presenze-v1';
@@ -230,7 +348,7 @@ function render(){
   $('thr').value=S.thr;renderTop();
   const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
   $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
-  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty"><p>Non c'è ancora nessun insegnamento.<br>Importa il calendario o aggiungine uno a mano.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Tocca le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
 }
 function renderCard(id){
   const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
@@ -252,11 +370,30 @@ function courseDlg(c){
 <div class="row">${c?`<button class="btn" data-act="delc" data-c="${c.id}">Elimina</button><button class="btn" data-act="arc" data-c="${c.id}">${c.arch?'Ripristina':'Archivia'}</button>`:''}<button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savec" data-c="${c?.id||''}">Salva</button></div>`;
   dlg.showModal();
 }
+async function loadLink(u){
+  const ok=t=>typeof t==='string'&&t.includes('BEGIN:VCALENDAR');
+  const get=async url=>{const r=await fetch(url,{credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw new Error('http');return r.text()};
+  try{const t=await get(u);if(ok(t))return t}catch(_){}
+  if(IMPORT_PROXY){try{const t=await get(IMPORT_PROXY+(IMPORT_PROXY.includes('?')?'&':'?')+'u='+encodeURIComponent(u));if(ok(t))return t}catch(_){}}
+  throw new Error('no');
+}
+async function readLink(){
+  const inp=$('il'),imp=$('imp'),btn=$('gl');if(!inp||!btn)return;
+  const u=inp.value.trim().replace(/^webcal:/i,'https:');
+  if(!/^https:\/\/\S+$/i.test(u)){imp.innerHTML='<p class="note">Incolla un link che inizia con https://</p>';return}
+  btn.disabled=true;btn.textContent='Leggo…';imp.innerHTML='';
+  try{showMap(await loadLink(u))}
+  catch(e){imp.innerHTML='<p class="note">Non riesco a leggere questo link da qui. Controlla di averlo copiato tutto, oppure usa il file .ics (dal computer). <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Guarda la guida</button></p>'}
+  btn.disabled=false;btn.textContent='Leggi il link';
+}
 function importDlg(){
   dlg.innerHTML=`<h3>Importa calendario</h3>
-<p class="meta">Scarica il file .ics dal calendario dell'università e sceglilo qui: viene letto solo nel tuo browser. Il link iCal può contenere un accesso personale, quindi meglio non incollarlo altrove.</p>
+<p class="meta">Incolla il link dell'orario copiato dal sito dell'università: viene letto e non viene salvato. <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Non sai come? Guarda la guida</button></p>
+<label>Link dell'orario<input id="il" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…"></label>
+<div class="row" style="justify-content:flex-start;margin:0 0 6px"><button class="btn pri" type="button" id="gl" data-act="lnk">Leggi il link</button></div>
+<details class="alt"><summary>Hai il file .ics? Usalo qui</summary>
 <label>File .ics<input type="file" id="ff" accept=".ics,text/calendar"></label>
-<label>Oppure incolla il contenuto del file<textarea id="ft2" rows="3"></textarea></label>
+<label>Oppure incolla il contenuto del file<textarea id="ft2" rows="3"></textarea></label></details>
 <div id="imp"></div><div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`;
   dlg.showModal();
 }
@@ -308,6 +445,12 @@ function showMap(text,by){
   `<div id="archbox"></div><div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
   refreshArch(arcOn);
 }
+function openGuide(s){
+  const g=$('gd');
+  if(s){g.querySelectorAll('details.gs').forEach(d=>{d.open=d.id==='gs'+s})}
+  if(!g.open)g.showModal();
+  g.querySelector('.gc').scrollTop=0;
+}
 const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
 function delLesson(c,id){
   const l=c.lessons.find(x=>x.id===id);if(!l)return;
@@ -357,6 +500,9 @@ document.addEventListener('click',e=>{
     if(c)Object.assign(c,v);else S.courses.push({id:uid(),...v,lessons:[]});
     save();dlg.close();render();
   }
+  else if(a==='lnk')readLink();
+  else if(a==='guide')openGuide(b.dataset.s);
+  else if(a==='gclose')$('gd').close();
   else if(a==='arc'&&c){c.arch=!c.arch;save();dlg.close();render()}
   else if(a==='delc'&&c){
     if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Conferma eliminazione';return}
@@ -378,6 +524,8 @@ document.addEventListener('click',e=>{
     $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
   }
 });
+document.addEventListener('keydown',e=>{if(e.target.id==='il'&&e.key==='Enter'){e.preventDefault();readLink()}});
+document.addEventListener('paste',e=>{if(e.target.id==='il')setTimeout(readLink,60)});
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
