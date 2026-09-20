@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="InAula">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>InAula</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-display:swap;src:url(bricolage-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{--bg:#F5F8FA;--sf:#fff;--ink:#082A46;--mu:#5A6F80;--ln:#DCE5EA;--ok:#2F7A5E;--no:#C0506B;--wa:#9A6427;--rs:#C9D3D9;--bgimg:radial-gradient(520px 340px at 100% 0,#E4F3F3 0,transparent 62%),radial-gradient(480px 320px at 0 22%,#EEEAF9 0,transparent 60%),radial-gradient(520px 360px at 100% 62%,#FBF1E2 0,transparent 60%);--hg:linear-gradient(135deg,#E5F3F1 0,#EDEAF9 55%,#FBEFDD 100%);--sh:0 6px 18px rgba(11,43,74,.07);--blend:multiply;--ct:13%;--warnbg:#FBF0DC;--dotpct:80%;--dotmix:#0B2B4A;--dotck:#fff;--pri:linear-gradient(135deg,#17395B,#3E6E96);--pric:#fff;--btnsh:0 1px 6px rgba(11,43,74,.08);color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1B2B;--sf:#12283D;--ink:#E6EEF4;--mu:#95A9BA;--ln:#233A50;--ok:#6CBF9A;--no:#EE7C93;--wa:#D9A05B;--rs:#2A4258;--bgimg:radial-gradient(520px 340px at 100% 0,#123240 0,transparent 62%),radial-gradient(480px 320px at 0 22%,#1A2247 0,transparent 60%),radial-gradient(520px 360px at 100% 62%,#2B2A22 0,transparent 60%);--hg:linear-gradient(135deg,#143446 0,#1B2A4C 55%,#35291F 100%);--sh:0 6px 18px rgba(0,0,0,.35);--blend:normal;--ct:16%;--warnbg:#3A2F1D;--dotpct:100%;--dotmix:#0B2B4A;--dotck:#0B1B2B;--pri:linear-gradient(135deg,#8DBBE0,#A9A3DE);--pric:#0B1B2B;--btnsh:0 1px 6px rgba(0,0,0,.3);color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0B1B2B;--sf:#12283D;--ink:#E6EEF4;--mu:#95A9BA;--ln:#233A50;--ok:#6CBF9A;--no:#EE7C93;--wa:#D9A05B;--rs:#2A4258;--bgimg:radial-gradient(520px 340px at 100% 0,#123240 0,transparent 62%),radial-gradient(480px 320px at 0 22%,#1A2247 0,transparent 60%),radial-gradient(520px 360px at 100% 62%,#2B2A22 0,transparent 60%);--hg:linear-gradient(135deg,#143446 0,#1B2A4C 55%,#35291F 100%);--sh:0 6px 18px rgba(0,0,0,.35);--blend:normal;--ct:16%;--warnbg:#3A2F1D;--dotpct:100%;--dotmix:#0B2B4A;--dotck:#0B1B2B;--pri:linear-gradient(135deg,#8DBBE0,#A9A3DE);--pric:#0B1B2B;--btnsh:0 1px 6px rgba(0,0,0,.3);color-scheme:dark}
@@ -26,7 +26,7 @@ h1{font-size:clamp(1.7rem,4.5vw,2.4rem);margin:0;letter-spacing:-.02em;line-heig
 .brand{margin:0;line-height:0}
 .logo{height:76px;width:auto;max-width:100%;border-radius:14px;display:block}
 #auth .logo{height:150px}
-.sub{color:var(--mu);margin:6px 0 0;max-width:52ch;font-size:.95rem}
+header .sub,#auth .sub{color:var(--mu);margin:6px 0 0;max-width:52ch;font-size:.95rem}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 button,input,select,textarea{font:inherit;color:inherit}
 input,select,textarea{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:7px 9px;width:100%}
@@ -62,17 +62,19 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .lt{flex:1;min-width:0}.lt small{color:var(--mu);margin-left:2px}
 .lt small.t{white-space:nowrap}
 .dt{white-space:nowrap}
+.foot{margin:26px 0 0;font-size:.85rem;color:var(--mu);text-align:center}
+#auth .foot{text-align:left}
 .fab{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:11px 18px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.28);cursor:pointer}
 .empty.start{text-align:left;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:18px}
 .start h2{margin:0 0 6px;font-size:1.25rem}
 .start ol{padding-left:22px;margin:8px 0 14px;line-height:1.7}
 .empty.start .bar{justify-content:flex-start}
-#gd{max-width:680px;padding:0;max-height:92vh;overflow:hidden}
-#gd[open]{display:flex;flex-direction:column}
-#gd .gh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--ln)}
-#gd .gh h2{margin:0;font-size:1.25rem}
-#gd .gc{overflow-y:auto;padding:4px 16px 24px;flex:1}
-#gd p{margin:8px 0}
+.sheet{max-width:680px;padding:0;max-height:92vh;overflow:hidden}
+.sheet[open]{display:flex;flex-direction:column}
+.sheet .gh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--ln)}
+.sheet .gh h2{margin:0;font-size:1.25rem}
+.sheet .gc{overflow-y:auto;padding:4px 16px 24px;flex:1}
+.sheet p{margin:8px 0}
 .tl{background:var(--bg);border-radius:10px;padding:10px 14px;margin:12px 0}
 .gs{border-top:1px solid var(--ln)}
 .gs>summary{cursor:pointer;font-weight:700;font-size:1.05rem;padding:14px 0;color:var(--ink)}
@@ -149,6 +151,9 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 #toast{position:fixed;left:14px;right:122px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:7;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:.92rem}
 #toast[hidden]{display:none}
 #toast .lnk{color:inherit;font-weight:700;padding:4px 6px}
+.au,.nt{white-space:normal}
+.today .lt .au,.today .lt .dc,.today .lt .nt{display:block;margin-left:0}
+.dc{color:var(--mu)}
 </style>
 </head>
 <body>
@@ -157,7 +162,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
   <div>
     <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
     <p class="sub">Segna ogni lezione con ✓ (c'ero) o ✕ (non c'ero). Quelle che non segni restano "da segnare" e non contano come assenze.</p>
-    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span> · <button class="lnk" id="out">Esci</button></p>
+    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span> · <button class="lnk" data-act="acct">Account</button> · <button class="lnk" id="out">Esci</button></p>
   </div>
   <div class="bar">
     <label class="thr">Soglia <input id="thr" type="number" min="1" max="100" value="66"> %</label>
@@ -170,6 +175,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <p class="legend"><span><i style="background:conic-gradient(#6DB3AB,#A29CDB,#7FB0DC,#E2BC7C,#98C08E,#6DB3AB)"></i>Presenze (nel colore dell'insegnamento)</span><span><i style="background:var(--no)"></i>Assenze segnate</span><span><i style="background:var(--wa);opacity:.5"></i>Da segnare</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
+<p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 <button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button>
 </main>
 <main id="auth">
@@ -178,16 +184,55 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
   <form class="loginbox" id="lf" novalidate>
     <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
     <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
+    <label id="nameRow" hidden>Come ti chiami?<input id="nm" autocomplete="given-name" maxlength="40" placeholder="Il tuo nome"></label>
     <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
     <label class="ck"><input id="rem" type="checkbox" checked> Ricordami su questo dispositivo</label>
+    <label class="ck" id="tosRow" hidden style="align-items:flex-start"><input id="tos" type="checkbox"><span>Ho letto l'<button class="lnk" type="button" data-act="legal" data-s="p" style="padding:0">informativa privacy</button> e i <button class="lnk" type="button" data-act="legal" data-s="t" style="padding:0">termini</button>.</span></label>
     <p id="amsg" class="meta" role="alert"></p>
     <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go" type="submit">Accedi</button><button class="btn" id="sw" type="button">Crea un account</button></div>
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
+  <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 </main>
 <div id="toast" role="status" hidden></div>
 <dialog id="dlg"></dialog>
-<dialog id="gd" aria-labelledby="gdt">
+<dialog id="lg" class="sheet" aria-labelledby="lgt">
+<div class="gh"><h2 id="lgt">Informazioni legali</h2><button class="btn" data-act="lclose">Chiudi</button></div>
+<div class="gc">
+<details class="gs" id="ls_p"><summary>Informativa privacy</summary><div class="gb">
+<p class="meta">Ultimo aggiornamento: 20 settembre 2026</p>
+<p><b>Titolare del trattamento.</b> Gaia Alessandro. Contatto: <span class="ce"></span>. InAula è un progetto personale, gratuito e senza scopo di lucro, non affiliato all'Università di Torino né a Cineca.</p>
+<p><b>Quali dati tratta.</b></p>
+<ul class="sub"><li>Email e nome che inserisci alla registrazione. La password è gestita dal servizio di accesso di Google (Firebase Authentication): il gestore di InAula non la vede né la conosce.</li>
+<li>I dati che inserisci o importi: insegnamenti, CFU, lezioni con date e orari, aule e docenti indicati nel calendario, presenze e assenze, note, impostazioni (soglia, colori).</li>
+<li>Dati tecnici di connessione (per esempio l'indirizzo IP) registrati dai fornitori del servizio per farlo funzionare e proteggerlo.</li></ul>
+<p>Non chiediamo dati sulla salute né su altre persone: ti invitiamo a non scriverli nelle note.</p>
+<p><b>Perché e con quale base giuridica.</b> Per creare il tuo account, salvare e sincronizzare i tuoi dati tra i dispositivi (esecuzione del servizio che hai richiesto, art. 6.1.b GDPR) e per garantire la sicurezza del servizio e prevenire abusi (legittimo interesse, art. 6.1.f GDPR).</p>
+<p><b>Cosa non facciamo.</b> Nessuna pubblicità, nessuna profilazione, nessuna vendita o cessione dei dati a terzi, nessuno strumento di statistica sugli utenti.</p>
+<p><b>Chi tratta i dati per conto del titolare.</b> Google (Firebase Authentication e Cloud Firestore) per l'accesso e l'archiviazione; GitHub (GitHub Pages) per la pubblicazione del sito. Il gestore accede ai dati dalla console del progetto solo per manutenzione, sicurezza o per rispondere a una tua richiesta.</p>
+<p><b>Dove sono i dati.</b> Sui server di Google situati negli Stati Uniti. Il trasferimento avviene con le garanzie previste dal GDPR offerte dal fornitore (per esempio le clausole contrattuali standard).</p>
+<p><b>Per quanto tempo.</b> Finché l'account esiste. Con "Elimina il mio account" cancelli account e dati; copie tecniche di sicurezza presso il fornitore possono restare per un breve periodo. Se il servizio dovesse chiudere ti verrà dato un avviso e potrai scaricare i tuoi dati.</p>
+<p><b>I tuoi diritti.</b> Accesso, rettifica, cancellazione, limitazione, portabilità e opposizione. Molti li eserciti da solo dal menu <b>Account</b> (modifica il nome, scarica i tuoi dati, elimina l'account); per gli altri scrivi a <span class="ce"></span>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>
+<p><b>Cookie e tecnologie simili.</b> InAula usa solo strumenti tecnici necessari: la memoria del browser per mantenere l'accesso (se scegli "Ricordami") e una copia locale dei tuoi dati per usare il sito anche senza rete. Nessun cookie di profilazione o di statistica. Il carattere del sito è ospitato dal sito stesso, non viene caricato da servizi esterni.</p>
+<p><b>Chi può usarlo.</b> Il servizio è destinato a studenti maggiorenni.</p>
+</div></details>
+<details class="gs" id="ls_t"><summary>Termini e avvertenze</summary><div class="gb">
+<p class="meta">Ultimo aggiornamento: 20 settembre 2026</p>
+<ul class="sub"><li><b>Cos'è InAula.</b> Uno strumento personale e gratuito per tenere traccia delle proprie presenze alle lezioni. Non è un servizio ufficiale dell'università e non ha alcun legame con l'Università di Torino o con Cineca: i loro nomi sono usati solo per indicare da dove si importa l'orario.</li>
+<li><b>Non sostituisce il registro ufficiale.</b> Fanno fede solo i registri delle presenze dell'università. Il conteggio di InAula è indicativo e dipende da come lo imposti (percentuale, arrotondamento, lezioni o ore, insegnamento o moduli): controlla sempre le regole del tuo corso di laurea.</li>
+<li><b>Nessuna garanzia.</b> Il servizio è offerto "così com'è": può contenere errori, essere interrotto o cambiare. Nei limiti consentiti dalla legge il gestore non risponde delle conseguenze di decisioni prese in base ai dati mostrati (per esempio assenze o mancate firme).</li>
+<li><b>Account.</b> L'account è personale. Non diffondere il codice di invito, non tentare di accedere ai dati di altri utenti, non usare il servizio per attività illecite né per sovraccaricarlo. In caso di abuso l'account può essere chiuso.</li>
+<li><b>Contenuti.</b> Sei responsabile di ciò che scrivi. Nelle note non inserire dati sulla salute, dati di altre persone o contenuti illeciti.</li>
+<li><b>Modifiche e chiusura.</b> Le funzioni possono cambiare. Se il servizio chiude, ne sarai avvisato e potrai scaricare i tuoi dati dal menu Account.</li>
+<li><b>Legge applicabile.</b> Legge italiana.</li></ul>
+</div></details>
+<details class="gs" id="ls_c"><summary>Contatti</summary><div class="gb">
+<p>Per domande, richieste sui tuoi dati o segnalazioni scrivi a <span class="ce"></span>.</p>
+<p>Titolare del trattamento: Gaia Alessandro.</p>
+</div></details>
+</div>
+</dialog>
+<dialog id="gd" class="sheet" aria-labelledby="gdt">
 <div class="gh"><h2 id="gdt">Guida</h2><button class="btn" data-act="gclose">Chiudi</button></div>
 <div class="gc">
 <div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) segni ✓ le lezioni a cui vai. Il resto lo calcola il sito.</div>
@@ -228,6 +273,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <img class="gimg" src="guida-7.png" width="780" height="925" alt="Vista Oggi con le lezioni della giornata e i pulsanti presente e assente evidenziati" loading="lazy">
 <ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li></ol>
 <ul class="sub"><li><b>Oggi</b>, in alto, mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo.</li>
+<li>In <b>Oggi</b> vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
 <li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in alto.</li>
 <li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
 <li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
@@ -245,7 +291,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <details class="gs" id="gs5"><summary>5. Modificare o spostare una lezione</summary><div class="gb">
 <p>Se un professore sposta o annulla una lezione, apri l'elenco con <b>Lezioni</b> e usa:</p>
 <img class="gimg" src="guida-9.png" width="780" height="1260" alt="Elenco delle lezioni con il pulsante modifica e il pulsante Aggiungi lezione evidenziati" loading="lazy">
-<ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche <b>eliminare</b> la lezione: se ti sbagli, subito dopo compare <b>Annulla</b>.</li>
+<ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche scrivere l'<b>aula</b>, i <b>docenti</b> e una <b>nota</b> per quella lezione (per esempio "portare il camice"), oppure <b>eliminare</b> la lezione: se ti sbagli, subito dopo compare <b>Annulla</b>.</li>
 <li><b>Aggiungi lezione</b> per inserirne una nuova con data e orari.</li></ol>
 <p>Le modifiche sono solo tue: i compagni non vedono niente. Se importi di nuovo il calendario, le lezioni che hai spostato o eliminato non tornano.</p>
 </div></details>
@@ -262,15 +308,17 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 <li>Da <b>Modifica</b> puoi archiviare o ripristinare una materia quando vuoi.</li></ul>
 </div></details>
 
-<details class="gs" id="gs7"><summary>7. Account e dati</summary><div class="gb">
-<ul class="sub"><li><b>Accesso:</b> email e password. Sul tuo telefono o computer lascia la spunta "Ricordami"; su un computer condiviso toglila e premi sempre <b>Esci</b>.</li>
-<li><b>Password dimenticata?</b> Il collegamento è sotto il pulsante Accedi.</li>
+<details class="gs" id="gs7"><summary>7. Account, privacy e dati</summary><div class="gb">
+<ul class="sub"><li><b>Accesso:</b> email e password. Sul tuo telefono o computer lascia la spunta "Ricordami"; su un computer condiviso toglila e premi sempre <b>Esci</b>. <b>Password dimenticata?</b> è sotto il pulsante Accedi.</li>
+<li><b>Account</b> (in alto, accanto a Esci): puoi cambiare il nome, la password e l'email, <b>scaricare una copia dei tuoi dati</b> oppure <b>eliminare il tuo account</b> con tutti i tuoi dati (serve la password e l'operazione non si annulla).</li>
 <li><b>Ognuno vede solo i propri dati</b>: gli altri utenti non possono vedere le tue presenze.</li>
-<li>Il sito salva solo la tua email e le tue presenze, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario non viene salvato: per leggerlo il sito può passare da un servizio di appoggio gratuito (Cloudflare), che non conserva niente.</li>
+<li>Il sito salva solo il tuo nome, la tua email e i dati che inserisci, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario non viene salvato: per leggerlo il sito può passare da un servizio di appoggio gratuito, che non conserva niente.</li>
+<li>In fondo alla pagina trovi <b>Privacy</b>, <b>Termini</b> e <b>Contatti</b>. InAula è uno strumento personale e non ufficiale: fanno fede solo i registri delle presenze dell'università.</li>
 <li>Puoi usare lo stesso account da telefono e computer: i dati si sincronizzano. Sull'iPhone il collegamento in Home ti chiede l'accesso la prima volta.</li></ul>
 </div></details>
 
 <details class="gs" id="gs8"><summary>8. Domande frequenti</summary><div class="gb">
+<details class="q"><summary>Non vedo aula e docenti</summary><p>Importa di nuovo il calendario (incolla il link): le lezioni già presenti vengono aggiornate con aula e docenti, senza duplicati.</p></details>
 <details class="q"><summary>Il link non viene letto</summary><p>Controlla di aver copiato tutto il link (inizia con https://). Se non funziona, usa il file .ics dal computer (sezione 1).</p></details>
 <details class="q"><summary>Mancano delle lezioni</summary><p>Controlla che la data di inizio del link fosse giusta (sezione 1). Le lezioni mancanti si aggiungono a mano con "Aggiungi lezione".</p></details>
 <details class="q"><summary>Gli orari sono sfasati di un'ora</summary><p>Controlla che l'ora e il fuso orario del telefono o del computer siano quelli italiani.</p></details>
@@ -283,13 +331,15 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 </dialog>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,EmailAuthProvider,reauthenticateWithCredential,updatePassword,verifyBeforeUpdateEmail,deleteUser,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,deleteDoc,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
 // ⬆⬆ FINE ⬆⬆
 // Indirizzo del servizio di appoggio per leggere il link dell'orario (facoltativo, vedi guida di configurazione). Lascia vuoto se non serve.
 const IMPORT_PROXY="";
+// Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
+const CONTACT_EMAIL="";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const KEY='presenze-v1';
@@ -310,7 +360,7 @@ async function flush(){
   if(dirty&&ref)setTimeout(flush,ok?0:8000);
 }
 function adopt(d){
-  const n={thr:d.thr||66,courses:clone(d.courses||[])};
+  const n={thr:d.thr||66,courses:clone(d.courses||[]),name:d.name||''};
   if(canon(n)===canon(S))return;
   S=n;render();
 }
@@ -362,6 +412,7 @@ function pie(k){
   const pct=k.T?Math.round(k.P/k.T*1000)/10:0;
   return`<svg class="pie" viewBox="0 0 100 100" role="img" aria-label="${pct}% di presenze">${s}<line x1="${50+31*sn}" y1="${50-31*cs}" x2="${50+49*sn}" y2="${50-49*cs}" stroke="var(--ink)" stroke-width="2.5"/><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="700" fill="currentColor">${pct}%</text></svg>`;
 }
+const meta2=(l,dc)=>(l.au?` <small class="au" title="${esc(l.au)}">📍 ${esc(l.au.split(' - ')[0])}</small>`:'')+(dc&&l.dc?` <small class="dc">${esc(l.dc)}</small>`:'')+(l.nt?` <small class="nt">📝 ${esc(l.nt.length>60?l.nt.slice(0,60)+'…':l.nt)}</small>`:'');
 function sim(c,k){
   const now=new Date(),f=v=>fv(k,v),n=v=>k.h?fh(v):`${v} ${v===1?'lezione':'lezioni'}`,w=l=>k.h?durMin(l,c):1,pc=v=>(Math.round(v/k.T*1000)/10)+'%';
   const up=c.lessons.filter(l=>sx(l)===0&&!ended(l,now)).sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')))[0];
@@ -377,7 +428,7 @@ function card(c){
   const L=[...c.lessons].sort((a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||'')));
   const my=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{month:'short',year:'numeric'}),rg=arch&&L.length?`, archiviato (${my(L[0].d)} – ${my(L[L.length-1].d)})`:'';
   const rows=L.map(l=>{const x=sx(l),pend=x===0&&ended(l,now);
-    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button></li>`}).join('');
+    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><span class="dt">${fmtD(l.d)}</span> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,false)}</span>${l.o?'<span class="tag" style="color:var(--mu)">modificata</span>':''}<button class="x" data-act="el" data-c="${c.id}" data-l="${l.id}" aria-label="Modifica lezione">✎</button></li>`}).join('');
   const nP=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length,f=v=>fv(k,v),missing=k.T>k.S?`, di cui ${f(k.T-k.S)} non ancora in calendario`:'';
   return`<article class="card" data-card="${c.id}" style="--st:${st.c};--cc:${cc(c)}">
 <div class="top"><div><h2>${esc(c.name)}</h2><div class="meta">${c.cfu?c.cfu+' CFU':'CFU non indicati'}${c.annual?', annuale':''}${c.unit==='h'?', conteggio in ore':''}${rg}</div></div><button class="btn" data-act="edit" data-c="${c.id}">Modifica</button></div>
@@ -402,7 +453,7 @@ function renderTop(){
   let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
   $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'');
   const rows=items.map(({c,l})=>{const x=sx(l),pend=x===0&&ended(l,now);
-    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}</span></li>`}).join('');
+    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,true)}</span></li>`}).join('');
   const nT=items.filter(({l})=>sx(l)===0).length;
   $('today').innerHTML=`<h2>📅 Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>${nT?`<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>`:''}`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
 }
@@ -480,12 +531,12 @@ function parseICS(t){
   for(const b of t.split('BEGIN:VEVENT').slice(1)){
     const blk=b.split('END:VEVENT')[0];
     const line=k=>{const m=blk.match(new RegExp('^'+k+'(?:;[^:\\r\\n]*)?:(.*)$','m'));return m?m[1].trim():null};
-    const s=line('DTSTART'),e=line('DTEND'),n=line('SUMMARY');
+    const s=line('DTSTART'),e=line('DTEND'),n=line('SUMMARY'),un=v=>v?v.replace(/\\(["',;])/g,'$1').replace(/\\n/gi,' ').trim():'';
     if(!s||!n)continue;
     if(/^RRULE/m.test(blk))rr++;
     const ps=pdt(s),pe=e?pdt(e):null;
     if(!ps.d)continue;
-    ev.push({n:n.replace(/\\([,;])/g,'$1').replace(/\\n/gi,' ').trim(),d:ps.d,s:ps.t,e:pe&&pe.d===ps.d?pe.t:''});
+    ev.push({n:n.replace(/\\([,;])/g,'$1').replace(/\\n/gi,' ').trim(),d:ps.d,s:ps.t,e:pe&&pe.d===ps.d?pe.t:'',au:un(line('LOCATION')),dc:un(line('DESCRIPTION'))});
   }
   return{ev,rr};
 }
@@ -525,6 +576,54 @@ function openGuide(s){
 let undoSnap=null,toastT=null;
 function showToast(msg){const t=$('toast');t.innerHTML=`<span>${esc(msg)}</span><button class="lnk" data-act="undo" type="button">Annulla</button>`;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true;undoSnap=null},6000)}
 function mark(c,l,v){undoSnap=clone(S);l.x=sx(l)===v?0:v;delete l.p;save();renderCard(c.id);showToast(l.x===1?'Segnata come presente':l.x===2?'Segnata come assente':'Segno rimosso')}
+function openLegal(s){
+  const g=$('lg');
+  if(s){g.querySelectorAll('details.gs').forEach(d=>{d.open=d.id==='ls_'+s})}
+  if(!g.open)g.showModal();
+  g.querySelector('.gc').scrollTop=0;
+}
+const amsg=(t,ok)=>{const e=$('am');if(!e)return;e.hidden=false;e.textContent=t;e.style.borderLeftColor=ok?'var(--ok)':'var(--no)'};
+const reauth=async pw=>{const u=auth.currentUser;await reauthenticateWithCredential(u,EmailAuthProvider.credential(u.email,pw))};
+const AERR={'auth/wrong-password':'Password non corretta.','auth/invalid-credential':'Password non corretta.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/weak-password':'La nuova password è troppo corta (minimo 6 caratteri).','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/requires-recent-login':'Per sicurezza esci e rientra, poi riprova.','auth/network-request-failed':'Nessuna connessione.'};
+function accountDlg(){
+  const u=auth.currentUser;if(!u)return;
+  dlg.innerHTML=`<h3>Il mio account</h3>
+<label>Nome<input id="an" value="${esc(S.name||'')}" maxlength="40" autocomplete="given-name"></label>
+<div class="row" style="justify-content:flex-start;margin:0 0 6px"><button class="btn" type="button" data-act="savename">Salva il nome</button></div>
+<p class="meta">Email: <b>${esc(u.email)}</b></p>
+<div id="am" class="note" role="alert" hidden></div>
+<details class="alt"><summary>Cambia password</summary>
+<label>Password attuale<input id="cp0" type="password" autocomplete="current-password"></label>
+<label>Nuova password (minimo 6 caratteri)<input id="cp1" type="password" autocomplete="new-password"></label>
+<button class="btn" type="button" data-act="chpw">Cambia password</button></details>
+<details class="alt"><summary>Cambia email</summary>
+<label>Password attuale<input id="ce0" type="password" autocomplete="current-password"></label>
+<label>Nuova email<input id="ce1" type="email" autocomplete="email" autocapitalize="off"></label>
+<button class="btn" type="button" data-act="chem">Cambia email</button></details>
+<details class="alt"><summary>I miei dati</summary>
+<p class="meta">Scarica una copia di tutti i tuoi dati (nome, email, insegnamenti, lezioni, presenze, note) in formato JSON.</p>
+<button class="btn" type="button" data-act="dld">Scarica i miei dati</button></details>
+<details class="alt"><summary>Elimina il mio account</summary>
+<p class="meta">Elimina in modo definitivo il tuo account e tutti i tuoi dati. Non si può annullare: ti consigliamo di scaricare prima i tuoi dati.</p>
+<label>Password<input id="cd0" type="password" autocomplete="current-password"></label>
+<button class="btn" type="button" data-act="dela" style="color:var(--no)">Elimina definitivamente</button></details>
+<div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`;
+  dlg.showModal();
+}
+function dlData(){
+  const u=auth.currentUser,data={esportato_il:new Date().toISOString(),email:u.email,nome:S.name||'',soglia_percentuale:S.thr,insegnamenti:S.courses};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='inaula-i-miei-dati.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+async function acctAct(a){
+  try{
+    if(a==='savename'){S.name=$('an').value.trim().slice(0,40);save();amsg('Nome salvato.',1)}
+    else if(a==='dld'){dlData();amsg('Download avviato.',1)}
+    else if(a==='chpw'){const p0=$('cp0').value,p1=$('cp1').value;if(!p0||p1.length<6)return amsg('Inserisci la password attuale e una nuova password di almeno 6 caratteri.');await reauth(p0);await updatePassword(auth.currentUser,p1);$('cp0').value=$('cp1').value='';amsg('Password cambiata.',1)}
+    else if(a==='chem'){const p0=$('ce0').value,e1=$('ce1').value.trim();if(!p0||!e1)return amsg('Inserisci la password attuale e la nuova email.');await reauth(p0);await verifyBeforeUpdateEmail(auth.currentUser,e1);amsg('Ti ho inviato una email di conferma al nuovo indirizzo: la email cambia dopo che clicchi il link (controlla anche lo spam).',1)}
+    else if(a==='dela'){const p0=$('cd0').value;if(!p0)return amsg('Inserisci la password per confermare.');await reauth(p0);clearTimeout(timer);dirty=false;await deleteDoc(ref);await deleteUser(auth.currentUser);try{await terminate(fs);await clearIndexedDbPersistence(fs)}catch(_){}location.reload()}
+  }catch(e){amsg(AERR[e.code]||('Operazione non riuscita: '+(e.code||e.message||'errore')))}
+}
 const keysOf=t=>new Set([...t.lessons.flatMap(l=>[l.d+'|'+l.s,...(l.o?[l.o]:[])]),...(t.rm||[])]);
 function delLesson(c,id){
   const l=c.lessons.find(x=>x.id===id);if(!l)return;
@@ -538,6 +637,10 @@ function lessonDlg(c,l){
 <label>Inizio<input id="ls" type="time" value="${l.s||''}"></label>
 <label>Fine<input id="le" type="time" value="${l.e||''}"></label>
 <label>Modulo (facoltativo)<input id="lm" value="${esc(l.m||'')}"></label>
+<label>Aula (facoltativo)<input id="la" value="${esc(l.au||'')}" maxlength="160"></label>
+<label>Docenti (facoltativo)<input id="lo" value="${esc(l.dc||'')}" maxlength="200"></label>
+<label>Nota (facoltativa)<textarea id="ln" rows="3" maxlength="500">${esc(l.nt||'')}</textarea></label>
+<p class="meta">Non scrivere dati sulla salute o su altre persone. La nota resta nel tuo account.</p>
 <div class="row"><button class="btn" data-act="dl2" data-c="${c.id}" data-l="${l.id}">Elimina lezione</button><button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="savel" data-c="${c.id}" data-l="${l.id}">Salva</button></div>`;
   dlg.showModal();
 }
@@ -556,6 +659,8 @@ document.addEventListener('click',e=>{
     const s=$('ls').value,e2=$('le').value,m=$('lm').value.trim();
     if(!l.o&&(d!==l.d||s!==(l.s||'')))l.o=l.d+'|'+(l.s||'');
     Object.assign(l,{d,s,e:e2});if(m)l.m=m;else delete l.m;
+    const au=$('la').value.trim(),dc=$('lo').value.trim(),nt=$('ln').value.trim();
+    if(au)l.au=au;else delete l.au;if(dc)l.dc=dc;else delete l.dc;if(nt)l.nt=nt;else delete l.nt;
     save();dlg.close();renderCard(c.id);
   }
   else if(a==='dl2'&&c){
@@ -580,6 +685,10 @@ document.addEventListener('click',e=>{
   }
   else if(a==='lnk')readLink();
   else if(a==='guide')openGuide(b.dataset.s);
+  else if(a==='legal')openLegal(b.dataset.s);
+  else if(a==='lclose')$('lg').close();
+  else if(a==='acct')accountDlg();
+  else if(['savename','dld','chpw','chem','dela'].includes(a))acctAct(a);
   else if(a==='gclose')$('gd').close();
   else if(a==='arc'&&c){c.arch=!c.arch;save();dlg.close();render()}
   else if(a==='delc'&&c){
@@ -587,19 +696,19 @@ document.addEventListener('click',e=>{
     S.courses=S.courses.filter(x=>x!==c);save();dlg.close();render();
   }
   else if(a==='doimp'&&pending){
-    let add=0;
+    let add=0,enr=0;
     const toArc=$('arch')&&$('arch').checked?archCands():[];
     dlg.querySelectorAll('select[data-i]').forEach(s=>{
       if(s.value==='skip')return;
       const n=pending.names[+s.dataset.i];
       let t=S.courses.find(x=>x.id===s.value);
       if(!t){t={id:uid(),name:nice(n),cfu:0,annual:false,total:0,unit:$('iu').value,hd:2,lessons:[]};S.courses.push(t)}
-      const seen=keysOf(t);
-      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key))return;seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,...(x.m?{m:nice(x.m)}:{})});add++});
+      const seen=keysOf(t),byKey=new Map(t.lessons.map(l=>[l.d+'|'+l.s,l]));
+      pending.g[n].forEach(x=>{const key=x.d+'|'+x.s;if(seen.has(key)){const ex=byKey.get(key);if(ex){let up=false;if(!ex.au&&x.au){ex.au=x.au;up=true}if(!ex.dc&&x.dc){ex.dc=x.dc.slice(0,200);up=true}if(!ex.m&&x.m){ex.m=nice(x.m);up=true}if(up)enr++}return}seen.add(key);t.lessons.push({id:uid(),d:x.d,s:x.s,e:x.e,...(x.m?{m:nice(x.m)}:{}),...(x.au?{au:x.au}:{}),...(x.dc?{dc:x.dc.slice(0,200)}:{})});add++});
     });
     toArc.forEach(c=>{c.arch=true});
     save();render();pending=null;
-    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
+    $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${enr?` Aggiornate ${enr} lezioni con aula e docenti.`:''}${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
   }
 });
 document.addEventListener('keydown',e=>{if(e.target.id==='il'&&e.key==='Enter'){e.preventDefault();readLink()}});
@@ -619,19 +728,20 @@ document.addEventListener('toggle',e=>{
 },true);
 const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
 let mode='in';
-function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
+function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('nameRow').hidden=m!=='up';$('tosRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
 $('sw').onclick=()=>authMode(mode==='up'?'in':'up');
 $('lf').onsubmit=async e=>{
   e.preventDefault();
   const em=$('em').value.trim(),pw=$('pw').value,msg=$('amsg');
   if(!em||pw.length<6){msg.textContent='Inserisci email e una password di almeno 6 caratteri.';return}
+  if(mode==='up'){if($('nm').value.trim().length<2){msg.textContent='Scrivi il tuo nome.';$('nm').focus();return}if(!$('tos').checked){msg.textContent='Per registrarti conferma di aver letto informativa privacy e termini.';return}}
   $('go').disabled=true;msg.textContent='';
   try{
     try{await setPersistence(auth,$('rem').checked?browserLocalPersistence:browserSessionPersistence)}catch(_){}
     if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
     else{
       const cr=await createUserWithEmailAndPassword(auth,em,pw);
-      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],code:$('cd').value.trim()})}
+      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],name:$('nm').value.trim().slice(0,40),code:$('cd').value.trim()})}
       catch(e){try{await cr.user.delete()}catch(_){}throw{code:e.code==='permission-denied'?'bad-code':'fs/'+(e.code||'errore')}}
     }
   }catch(e){msg.textContent=ERR[e.code]||('Errore: '+(e.code||e.message||'sconosciuto'))}
@@ -663,6 +773,7 @@ onAuthStateChanged(auth,u=>{
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
   },()=>setSync('err'));
 });
+document.querySelectorAll('.ce').forEach(e=>{e.innerHTML=CONTACT_EMAIL?`<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>`:'<i>(indirizzo email in arrivo)</i>'});
 render();
 </script>
 </body>
