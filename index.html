@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex,nofollow">
+<script>try{var t=localStorage.getItem("inaula-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -105,7 +106,7 @@ label.ck{display:flex;align-items:center;gap:8px}label.ck input{width:auto}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
 .map{display:grid;gap:4px;padding:10px 0;border-top:1px solid var(--ln)}
 [hidden]{display:none!important}
-@media (max-width:520px){main{padding:18px 14px 130px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
+@media (max-width:520px){main{padding:18px 14px 160px}.bar{width:100%}.thr{flex:1 0 100%}.bar .btn{flex:1 1 auto}}
 .loginbox{max-width:380px;margin-top:18px}
 .lnk{border:0;background:none;text-decoration:underline;padding:8px 0;color:var(--mu);cursor:pointer}
 body{background:var(--bgimg),var(--bg);background-attachment:fixed}
@@ -161,31 +162,85 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 dialog h4{margin:14px 0 4px;font-size:1rem}
 .rd{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0}
 .rd label{margin:0;flex-direction:row}
+.hero .hi{font-size:1.6rem;font-weight:800;margin:6px 0 0}
+.hero .tag{margin:2px 0 4px;color:var(--mu)}
+.vt{margin:6px 0 10px;font-size:1.6rem;font-weight:800}
+.bar2{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.mcard{background:var(--sf);border-radius:18px;padding:14px 16px;box-shadow:var(--sh);margin:0 0 10px}
+.menu{display:grid;gap:8px}
+.mi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--sf);border:0;border-radius:16px;padding:14px 16px;font:inherit;color:var(--ink);box-shadow:var(--sh);cursor:pointer}
+.mi i{font-style:normal;font-size:1.3rem}
+.mi[hidden]{display:none}
+.seg{display:flex;gap:4px;margin:0 0 12px;background:color-mix(in srgb,var(--mu) 13%,var(--sf));padding:4px;border-radius:999px}
+.seg button{flex:1;border:0;background:none;padding:8px 10px;border-radius:999px;font:inherit;font-weight:600;color:var(--mu);cursor:pointer}
+.seg button.on{background:var(--sf);color:var(--ink);box-shadow:var(--sh)}
+.dh{margin:14px 0 4px;font-size:.95rem;color:var(--mu);text-transform:capitalize}
+.wk{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px}
+.wk .btn{padding:6px 16px}
+#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 20px));display:flex;justify-content:space-around;gap:4px;background:var(--sf);border-radius:24px;box-shadow:0 6px 24px rgba(11,43,74,.20);padding:6px;z-index:8}
+#nav button{flex:1;border:0;background:none;color:var(--mu);font:inherit;font-size:.72rem;padding:6px 2px;border-radius:18px;cursor:pointer;display:grid;gap:2px;justify-items:center}
+#nav button span{font-size:1.3rem;line-height:1}
+#nav button.on{background:color-mix(in srgb,#6DB3AB 24%,var(--sf));color:var(--ink);font-weight:700}
+.fabs{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+#toast{bottom:calc(88px + env(safe-area-inset-bottom,0px));right:150px}
+.foot{display:none}
+header.hero{display:block}
+.hero .brand{display:block}
 </style>
 </head>
 <body>
 <main id="app" hidden>
-<header>
-  <div>
-    <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
-    <p class="sub">Segna ogni lezione con ✓ (c'ero) o ✕ (non c'ero). Quelle che non segni restano "da segnare" e non contano come assenze.</p>
-    <p class="meta"><span id="who"></span> <span id="sync">Connessione…</span> · <button class="lnk" data-act="acct">Account</button> · <button class="lnk" id="out">Esci</button></p>
-  </div>
-  <div class="bar">
-    <label class="thr">Soglia <input id="thr" type="number" min="1" max="100" value="66"> %</label>
-    <button class="btn" data-act="imp">Importa calendario</button>
-    <button class="btn pri" data-act="new">Nuovo insegnamento</button>
-    <button class="btn" data-act="upd" id="updb" hidden>🔄 Aggiorna orario</button>
-  </div>
+<section id="v-home">
+<header class="hero">
+  <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
+  <p class="hi" id="hello">Ciao! 👋</p>
+  <p class="tag">Segna le lezioni a cui vai: al resto pensa InAula.</p>
+  <p class="meta"><span class="syn">Connessione…</span></p>
 </header>
+<div id="namecard"></div>
 <div id="warn"></div>
 <section class="today" id="today"></section>
+<div id="startcard"></div>
+<div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
+</section>
+<section id="v-courses" hidden>
+<h2 class="vt">Insegnamenti</h2>
+<div class="bar2"><button class="btn pri" data-act="new">Nuovo insegnamento</button><button class="btn" data-act="imp">Importa calendario</button></div>
 <p class="legend"><span><i style="background:conic-gradient(#6DB3AB,#A29CDB,#7FB0DC,#E2BC7C,#98C08E,#6DB3AB)"></i>Presenze (nel colore dell'insegnamento)</span><span><i style="background:var(--no)"></i>Assenze segnate</span><span><i style="background:var(--wa);opacity:.5"></i>Da segnare</span><span><i style="background:var(--rs)"></i>Lezioni restanti</span><span>La tacca sull'anello segna il minimo da raggiungere, arrotondato per eccesso.</span></p>
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
-<div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
-<p class="foot"><button class="lnk" data-act="fb">Suggerimenti</button> · <button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
-<div class="fabs"><button class="fab fb" data-act="fb">💬 Scrivici</button><button class="fab" data-act="guide" aria-label="Apri la guida">? Guida</button></div>
+</section>
+<section id="v-menu" hidden>
+<h2 class="vt">Menu</h2>
+<div class="mcard"><b id="who"></b><br><span class="syn meta">Connessione…</span></div>
+<div class="menu">
+  <button class="mi" data-act="imp"><i>📥</i>Importa calendario</button>
+  <button class="mi" data-act="upd" id="updb" hidden><i>🔄</i>Aggiorna orario</button>
+  <button class="mi" data-act="new"><i>➕</i>Nuovo insegnamento</button>
+</div>
+<h3 class="dh">Impostazioni</h3>
+<div class="mcard">
+  <label class="thr">Soglia minima di presenze <input id="thr" type="number" min="1" max="100" value="66"> %</label>
+  <div class="meta" style="margin:10px 0 4px">Aspetto</div>
+  <div class="rd"><label class="ck"><input type="radio" name="thm" value="auto" checked> Automatico</label><label class="ck"><input type="radio" name="thm" value="light"> Chiaro</label><label class="ck"><input type="radio" name="thm" value="dark"> Scuro</label></div>
+</div>
+<div class="menu" style="margin-top:12px">
+  <button class="mi" data-act="acct"><i>👤</i>Il mio account</button>
+  <button class="mi" data-act="fb"><i>💬</i>Scrivici</button>
+  <button class="mi" data-act="guide"><i>❓</i>Guida</button>
+  <button class="mi" data-act="legal" data-s="p"><i>🔒</i>Privacy</button>
+  <button class="mi" data-act="legal" data-s="t"><i>📄</i>Termini e avvertenze</button>
+  <button class="mi" data-act="legal" data-s="c"><i>✉️</i>Contatti</button>
+  <button class="mi" id="out"><i>🚪</i>Esci</button>
+</div>
+</section>
+<nav id="nav" aria-label="Navigazione principale">
+  <button data-act="tab" data-s="home" class="on"><span>🏠</span>Oggi</button>
+  <button data-act="tab" data-s="courses"><span>📚</span>Insegnamenti</button>
+  <button data-act="guide"><span>❓</span>Guida</button>
+  <button data-act="tab" data-s="menu"><span>☰</span>Menu</button>
+</nav>
+<div class="fabs"><button class="fab fb" data-act="fb">💬 Scrivici</button></div>
 </main>
 <main id="auth">
   <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
@@ -224,7 +279,7 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 <p><b>Dove sono i dati.</b> Sui server di Google situati negli Stati Uniti. Il trasferimento avviene con le garanzie previste dal GDPR offerte dal fornitore (per esempio le clausole contrattuali standard).</p>
 <p><b>Per quanto tempo.</b> Finché l'account esiste. Con "Elimina il mio account" cancelli account e dati; copie tecniche di sicurezza presso il fornitore possono restare per un breve periodo. Se il servizio dovesse chiudere ti verrà dato un avviso e potrai scaricare i tuoi dati.</p>
 <p><b>I tuoi diritti.</b> Accesso, rettifica, cancellazione, limitazione, portabilità e opposizione. Molti li eserciti da solo dal menu <b>Account</b> (modifica il nome, scarica i tuoi dati, elimina l'account); per gli altri scrivi a <span class="ce"></span>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>
-<p><b>Cookie e tecnologie simili.</b> InAula usa solo strumenti tecnici necessari: la memoria del browser per mantenere l'accesso (se scegli "Ricordami") e una copia locale dei tuoi dati per usare il sito anche senza rete. Nessun cookie di profilazione o di statistica. Il carattere del sito è ospitato dal sito stesso, non viene caricato da servizi esterni.</p>
+<p><b>Cookie e tecnologie simili.</b> InAula usa solo strumenti tecnici necessari: la memoria del browser per mantenere l'accesso (se scegli "Ricordami") una copia locale dei tuoi dati per usare il sito anche senza rete e la tua preferenza di aspetto (chiaro o scuro). Nessun cookie di profilazione o di statistica. Il carattere del sito è ospitato dal sito stesso, non viene caricato da servizi esterni.</p>
 <p><b>Chi può usarlo.</b> Il servizio è destinato a studenti maggiorenni.</p>
 </div></details>
 <details class="gs" id="ls_t"><summary>Termini e avvertenze</summary><div class="gb">
@@ -247,6 +302,7 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 <dialog id="gd" class="sheet" aria-labelledby="gdt">
 <div class="gh"><h2 id="gdt">Guida</h2><button class="btn" data-act="gclose">Chiudi</button></div>
 <div class="gc">
+<div class="tl"><b>La barra in basso:</b> <b>Oggi</b> (le lezioni di oggi, domani e della settimana), <b>Insegnamenti</b> (le schede con grafico e simulatore), <b>Guida</b> e <b>Menu</b> (importa, aggiorna orario, impostazioni, account).</div>
 <div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) segni ✓ le lezioni a cui vai. Il resto lo calcola il sito.</div>
 
 <details class="gs" id="gs1" open><summary>1. Copiare il link dell'orario</summary><div class="gb">
@@ -268,7 +324,7 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 
 <details class="gs" id="gs2"><summary>2. Importare il calendario in InAula</summary><div class="gb">
 <ol class="st">
-<li>Premi <b>Importa calendario</b> in alto.<img class="gimg" src="guida-5.png" width="780" height="800" alt="Intestazione di InAula con il pulsante Importa calendario evidenziato" loading="lazy"></li>
+<li>Apri il <b>Menu</b> (in basso a destra) e premi <b>Importa calendario</b>.<img class="gimg" src="guida-5.png" width="780" height="615" alt="Menu di InAula con il pulsante Importa calendario evidenziato" loading="lazy"></li>
 <li>Nella finestra che si apre segui i numeri:<img class="gimg" src="guida-6.png" width="780" height="1566" alt="Finestra Importa calendario con quattro punti numerati" loading="lazy">
 <ol class="sub"><li><b>Incolla il link</b> copiato dall'università: si legge da solo. (Se non parte, premi <b>Leggi il link</b>.)</li>
 <li>Scegli come contare la frequenza: <b>per insegnamento intero</b> (la soglia vale sul totale dei moduli) oppure <b>per singoli moduli</b> (ogni modulo ha la sua soglia).</li>
@@ -278,15 +334,15 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 </ol>
 <div class="note"><b>Come scegliere?</b> Guarda nel regolamento del tuo corso, alla voce frequenza obbligatoria: dice se la percentuale è sull'insegnamento o sul modulo, e sulle ore o sulle lezioni. Se tutte le lezioni durano uguale, lezioni e ore danno lo stesso risultato.</div>
 <div class="note">Importare lo stesso orario due volte non crea doppioni.</div>
-<div class="note"><b>Ricorda il link:</b> lasciando la spunta "Ricorda il link", in alto compare <b>🔄 Aggiorna orario</b> per rileggere l'orario quando l'università lo cambia (vedi sezione 5).</div>
+<div class="note"><b>Ricorda il link:</b> lasciando la spunta "Ricorda il link", nel <b>Menu</b> compare <b>🔄 Aggiorna orario</b> per rileggere l'orario quando l'università lo cambia (vedi sezione 5).</div>
 </div></details>
 
 <details class="gs" id="gs3"><summary>3. Segnare le presenze e vedere le lezioni di oggi</summary><div class="gb">
 <p>Accanto a ogni lezione ci sono due pulsanti: <b>✓</b> (c'ero) e <b>✕</b> (non c'ero). Toccane uno per segnare la lezione; toccalo di nuovo per togliere il segno.</p>
-<img class="gimg" src="guida-7.png" width="780" height="925" alt="Vista Oggi con le lezioni della giornata e i pulsanti presente e assente evidenziati" loading="lazy">
-<ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li></ol>
-<ul class="sub"><li><b>Oggi</b>, in alto, mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo.</li>
-<li>In <b>Oggi</b> vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
+<img class="gimg" src="guida-7.png" width="780" height="986" alt="Schermata Oggi con le lezioni della giornata, i pulsanti presente e assente e il selettore del periodo evidenziati" loading="lazy">
+<ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li><li><b>Oggi · Domani · Settimana</b>: scegli il periodo da guardare.</li></ol>
+<ul class="sub"><li>La schermata <b>Oggi</b> (in basso a sinistra) mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo. Con <b>Domani</b> e <b>Settimana</b> guardi i giorni successivi.</li>
+<li>Vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
 <li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in alto.</li>
 <li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
 <li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
@@ -298,11 +354,11 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 <li><b>Il messaggio</b> dice quante assenze ti restano (contano solo quelle che hai segnato con ✕). Verde: sei tranquillo. Marrone: te ne restano pochissime (2 lezioni o meno). Rosso: la soglia non è più raggiungibile.</li>
 <li><b>I numeri</b>: presenze segnate e minimo richiesto, assenze segnate e massimo consentito, lezioni ancora da segnare.</li>
 <li><b>Simulatore</b>: risponde a "Posso saltare la prossima lezione?", "Quante ne posso ancora saltare?" e "Se frequento tutte le prossime, a quanto arrivo?".</li></ol>
-<p>In alto compare un riquadro con gli insegnamenti a rischio. La percentuale minima (66%) si cambia accanto a "Soglia", in alto. Il minimo è sempre arrotondato per eccesso. Il colore di ogni insegnamento si sceglie da <b>Modifica</b>.</p>
+<p>In <b>Oggi</b> compare un riquadro con gli insegnamenti a rischio. La percentuale minima (66%) si cambia da <b>Menu</b>, alla voce "Soglia". Il minimo è sempre arrotondato per eccesso. Il colore di ogni insegnamento si sceglie da <b>Modifica</b>.</p>
 </div></details>
 
 <details class="gs" id="gs5"><summary>5. Modificare o spostare una lezione</summary><div class="gb">
-<p><b>Se è l'università a cambiare l'orario</b>, premi <b>🔄 Aggiorna orario</b> (in alto, appare se hai lasciato la spunta "Ricorda il link"): InAula confronta il calendario con il tuo e ti mostra le lezioni <b>nuove</b>, <b>spostate</b> o <b>non più in calendario</b>. Scegli tu cosa applicare, e le presenze che hai già segnato restano. Una volta al giorno, quando apri il sito, controlla da solo e ti avvisa.</p>
+<p><b>Se è l'università a cambiare l'orario</b>, premi <b>🔄 Aggiorna orario</b> (nel <b>Menu</b>, appare se hai lasciato la spunta "Ricorda il link"): InAula confronta il calendario con il tuo e ti mostra le lezioni <b>nuove</b>, <b>spostate</b> o <b>non più in calendario</b>. Scegli tu cosa applicare, e le presenze che hai già segnato restano. Una volta al giorno, quando apri il sito, controlla da solo e ti avvisa.</p>
 <p>Se invece è un cambio solo tuo, apri l'elenco con <b>Lezioni</b> e usa:</p>
 <img class="gimg" src="guida-9.png" width="780" height="1260" alt="Elenco delle lezioni con il pulsante modifica e il pulsante Aggiungi lezione evidenziati" loading="lazy">
 <ol class="sub"><li><b>✎</b> per cambiare data e orario (poi Salva). Nella stessa finestra puoi anche scrivere l'<b>aula</b>, i <b>docenti</b> e una <b>nota</b> per quella lezione (per esempio "portare il camice"), oppure <b>eliminare</b> la lezione: se ti sbagli, subito dopo compare <b>Annulla</b>.</li>
@@ -324,23 +380,23 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 
 <details class="gs" id="gs7"><summary>7. Account, privacy e dati</summary><div class="gb">
 <ul class="sub"><li><b>Accesso:</b> email e password. Sul tuo telefono o computer lascia la spunta "Ricordami"; su un computer condiviso toglila e premi sempre <b>Esci</b>. <b>Password dimenticata?</b> è sotto il pulsante Accedi.</li>
-<li><b>Account</b> (in alto, accanto a Esci): puoi cambiare il nome, la password e l'email, <b>scaricare una copia dei tuoi dati</b> oppure <b>eliminare il tuo account</b> con tutti i tuoi dati (serve la password e l'operazione non si annulla).</li>
+<li><b>Account</b> (nel <b>Menu</b>): puoi cambiare il nome, la password e l'email, <b>scaricare una copia dei tuoi dati</b> oppure <b>eliminare il tuo account</b> con tutti i tuoi dati (serve la password e l'operazione non si annulla).</li>
 <li><b>Ognuno vede solo i propri dati</b>: gli altri utenti non possono vedere le tue presenze.</li>
 <li>Il sito salva solo il tuo nome, la tua email e i dati che inserisci, su server Google (Firebase) che possono trovarsi anche fuori dall'Unione Europea. Il link dell'orario viene salvato solo se lasci la spunta "Ricorda il link" (per usare <b>Aggiorna orario</b>): lo scolleghi da Account. Per leggerlo il sito può passare da un servizio di appoggio gratuito, che non conserva niente.</li>
-<li>In fondo alla pagina trovi <b>Privacy</b>, <b>Termini</b> e <b>Contatti</b>. InAula è uno strumento personale e non ufficiale: fanno fede solo i registri delle presenze dell'università.</li>
+<li>Nel <b>Menu</b> trovi <b>Privacy</b>, <b>Termini</b> e <b>Contatti</b>. InAula è uno strumento personale e non ufficiale: fanno fede solo i registri delle presenze dell'università.</li>
 <li>Puoi usare lo stesso account da telefono e computer: i dati si sincronizzano. Sull'iPhone il collegamento in Home ti chiede l'accesso la prima volta.</li></ul>
 </div></details>
 
 <details class="gs" id="gs8"><summary>8. Domande frequenti</summary><div class="gb">
-<details class="q"><summary>Come scrivo un suggerimento o segnalo un problema?</summary><p>Premi <b>💬 Scrivici</b> in basso a destra, oppure la scheda "Scrivi un messaggio" in fondo alla pagina. Il messaggio arriva direttamente a chi gestisce InAula.</p></details>
+<details class="q"><summary>Come scrivo un suggerimento o segnalo un problema?</summary><p>Premi <b>💬 Scrivici</b> in basso a destra (o dal <b>Menu</b>). Il messaggio arriva direttamente a chi gestisce InAula.</p></details>
 <details class="q"><summary>Non vedo aula e docenti</summary><p>Importa di nuovo il calendario (incolla il link): le lezioni già presenti vengono aggiornate con aula e docenti, senza duplicati.</p></details>
 <details class="q"><summary>Il link non viene letto</summary><p>Controlla di aver copiato tutto il link (inizia con https://). Se non funziona, usa il file .ics dal computer (sezione 1).</p></details>
 <details class="q"><summary>Mancano delle lezioni</summary><p>Controlla che la data di inizio del link fosse giusta (sezione 1). Le lezioni mancanti si aggiungono a mano con "Aggiungi lezione".</p></details>
 <details class="q"><summary>Gli orari sono sfasati di un'ora</summary><p>Controlla che l'ora e il fuso orario del telefono o del computer siano quelli italiani.</p></details>
 <details class="q"><summary>Ho importato per sbaglio o ho troppi insegnamenti</summary><p>Apri <b>Modifica</b> sull'insegnamento e premi <b>Elimina</b> (due clic). Poi importa di nuovo scegliendo l'opzione giusta.</p></details>
-<details class="q"><summary>L'università ha cambiato l'orario</summary><p>Premi <b>🔄 Aggiorna orario</b> in alto (se non lo vedi, incolla di nuovo il link in Importa calendario lasciando la spunta "Ricorda il link"). Se preferisci fare a mano: incolla di nuovo il link in Importa calendario: le lezioni nuove si aggiungono. Quelle tolte o spostate vanno eliminate a mano con ✕.</p></details>
+<details class="q"><summary>L'università ha cambiato l'orario</summary><p>Premi <b>🔄 Aggiorna orario</b> nel <b>Menu</b> (se non lo vedi, incolla di nuovo il link in Importa calendario lasciando la spunta "Ricorda il link"). Se preferisci fare a mano: incolla di nuovo il link in Importa calendario: le lezioni nuove si aggiungono. Quelle tolte o spostate vanno eliminate a mano con ✕.</p></details>
 <details class="q"><summary>Mi chiede sempre la password</summary><p>Non usare la finestra privata, lascia la spunta "Ricordami" e non premere Esci se non serve.</p></details>
-<details class="q"><summary>La mia soglia non è il 66%</summary><p>Cambia il numero accanto a "Soglia" in alto nella pagina.</p></details>
+<details class="q"><summary>La mia soglia non è il 66%</summary><p>Cambia il numero alla voce "Soglia" nel <b>Menu</b>.</p></details>
 </div></details>
 </div>
 </dialog>
@@ -366,7 +422,7 @@ const canon=v=>JSON.stringify(v,(k,x)=>x&&typeof x==='object'&&!Array.isArray(x)
 const SYNC={ok:'Sincronizzato',pending:'Salvataggio…',off:'Offline: le modifiche partiranno appena torni online',err:'Sincronizzazione non riuscita, riprovo…'};
 let lastSync=null;
 const fmtLast=d=>{const t=new Date(),y=new Date(t);y.setDate(t.getDate()-1);const hh=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return d.toDateString()===t.toDateString()?`oggi alle ${hh}`:d.toDateString()===y.toDateString()?`ieri alle ${hh}`:`${d.toLocaleDateString('it-IT',{day:'numeric',month:'short'})} alle ${hh}`};
-const setSync=k=>{const e=document.getElementById('sync');if(!e)return;if(k==='ok')lastSync=new Date();const ls=lastSync?` Ultima sincronizzazione: ${fmtLast(lastSync)}.`:'';e.textContent=k==='ok'?`Ultima sincronizzazione: ${fmtLast(lastSync)}`:SYNC[k]+(k==='pending'?'':ls)};
+const setSync=k=>{const els=document.querySelectorAll('.syn');if(!els.length)return;if(k==='ok')lastSync=new Date();const ls=lastSync?` Ultima sincronizzazione: ${fmtLast(lastSync)}.`:'';const tx=k==='ok'?`Ultima sincronizzazione: ${fmtLast(lastSync)}`:SYNC[k]+(k==='pending'?'':ls);els.forEach(e=>{e.textContent=tx})};
 function save(){if(!ref)return;dirty=true;clearTimeout(timer);timer=setTimeout(flush,400);setSync('pending')}
 async function flush(){
   if(writing||!dirty||!ref)return;
@@ -457,22 +513,43 @@ ${arch||!k.T?'':`<details class="sim" data-c="${c.id}"${openSet.has('s'+c.id)?' 
 <div class="add"><input type="date" class="nd" aria-label="Data"><input type="time" class="ns" aria-label="Inizio"><input type="time" class="ne" aria-label="Fine"><button class="btn" data-act="add" data-c="${c.id}">Aggiungi lezione</button></div></details>
 </article>`;
 }
+const mondayOf=d=>{const x=new Date(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+const lessonsOn=ds=>{const it=[];S.courses.forEach(c=>{if(!c.arch)c.lessons.forEach(l=>{if(l.d===ds)it.push({c,l})})});return it.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''))};
+function dayRow({c,l},now){const x=sx(l),pend=x===0&&ended(l,now);
+  return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,true)}</span></li>`}
 function renderTop(){
-  const now=new Date(),td=ymd(now),items=[],w=[];
+  const now=new Date(),td=ymd(now),w=[];
   for(const c of S.courses){
     if(c.arch)continue;
-    c.lessons.forEach(l=>{if(l.d===td)items.push({c,l})});
     const k=calc(c);
     if(k.T&&k.P<k.M&&k.margin<=k.warn)w.push(`<div>⚠️ <b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
   }
-  items.sort((a,b)=>(a.l.s||'').localeCompare(b.l.s||''));
   let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
   $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'')+(updDiff&&updDiff.items.some(x=>x.t!=='inf')?`<div class="warn" style="margin-top:8px">🔄 L'università ha modificato l'orario (${updDiff.items.filter(x=>x.t!=='inf').length} differenze). <button class="btn" data-act="upd" data-s="rev" style="margin-left:6px">Rivedi</button></div>`:'');
-  const rows=items.map(({c,l})=>{const x=sx(l),pend=x===0&&ended(l,now);
-    return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,true)}</span></li>`}).join('');
-  const nT=items.filter(({l})=>sx(l)===0).length;
-  $('today').innerHTML=`<h2>📅 Oggi, ${now.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}</h2>`+(items.length?`<ul class="ls">${rows}</ul>${nT?`<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>`:''}`:'<p class="meta">Oggi non ci sono lezioni in calendario.</p>');
+  $('hello').textContent=S.name?`Ciao ${S.name.replace(/[.!\s]+$/,'')}! 👋`:'Ciao! 👋';
+  const showName=loaded&&!S.name&&!nameSkip,nc=$('namecard');
+  if(nc.dataset.on!==String(showName)){nc.dataset.on=String(showName);nc.innerHTML=showName?`<div class="fbcard" style="margin:0 0 10px"><div><b>Come ti chiami?</b><br><span class="meta">Così posso salutarti per nome.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nn" maxlength="40" placeholder="Il tuo nome" autocomplete="given-name" style="width:160px"><button class="btn pri" data-act="nsave">Salva</button><button class="lnk" data-act="nskip">Non ora</button></div></div>`:''}
+  $('startcard').innerHTML=(loaded&&!S.courses.length)?START:'';
+  const dfmt=(d,o)=>d.toLocaleDateString('it-IT',o);let head,body='';
+  if(homeMode==='sett'){
+    const mon=mondayOf(now);mon.setDate(mon.getDate()+7*weekOff);
+    const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
+    head=`<div class="wk"><button class="btn" data-act="wk" data-s="-1" aria-label="Settimana precedente">‹</button><b>${dfmt(days[0],{day:'numeric',month:'short'})} – ${dfmt(days[6],{day:'numeric',month:'short'})}</b><button class="btn" data-act="wk" data-s="1" aria-label="Settimana successiva">›</button></div>${weekOff?'<p style="margin:0 0 4px"><button class="lnk" data-act="wk" data-s="0" style="padding:0">Torna a questa settimana</button></p>':''}`;
+    let any=false;
+    days.forEach(d=>{const ds=ymd(d),it=lessonsOn(ds);if(!it.length)return;any=true;body+=`<h3 class="dh">${dfmt(d,{weekday:'long',day:'numeric',month:'long'})}${ds===td?' · oggi':''}</h3><ul class="ls">${it.map(x=>dayRow(x,now)).join('')}</ul>`});
+    if(!any)body='<p class="meta">Nessuna lezione in questa settimana.</p>';
+  }else{
+    const d=new Date(now);if(homeMode==='domani')d.setDate(d.getDate()+1);
+    const it=lessonsOn(ymd(d)),nT=it.filter(({l})=>sx(l)===0).length;
+    head=`<h2>${homeMode==='oggi'?'📅 Oggi, ':'Domani, '}${dfmt(d,{weekday:'long',day:'numeric',month:'long'})}</h2>`;
+    body=it.length?`<ul class="ls">${it.map(x=>dayRow(x,now)).join('')}</ul>${homeMode==='oggi'&&nT?`<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>`:''}`:`<p class="meta">${homeMode==='oggi'?'Oggi':'Domani'} non ci sono lezioni in calendario.</p>`;
+  }
+  const seg=`<div class="seg" role="group" aria-label="Periodo">${[['oggi','Oggi'],['domani','Domani'],['sett','Settimana']].map(([k,t])=>`<button data-act="hm" data-s="${k}" class="${homeMode===k?'on':''}">${t}</button>`).join('')}</div>`;
+  $('today').innerHTML=seg+head+body;
 }
+function showTab(t){tab=t;['home','courses','menu'].forEach(k=>{$('v-'+k).hidden=k!==t});document.querySelectorAll('#nav [data-act="tab"]').forEach(b=>b.classList.toggle('on',b.dataset.s===t));window.scrollTo(0,0)}
+const START=`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+function setTheme(v){try{v==='auto'?localStorage.removeItem('inaula-theme'):localStorage.setItem('inaula-theme',v)}catch(e){}if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',v)}
 const PAL=[['Verde acqua','#6DB3AB'],['Lilla','#A29CDB'],['Azzurro','#7FB0DC'],['Sabbia','#E2BC7C'],['Salvia','#98C08E'],['Orchidea','#BE9BD6'],['Pesca','#E0A48F'],['Ardesia','#8FB0BF']];
 function nextColor(){const n=PAL.map(()=>0);S.courses.forEach(c=>{if(n[c.ci]!==undefined)n[c.ci]++});return n.indexOf(Math.min(...n))}
 function ensureColors(){let ch=false;S.courses.forEach(c=>{if(!PAL[c.ci]){c.ci=nextColor();ch=true}});if(ch)save()}
@@ -485,7 +562,7 @@ function render(){
   $('thr').value=S.thr;renderTop();
   const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
   $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>🗂️ Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
-  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p><div class="bar"><button class="btn pri" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`:`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+  $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p></div>`:START;
 }
 function renderCard(id){
   const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
@@ -560,7 +637,7 @@ function parseICS(t){
 const SM=new Set(['e','ed','di','del','della','dello','dell','dei','degli','delle','da','in','con','per','a','al','alla','ai','nel','nella','sul']);
 const nice=s=>s!==s.toUpperCase()?s:s.replace(/\p{L}+/gu,(w,i)=>{const l=w.toLowerCase();if(SM.has(l)&&i>0)return l;if(w.length<=3&&!SM.has(l))return w;return w[0]+l.slice(1)});
 const grp=(x,by)=>{const i=by?x.n.indexOf(' - '):-1;return i>0?{g:x.n.slice(0,i).trim(),m:x.n.slice(i+3).trim()}:{g:x.n,m:''}};
-let icsText='',srcLink='',curBy=true,updDiff=null,daily=false;
+let icsText='',srcLink='',curBy=true,updDiff=null,daily=false,loaded=false,nameSkip=false,homeMode='oggi',weekOff=0,tab='home';
 function archCands(){
   const touched=new Set();
   document.querySelectorAll('select[data-i]').forEach(s=>{if(s.value!=='skip'&&s.value!=='new')touched.add(s.value)});
@@ -635,7 +712,7 @@ function dlData(){
 }
 async function acctAct(a){
   try{
-    if(a==='savename'){S.name=$('an').value.trim().slice(0,40);save();amsg('Nome salvato.',1)}
+    if(a==='savename'){S.name=$('an').value.trim().slice(0,40);save();renderTop();amsg('Nome salvato.',1)}
     else if(a==='dld'){dlData();amsg('Download avviato.',1)}
     else if(a==='chpw'){const p0=$('cp0').value,p1=$('cp1').value;if(!p0||p1.length<6)return amsg('Inserisci la password attuale e una nuova password di almeno 6 caratteri.');await reauth(p0);await updatePassword(auth.currentUser,p1);$('cp0').value=$('cp1').value='';amsg('Password cambiata.',1)}
     else if(a==='chem'){const p0=$('ce0').value,e1=$('ce1').value.trim();if(!p0||!e1)return amsg('Inserisci la password attuale e la nuova email.');await reauth(p0);await verifyBeforeUpdateEmail(auth.currentUser,e1);amsg('Ti ho inviato una email di conferma al nuovo indirizzo: la email cambia dopo che clicchi il link (controlla anche lo spam).',1)}
@@ -782,11 +859,16 @@ document.addEventListener('click',e=>{
     const name=$('fn').value.trim();if(!name){$('fn').focus();return}
     const v={name,cfu:+$('fc').value||0,annual:$('fa').checked,total:+$('ft').value||0,unit:$('fu').value,hd:+$('fd').value||2,ci:+(document.querySelector('input[name=fcol]:checked')||{value:0}).value};
     if(c)Object.assign(c,v);else S.courses.push({id:uid(),...v,lessons:[]});
-    save();dlg.close();render();
+    save();dlg.close();render();if(!c)showTab('courses');
   }
   else if(a==='lnk')readLink();
   else if(a==='fb'){feedbackDlg(b.dataset.s);if(!dlg.open)dlg.showModal()}
   else if(a==='fsend')sendFb();
+  else if(a==='tab')showTab(b.dataset.s)
+  else if(a==='hm'){homeMode=b.dataset.s;renderTop()}
+  else if(a==='wk'){weekOff=b.dataset.s==='0'?0:weekOff+ +b.dataset.s;renderTop()}
+  else if(a==='nsave'){const v=$('nn').value.trim().slice(0,40);if(v){S.name=v;save();renderTop()}}
+  else if(a==='nskip'){nameSkip=true;renderTop()}
   else if(a==='upd'){if(b.dataset.s==='rev'&&updDiff)renderUpd();else updateNow()}
   else if(a==='upapply'){const sel=new Set([...dlg.querySelectorAll('input[data-u]:checked')].map(x=>+x.dataset.u));dlg.close();applyUpd(sel)}
   else if(a==='unlink'){S.lk=null;updDiff=null;S.courses.forEach(c=>{delete c.gk});save();render();amsg('Orario scollegato.',1)}
@@ -816,7 +898,7 @@ document.addEventListener('click',e=>{
     });
     toArc.forEach(c=>{c.arch=true});
     if(linkOn)S.lk={u:srcLink,by:curBy,t:ymd(new Date())};
-    save();render();pending=null;
+    save();render();pending=null;showTab('courses');
     $('imp').innerHTML=`<p><b>Importate ${add} lezioni.</b>${linkOn?' Link ricordato: ora puoi usare <b>Aggiorna orario</b>.':''}${enr?` Aggiornate ${enr} lezioni con aula e docenti.`:''}${toArc.length?` Archiviati ${toArc.length} insegnamenti.`:''} Puoi chiudere questa finestra.</p>`;
   }
 });
@@ -826,6 +908,7 @@ document.addEventListener('paste',e=>{if(e.target.id==='il')setTimeout(readLink,
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
+  else if(t.name==='thm')setTheme(t.value)
   else if(t.id==='ff'&&t.files[0]){srcLink='';t.files[0].text().then(showMap)}
   else if(t.id==='ft2'){srcLink='';showMap(t.value)}
   else if(t.dataset&&t.dataset.i!==undefined)refreshArch();
@@ -874,15 +957,16 @@ onAuthStateChanged(auth,u=>{
   if(unsub){unsub();unsub=null}
   ref=null;dirty=false;clearTimeout(timer);
   $('auth').hidden=!!u;$('app').hidden=!u;
-  if(!u){S={thr:66,courses:[]};return}
-  $('who').textContent=u.email+' ·';
+  if(!u){S={thr:66,courses:[]};loaded=false;return}
+  $('who').textContent=u.email;
   ref=doc(fs,'users',u.uid);setSync('pending');
   unsub=onSnapshot(ref,{includeMetadataChanges:true},sn=>{
     const pend=dirty||writing||sn.metadata.hasPendingWrites;
-    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}if(sn.exists()&&!daily&&!sn.metadata.fromCache){daily=true;setTimeout(checkDaily,1200)}}
+    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}if(sn.exists()&&!daily&&!sn.metadata.fromCache){daily=true;setTimeout(checkDaily,1200)}if(sn.exists()&&!loaded){loaded=true;renderTop()}}
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
   },()=>setSync('err'));
 });
+(()=>{let v='auto';try{v=localStorage.getItem('inaula-theme')||'auto'}catch(e){}const r=document.querySelector(`input[name=thm][value=${v}]`);if(r)r.checked=true})();
 document.querySelectorAll('.ce').forEach(e=>{e.innerHTML=CONTACT_EMAIL?`<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>`:'<i>(indirizzo email in arrivo)</i>'});
 render();
 </script>
