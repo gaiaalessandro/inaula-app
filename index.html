@@ -437,13 +437,12 @@ header.hero{display:block}
 
 <details class="gs" id="gs9"><summary>8. Statistiche, serie 🔥 ed esportazione</summary><div class="gb">
 <p>Nella scheda <b>Statistiche</b> (barra in basso):</p>
-<img class="gimg" src="guida-10.png" width="780" height="2236" alt="Schermata Statistiche con serie, situazione per insegnamento, grafico dell'andamento e barre per settimana evidenziati" loading="lazy">
-<ol class="sub"><li><b>Serie 🔥, record e presenze segnate.</b> La serie conta le lezioni frequentate di fila: un'assenza segnata la azzera, le lezioni non segnate non la spezzano. La serie compare anche in <b>Oggi</b>.</li>
-<li><b>Situazione per insegnamento</b>: la barra colorata sono le tue presenze, la lineetta scura il minimo da raggiungere.</li>
-<li><b>Andamento</b>: la linea colorata sono le presenze segnate nel tempo, quella tratteggiata è il ritmo per arrivare al minimo (se sei sopra, sei in regola). I pallini rossi sono assenze, quelli vuoti lezioni da segnare.</li>
+<img class="gimg" src="guida-10.png" width="780" height="1533" alt="Schermata Statistiche con serie e record, grafico dell'andamento e barre per settimana evidenziati" loading="lazy">
+<ol class="sub"><li><b>Serie 🔥, record e presenze segnate.</b> La serie conta le lezioni frequentate di fila: un'assenza segnata la azzera, le lezioni non segnate non la spezzano. Contano tutte le lezioni che hai segnato. La serie compare anche in <b>Oggi</b>.</li>
+<li><b>Andamento</b> (scegli l'insegnamento): la linea colorata sono le presenze segnate nel tempo, quella tratteggiata è il ritmo per arrivare al minimo (se sei sopra, sei in regola). I pallini rossi sono assenze, quelli vuoti lezioni da segnare.</li>
 <li><b>Lezioni per settimana</b>: quante lezioni presenti, assenti e da segnare in ogni settimana.</li></ol>
 <p><b>Soglia raggiunta 🎉</b>: quando raggiungi il minimo in un insegnamento compare una piccola festa, una sola volta per insegnamento.</p>
-<p><b>Esportare.</b> Da <b>Menu</b> (o da Statistiche) premi <b>Esporta le mie presenze</b>: il <b>PDF</b> è un riepilogo con l'elenco delle lezioni (nella stampa scegli "Salva come PDF"), il <b>CSV</b> si apre con Excel. Il PDF è personale e non ufficiale: per un docente o la segreteria è un promemoria, non una certificazione.</p>
+<p><b>Esportare.</b> Da <b>Menu</b> (o da Statistiche) premi <b>Esporta le mie presenze</b>: il <b>PDF</b> si apre in una pagina a parte con il riepilogo e l'elenco delle lezioni: nella finestra di stampa scegli "Salva come PDF" (se non compare, usa il pulsante "Stampa / Salva come PDF" della pagina), il <b>CSV</b> si apre con Excel. Il PDF è personale e non ufficiale: per un docente o la segreteria è un promemoria, non una certificazione.</p>
 </div></details>
 
 <details class="gs" id="gs8"><summary>9. Domande frequenti</summary><div class="gb">
@@ -628,8 +627,8 @@ function render(){
 let celT=null,statCourse='';
 const byDate=(a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||''));
 function streaks(){
-  const td=ymd(new Date()),all=[];
-  S.courses.forEach(c=>c.lessons.forEach(l=>{const x=sx(l);if(x&&l.d<=td)all.push([l.d+(l.s||''),x])}));
+  const all=[];
+  S.courses.forEach(c=>c.lessons.forEach(l=>{const x=sx(l);if(x)all.push([l.d+(l.s||''),x])}));
   all.sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0);
   let run=0,best=0;all.forEach(([,x])=>{if(x===1){run++;if(run>best)best=run}else run=0});
   return{cur:run,best,tot:all.filter(a=>a[1]===1).length};
@@ -662,8 +661,8 @@ ${ab.map(([i,v])=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="var(--no)"/>`).
 }
 function weekBars(){
   const now=new Date(),td=ymd(now),map=new Map();
-  S.courses.forEach(c=>{if(c.arch)return;c.lessons.forEach(l=>{if(l.d>td)return;const m=ymd(mondayOf(new Date(l.d+'T12:00'))),o=map.get(m)||{p:0,a:0,u:0},x=sx(l);if(x===1)o.p++;else if(x===2)o.a++;else if(ended(l,now))o.u++;map.set(m,o)})});
-  const ks=[...map.keys()].sort();if(!ks.length)return'<p class="meta">Ancora nessuna lezione svolta.</p>';
+  S.courses.forEach(c=>{if(c.arch)return;c.lessons.forEach(l=>{const x=sx(l);if(!x&&!ended(l,now))return;const m=ymd(mondayOf(new Date(l.d+'T12:00'))),o=map.get(m)||{p:0,a:0,u:0};if(x===1)o.p++;else if(x===2)o.a++;else o.u++;map.set(m,o)})});
+  const ks=[...map.keys()].sort();if(!ks.length)return'<p class="meta">Ancora nessuna lezione segnata.</p>';
   const mx=Math.max(...ks.map(k=>map.get(k).p+map.get(k).a+map.get(k).u),1),hh=v=>Math.round(110*v/mx);
   return `<div class="wbs">${ks.map(k=>{const o=map.get(k),d=new Date(k+'T12:00').toLocaleDateString('it-IT',{day:'numeric',month:'short'});return `<div class="wc" title="Settimana dal ${d}: ${o.p} presenti, ${o.a} assenti, ${o.u} da segnare"><div class="col"><i class="p" style="height:${hh(o.p)}px"></i><i class="a" style="height:${hh(o.a)}px"></i><i class="u" style="height:${hh(o.u)}px"></i></div><small>${d}</small></div>`}).join('')}</div><div class="lg"><span><i style="border-color:#6DB3AB"></i>Presenti</span><span><i style="border-color:var(--no)"></i>Assenti</span><span><i style="border-color:var(--wa);opacity:.5"></i>Da segnare</span></div>`;
 }
@@ -674,10 +673,8 @@ function renderStats(){
   const sk=streaks();
   if(!act.find(c=>c.id===statCourse))statCourse=(act[0]||{}).id||'';
   const c=S.courses.find(x=>x.id===statCourse);
-  const ov=act.map(c=>{const k=calc(c),f=v=>fv(k,v),pP=k.T?Math.min(100,100*k.P/k.T):0,pM=k.T?Math.min(100,100*k.M/k.T):0;return `<div class="ov"><div class="ovn"><span class="dt" style="background:${cc(c)}"></span>${esc(c.name)}</div><div class="ovb"><i style="width:${pP}%;background:${cc(c)}"></i><s style="left:${pM}%"></s></div><small class="meta">${f(k.P)} presenze su ${f(k.M)} richieste${k.P>=k.M?' 🎉':''}</small></div>`}).join('');
   box.innerHTML=`<div class="scards"><div class="sc"><b>🔥 ${sk.cur}</b><span>serie attuale</span></div><div class="sc"><b>🏅 ${sk.best}</b><span>record</span></div><div class="sc"><b>${sk.tot}</b><span>presenze segnate</span></div></div>
 <p class="meta">La serie conta le lezioni frequentate di fila: un'assenza segnata la azzera, le lezioni non segnate non la spezzano.</p>
-<h3 class="dh">Situazione per insegnamento</h3>${ov||'<p class="meta">Nessun insegnamento attivo.</p>'}<p class="meta">La lineetta scura è il minimo da raggiungere.</p>
 ${c?`<h3 class="dh">Andamento</h3><label>Insegnamento<select id="stc">${act.map(x=>`<option value="${x.id}"${x.id===statCourse?' selected':''}>${esc(x.name)}</option>`).join('')}</select></label>${lineChart(c)}<div class="lg"><span><i style="border-color:${cc(c)}"></i>Presenze segnate</span><span><i style="border-color:var(--mu);border-top-style:dashed"></i>Ritmo per arrivare al minimo</span><span><i style="border-color:var(--no)"></i>● assenza</span><span>○ da segnare</span></div>`:''}
 <h3 class="dh">Lezioni per settimana</h3>${weekBars()}
 <div class="row" style="justify-content:flex-start"><button class="btn pri" data-act="exp">📤 Esporta le mie presenze</button></div>`;
@@ -697,12 +694,23 @@ function csvExport(cid){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'}));a.download=`inaula-presenze-${ymd(new Date())}.csv`;
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
 }
-function pdfReport(cid){
+function reportBody(cid){
   const now=new Date(),cs=S.courses.filter(c=>cid==='*'||c.id===cid),u=auth.currentUser||{};
   const sum=cs.map(c=>{const k=calc(c),f=v=>fv(k,v),es=k.P>=k.M?'Soglia raggiunta':k.margin<0?'Soglia non raggiungibile':'In corso';return `<tr><td>${esc(c.name)}${c.arch?' (archivio)':''}</td><td>${f(k.T)}</td><td>${f(k.P)}</td><td>${f(k.A)}</td><td>${f(k.U)}</td><td>${f(k.M)}</td><td>${es}</td></tr>`}).join('');
   const det=cs.map(c=>`<div class="pgb"><h2>${esc(c.name)}</h2><table><thead><tr><th>Data</th><th>Orario</th><th>Modulo</th><th>Aula</th><th>Stato</th><th>Nota</th></tr></thead><tbody>${[...c.lessons].sort(byDate).map(l=>{const x=sx(l);return `<tr><td>${fmtD(l.d)}</td><td>${l.s?l.s+(l.e?'–'+l.e:''):''}</td><td>${esc(l.m||'')}</td><td>${esc((l.au||'').split(' - ')[0])}</td><td>${x===1?'Presente':x===2?'Assente':ended(l,now)?'Da segnare':'—'}</td><td>${esc(l.nt||'')}</td></tr>`}).join('')}</tbody></table></div>`).join('');
-  $('printarea').innerHTML=`<h1>Riepilogo presenze</h1><p>${esc(S.name||'')}${u.email?' — '+esc(u.email):''}<br>Generato il ${now.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})} alle ${hm(now)} con InAula</p><p class="dis">Documento personale compilato dall'utente: non ha valore ufficiale. Fanno fede solo i registri delle presenze dell'università.</p><table><thead><tr><th>Insegnamento</th><th>Lezioni</th><th>Presenze</th><th>Assenze</th><th>Da segnare</th><th>Minimo richiesto</th><th>Esito</th></tr></thead><tbody>${sum}</tbody></table>${det}`;
-  if(dlg.open)dlg.close();setTimeout(()=>window.print(),150);
+  return `<h1>Riepilogo presenze</h1><p>${esc(S.name||'')}${u.email?' — '+esc(u.email):''}<br>Generato il ${now.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})} alle ${hm(now)} con InAula</p><p class="dis">Documento personale compilato dall'utente: non ha valore ufficiale. Fanno fede solo i registri delle presenze dell'università.</p><table><thead><tr><th>Insegnamento</th><th>Lezioni</th><th>Presenze</th><th>Assenze</th><th>Da segnare</th><th>Minimo richiesto</th><th>Esito</th></tr></thead><tbody>${sum}</tbody></table>${det}`;
+}
+const REPORT_CSS='body{font:11pt/1.4 system-ui,-apple-system,Segoe UI,sans-serif;color:#000;background:#fff;margin:18px}h1{font-size:18pt;margin:0 0 4px}h2{font-size:13pt;margin:16px 0 6px}table{width:100%;border-collapse:collapse;margin:6px 0}th,td{border:1px solid #888;padding:3px 6px;font-size:9.5pt;text-align:left;vertical-align:top}th{background:#eee}.dis{font-size:9pt;border:1px solid #888;padding:6px 8px;margin:8px 0}.pgb{break-inside:avoid-page}.np{margin:0 0 14px}.np button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid #888;background:#f4f4f4;cursor:pointer}@media print{.np{display:none}}';
+function pdfReport(cid){
+  const body=reportBody(cid);
+  if(dlg.open)dlg.close();
+  let w=null;try{w=window.open('','_blank')}catch(_){}
+  if(w){
+    w.document.open();
+    w.document.write(`<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Riepilogo presenze - InAula</title><style>${REPORT_CSS}</style></head><body><div class="np"><button onclick="print()">Stampa / Salva come PDF</button></div>${body}<script>addEventListener('load',function(){setTimeout(function(){print()},300)})<\/script></body></html>`);
+    w.document.close();return;
+  }
+  $('printarea').innerHTML=body;setTimeout(()=>window.print(),150);
 }
 window.addEventListener('afterprint',()=>{const p=document.getElementById('printarea');if(p)p.innerHTML=''});
 function renderCard(id){
