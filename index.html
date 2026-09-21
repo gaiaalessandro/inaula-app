@@ -174,7 +174,8 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 .seg{display:flex;gap:4px;margin:0 0 12px;background:color-mix(in srgb,var(--mu) 13%,var(--sf));padding:4px;border-radius:999px}
 .seg button{flex:1;border:0;background:none;padding:8px 10px;border-radius:999px;font:inherit;font-weight:600;color:var(--mu);cursor:pointer}
 .seg button.on{background:var(--sf);color:var(--ink);box-shadow:var(--sh)}
-.dh{margin:14px 0 4px;font-size:.95rem;color:var(--mu);text-transform:capitalize}
+.dh{margin:14px 0 4px;font-size:.95rem;color:var(--mu)}
+.dh::first-letter{text-transform:uppercase}
 .wk{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px}
 .wk .btn{padding:6px 16px}
 #nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 20px));display:flex;justify-content:space-around;gap:4px;background:var(--sf);border-radius:24px;box-shadow:0 6px 24px rgba(11,43,74,.20);padding:6px;z-index:8}
@@ -184,8 +185,46 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 .fabs{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 #toast{bottom:calc(88px + env(safe-area-inset-bottom,0px));right:150px}
 .foot{display:none}
+#auth .foot{display:block}
 header.hero{display:block}
 .hero .brand{display:block}
+.streak{margin:4px 0 0;font-weight:600}
+.streak:empty{display:none}
+#nav button{min-width:0;font-size:.68rem}
+#cele{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}
+#cele[hidden]{display:none}
+.cb{position:absolute;top:14%;left:50%;transform:translateX(-50%);background:var(--sf);color:var(--ink);border-radius:18px;padding:12px 18px;box-shadow:0 8px 30px rgba(0,0,0,.25);text-align:center;max-width:86%}
+.cf{position:absolute;top:-40px;animation:cfall 2.6s ease-in forwards}
+@keyframes cfall{to{transform:translateY(110vh) rotate(360deg)}}
+.scards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px}
+.sc{background:var(--sf);border-radius:16px;padding:12px 8px;text-align:center;box-shadow:var(--sh)}
+.sc b{display:block;font-size:1.5rem}.sc span{font-size:.78rem;color:var(--mu)}
+.ov{margin:0 0 12px}.ovn{font-weight:600;margin:0 0 4px}
+.ovn .dt{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.ovb{position:relative;height:12px;border-radius:99px;background:color-mix(in srgb,var(--mu) 18%,var(--sf))}
+.ovb i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
+.ovb s{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink);border-radius:2px}
+.lc{width:100%;height:auto;display:block}
+.lg{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--mu);margin:4px 0 12px}
+.lg i{display:inline-block;width:14px;height:0;border-top:3px solid;margin-right:5px;vertical-align:middle}
+.wbs{display:flex;gap:6px;overflow-x:auto;padding:6px 0 4px;align-items:flex-end}
+.wc{flex:none;width:34px;text-align:center}
+.wc .col{display:flex;flex-direction:column-reverse;justify-content:flex-start;height:110px}
+.wc .col i{display:block;width:100%}
+.wc .col .p{background:#6DB3AB}.wc .col .a{background:var(--no)}.wc .col .u{background:var(--wa);opacity:.5}
+.wc small{font-size:.66rem;color:var(--mu)}
+#printarea{display:none}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  #app,#auth,dialog,#toast,#cele,#nav,.fabs{display:none!important}
+  #printarea{display:block!important;font:11pt/1.4 system-ui,-apple-system,Segoe UI,sans-serif;color:#000;padding:0}
+  #printarea h1{font-size:18pt;margin:0 0 4px}#printarea h2{font-size:13pt;margin:16px 0 6px}
+  #printarea table{width:100%;border-collapse:collapse;margin:6px 0}
+  #printarea th,#printarea td{border:1px solid #888;padding:3px 6px;font-size:9.5pt;text-align:left;vertical-align:top}
+  #printarea th{background:#eee}
+  #printarea .dis{font-size:9pt;border:1px solid #888;padding:6px 8px;margin:8px 0}
+  #printarea .pgb{break-inside:avoid-page}
+}
 </style>
 </head>
 <body>
@@ -195,6 +234,7 @@ header.hero{display:block}
   <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
   <p class="hi" id="hello">Ciao! 👋</p>
   <p class="tag">Segna le lezioni a cui vai: al resto pensa InAula.</p>
+  <p class="streak" id="streak"></p>
   <p class="meta"><span class="syn">Connessione…</span></p>
 </header>
 <div id="namecard"></div>
@@ -210,6 +250,10 @@ header.hero{display:block}
 <div class="grid" id="grid"></div>
 <div id="archive"></div>
 </section>
+<section id="v-stats" hidden>
+<h2 class="vt">Statistiche</h2>
+<div id="stats"></div>
+</section>
 <section id="v-menu" hidden>
 <h2 class="vt">Menu</h2>
 <div class="mcard"><b id="who"></b><br><span class="syn meta">Connessione…</span></div>
@@ -217,6 +261,7 @@ header.hero{display:block}
   <button class="mi" data-act="imp"><i>📥</i>Importa calendario</button>
   <button class="mi" data-act="upd" id="updb" hidden><i>🔄</i>Aggiorna orario</button>
   <button class="mi" data-act="new"><i>➕</i>Nuovo insegnamento</button>
+  <button class="mi" data-act="exp"><i>📤</i>Esporta le mie presenze</button>
 </div>
 <h3 class="dh">Impostazioni</h3>
 <div class="mcard">
@@ -237,6 +282,7 @@ header.hero{display:block}
 <nav id="nav" aria-label="Navigazione principale">
   <button data-act="tab" data-s="home" class="on"><span>🏠</span>Oggi</button>
   <button data-act="tab" data-s="courses"><span>📚</span>Insegnamenti</button>
+  <button data-act="tab" data-s="stats"><span>📊</span>Statistiche</button>
   <button data-act="guide"><span>❓</span>Guida</button>
   <button data-act="tab" data-s="menu"><span>☰</span>Menu</button>
 </nav>
@@ -259,6 +305,8 @@ header.hero{display:block}
   <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 </main>
 <div id="toast" role="status" hidden></div>
+<div id="cele" hidden aria-live="polite"></div>
+<div id="printarea"></div>
 <dialog id="dlg"></dialog>
 <dialog id="lg" class="sheet" aria-labelledby="lgt">
 <div class="gh"><h2 id="lgt">Informazioni legali</h2><button class="btn" data-act="lclose">Chiudi</button></div>
@@ -302,7 +350,7 @@ header.hero{display:block}
 <dialog id="gd" class="sheet" aria-labelledby="gdt">
 <div class="gh"><h2 id="gdt">Guida</h2><button class="btn" data-act="gclose">Chiudi</button></div>
 <div class="gc">
-<div class="tl"><b>La barra in basso:</b> <b>Oggi</b> (le lezioni di oggi, domani e della settimana), <b>Insegnamenti</b> (le schede con grafico e simulatore), <b>Guida</b> e <b>Menu</b> (importa, aggiorna orario, impostazioni, account).</div>
+<div class="tl"><b>La barra in basso:</b> <b>Oggi</b> (le lezioni di oggi, domani e della settimana), <b>Insegnamenti</b> (le schede con grafico e simulatore), <b>Statistiche</b> (serie, andamento, esportazione), <b>Guida</b> e <b>Menu</b> (importa, aggiorna orario, impostazioni, account).</div>
 <div class="tl"><b>In breve:</b> 1) copi il link dell'orario dal sito dell'università · 2) lo incolli in InAula · 3) segni ✓ le lezioni a cui vai. Il resto lo calcola il sito.</div>
 
 <details class="gs" id="gs1" open><summary>1. Copiare il link dell'orario</summary><div class="gb">
@@ -387,7 +435,18 @@ header.hero{display:block}
 <li>Puoi usare lo stesso account da telefono e computer: i dati si sincronizzano. Sull'iPhone il collegamento in Home ti chiede l'accesso la prima volta.</li></ul>
 </div></details>
 
-<details class="gs" id="gs8"><summary>8. Domande frequenti</summary><div class="gb">
+<details class="gs" id="gs9"><summary>8. Statistiche, serie 🔥 ed esportazione</summary><div class="gb">
+<p>Nella scheda <b>Statistiche</b> (barra in basso):</p>
+<img class="gimg" src="guida-10.png" width="780" height="2236" alt="Schermata Statistiche con serie, situazione per insegnamento, grafico dell'andamento e barre per settimana evidenziati" loading="lazy">
+<ol class="sub"><li><b>Serie 🔥, record e presenze segnate.</b> La serie conta le lezioni frequentate di fila: un'assenza segnata la azzera, le lezioni non segnate non la spezzano. La serie compare anche in <b>Oggi</b>.</li>
+<li><b>Situazione per insegnamento</b>: la barra colorata sono le tue presenze, la lineetta scura il minimo da raggiungere.</li>
+<li><b>Andamento</b>: la linea colorata sono le presenze segnate nel tempo, quella tratteggiata è il ritmo per arrivare al minimo (se sei sopra, sei in regola). I pallini rossi sono assenze, quelli vuoti lezioni da segnare.</li>
+<li><b>Lezioni per settimana</b>: quante lezioni presenti, assenti e da segnare in ogni settimana.</li></ol>
+<p><b>Soglia raggiunta 🎉</b>: quando raggiungi il minimo in un insegnamento compare una piccola festa, una sola volta per insegnamento.</p>
+<p><b>Esportare.</b> Da <b>Menu</b> (o da Statistiche) premi <b>Esporta le mie presenze</b>: il <b>PDF</b> è un riepilogo con l'elenco delle lezioni (nella stampa scegli "Salva come PDF"), il <b>CSV</b> si apre con Excel. Il PDF è personale e non ufficiale: per un docente o la segreteria è un promemoria, non una certificazione.</p>
+</div></details>
+
+<details class="gs" id="gs8"><summary>9. Domande frequenti</summary><div class="gb">
 <details class="q"><summary>Come scrivo un suggerimento o segnalo un problema?</summary><p>Premi <b>💬 Scrivici</b> in basso a destra (o dal <b>Menu</b>). Il messaggio arriva direttamente a chi gestisce InAula.</p></details>
 <details class="q"><summary>Non vedo aula e docenti</summary><p>Importa di nuovo il calendario (incolla il link): le lezioni già presenti vengono aggiornate con aula e docenti, senza duplicati.</p></details>
 <details class="q"><summary>Il link non viene letto</summary><p>Controlla di aver copiato tutto il link (inizia con https://). Se non funziona, usa il file .ics dal computer (sezione 1).</p></details>
@@ -410,7 +469,7 @@ const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomai
 // Indirizzo del servizio di appoggio per leggere il link dell'orario (facoltativo, vedi guida di configurazione). Lascia vuoto se non serve.
 const IMPORT_PROXY="";
 // Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
-const CONTACT_EMAIL="";
+const CONTACT_EMAIL="inaulaweb@gmail.com";
 const APP_VER="2026-09-20-c3";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
@@ -460,7 +519,7 @@ function calc(c){
 }
 function status(k){
   if(!k.T)return{c:'var(--mu)',t:'Aggiungi le lezioni'};
-  if(k.P>=k.M)return{c:'var(--ok)',t:'Soglia raggiunta'};
+  if(k.P>=k.M)return{c:'var(--ok)',t:'🎉 Soglia raggiunta'};
   if(k.margin<0)return{c:'var(--no)',t:'Soglia non più raggiungibile'};
   if(k.margin===0)return{c:'var(--wa)',t:k.h?'Non puoi più saltare ore':'Non puoi più saltare lezioni'};
   if(k.h)return k.margin<=k.warn?{c:'var(--wa)',t:`Ti restano solo ${fh(k.margin)} di assenza`}:{c:'var(--ok)',t:`Ti restano ${fh(k.margin)} di assenza`};
@@ -470,7 +529,7 @@ function status(k){
 }
 function statusArch(k){
   if(!k.T)return{c:'var(--mu)',t:'Nessuna lezione'};
-  return k.P>=k.M?{c:'var(--ok)',t:'Soglia raggiunta'}:{c:'var(--no)',t:'Soglia non raggiunta'};
+  return k.P>=k.M?{c:'var(--ok)',t:'🎉 Soglia raggiunta'}:{c:'var(--no)',t:'Soglia non raggiunta'};
 }
 function pie(k){
   const r=40,C=2*Math.PI*r,T=k.T||1;let off=0,s='';
@@ -526,6 +585,7 @@ function renderTop(){
   }
   let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
   $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'')+(updDiff&&updDiff.items.some(x=>x.t!=='inf')?`<div class="warn" style="margin-top:8px">🔄 L'università ha modificato l'orario (${updDiff.items.filter(x=>x.t!=='inf').length} differenze). <button class="btn" data-act="upd" data-s="rev" style="margin-left:6px">Rivedi</button></div>`:'');
+  const sk=streaks();$('streak').innerHTML=sk.cur>=2?`🔥 Serie di <b>${sk.cur}</b> lezioni frequentate di fila`:'';
   $('hello').textContent=S.name?`Ciao ${S.name.replace(/[.!\s]+$/,'')}! 👋`:'Ciao! 👋';
   const showName=loaded&&!S.name&&!nameSkip,nc=$('namecard');
   if(nc.dataset.on!==String(showName)){nc.dataset.on=String(showName);nc.innerHTML=showName?`<div class="fbcard" style="margin:0 0 10px"><div><b>Come ti chiami?</b><br><span class="meta">Così posso salutarti per nome.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nn" maxlength="40" placeholder="Il tuo nome" autocomplete="given-name" style="width:160px"><button class="btn pri" data-act="nsave">Salva</button><button class="lnk" data-act="nskip">Non ora</button></div></div>`:''}
@@ -547,7 +607,7 @@ function renderTop(){
   const seg=`<div class="seg" role="group" aria-label="Periodo">${[['oggi','Oggi'],['domani','Domani'],['sett','Settimana']].map(([k,t])=>`<button data-act="hm" data-s="${k}" class="${homeMode===k?'on':''}">${t}</button>`).join('')}</div>`;
   $('today').innerHTML=seg+head+body;
 }
-function showTab(t){tab=t;['home','courses','menu'].forEach(k=>{$('v-'+k).hidden=k!==t});document.querySelectorAll('#nav [data-act="tab"]').forEach(b=>b.classList.toggle('on',b.dataset.s===t));window.scrollTo(0,0)}
+function showTab(t){tab=t;['home','courses','stats','menu'].forEach(k=>{$('v-'+k).hidden=k!==t});if(t==='stats')renderStats();document.querySelectorAll('#nav [data-act="tab"]').forEach(b=>b.classList.toggle('on',b.dataset.s===t));window.scrollTo(0,0)}
 const START=`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
 function setTheme(v){try{v==='auto'?localStorage.removeItem('inaula-theme'):localStorage.setItem('inaula-theme',v)}catch(e){}if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',v)}
 const PAL=[['Verde acqua','#6DB3AB'],['Lilla','#A29CDB'],['Azzurro','#7FB0DC'],['Sabbia','#E2BC7C'],['Salvia','#98C08E'],['Orchidea','#BE9BD6'],['Pesca','#E0A48F'],['Ardesia','#8FB0BF']];
@@ -563,14 +623,95 @@ function render(){
   const act=S.courses.filter(c=>!c.arch),arc=S.courses.filter(c=>c.arch);
   $('archive').innerHTML=arc.length?`<details class="archv"${archOpen?' open':''}><summary>🗂️ Archivio (${arc.length})</summary><div class="grid">${arc.map(card).join('')}</div></details>`:'';
   $('grid').innerHTML=act.length?act.map(card).join(''):arc.length?`<div class="empty"><p>Nessun insegnamento attivo.<br>Importa il calendario del nuovo semestre o aggiungine uno.</p></div>`:START;
+  if(tab==='stats')renderStats();
 }
+let celT=null,statCourse='';
+const byDate=(a,b)=>(a.d+(a.s||'')).localeCompare(b.d+(b.s||''));
+function streaks(){
+  const td=ymd(new Date()),all=[];
+  S.courses.forEach(c=>c.lessons.forEach(l=>{const x=sx(l);if(x&&l.d<=td)all.push([l.d+(l.s||''),x])}));
+  all.sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0);
+  let run=0,best=0;all.forEach(([,x])=>{if(x===1){run++;if(run>best)best=run}else run=0});
+  return{cur:run,best,tot:all.filter(a=>a[1]===1).length};
+}
+function celMigrate(){let ch=false;S.courses.forEach(c=>{if(c.cel)return;const k=calc(c);if(k.T&&k.P>=k.M){c.cel=1;ch=true}});if(ch)save()}
+function celebrate(names){
+  const e=$('cele');e.innerHTML=`<div class="cb">🎉 <b>Soglia raggiunta</b> in ${names.map(esc).join(', ')}!</div>`;e.hidden=false;
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches){for(let i=0;i<28;i++){const s=document.createElement('span');s.className='cf';s.textContent=['🎉','✨','🎊','⭐'][i%4];s.style.left=(Math.random()*100)+'%';s.style.animationDelay=(Math.random()*.6)+'s';s.style.fontSize=(14+Math.random()*16)+'px';e.appendChild(s)}}
+  clearTimeout(celT);celT=setTimeout(()=>{e.hidden=true;e.innerHTML=''},4200);
+}
+function checkCele(){const n=[];S.courses.forEach(c=>{if(c.arch||c.cel)return;const k=calc(c);if(k.T&&k.P>=k.M){c.cel=1;n.push(c.name)}});if(n.length)celebrate(n)}
+function lineChart(c){
+  const k=calc(c),L=[...c.lessons].sort(byDate),n=L.length;if(!n)return'<p class="meta">Nessuna lezione in questo insegnamento.</p>';
+  const now=new Date(),w=l=>k.h?durMin(l,c):1,W=340,H=200,ml=36,mr=12,mt=16,mb=30,pw=W-ml-mr,ph=H-mt-mb,fx=v=>k.h?fh(v):String(v);
+  let cum=0;const pts=[[0,0]],ab=[],un=[];
+  L.forEach((l,i)=>{const x=sx(l),past=ended(l,now);if(x===1)cum+=w(l);if(past||x){pts.push([i+1,cum]);if(x===2)ab.push([i+1,cum]);if(x===0)un.push([i+1,cum])}});
+  const ti=L.filter(l=>ended(l,now)).length,yMax=Math.max(k.M,cum,1)*1.12,X=i=>(ml+pw*i/n).toFixed(1),Y=v=>(mt+ph-ph*v/yMax).toFixed(1),pace=k.T?k.M*(k.S/k.T):k.M;
+  const line=pts.map(([i,v],j)=>`${j?'L':'M'}${X(i)},${Y(v)}`).join(' '),dd=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+  return `<svg viewBox="0 0 ${W} ${H}" class="lc" role="img" aria-label="Andamento delle presenze di ${esc(c.name)}">
+<line x1="${ml}" y1="${Y(0)}" x2="${W-mr}" y2="${Y(0)}" stroke="var(--ln)" stroke-width="1.5"/>
+<line x1="${ml}" y1="${Y(k.M)}" x2="${W-mr}" y2="${Y(k.M)}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="${ml-4}" y="${+Y(k.M)+4}" text-anchor="end" font-size="10" fill="var(--ink)">${fx(k.M)}</text>
+<text x="${ml-4}" y="${+Y(0)+4}" text-anchor="end" font-size="10" fill="var(--mu)">0</text>
+<text x="${W-mr}" y="${+Y(k.M)-4}" text-anchor="end" font-size="10" fill="var(--ink)">minimo</text>
+<line x1="${X(0)}" y1="${Y(0)}" x2="${X(n)}" y2="${Y(pace)}" stroke="var(--mu)" stroke-width="1.5" stroke-dasharray="5 4"/>
+${ti&&ti<n?`<line x1="${X(ti)}" y1="${mt}" x2="${X(ti)}" y2="${Y(0)}" stroke="var(--mu)" stroke-width="1" stroke-dasharray="2 3"/><text x="${X(ti)}" y="${mt-4}" text-anchor="middle" font-size="10" fill="var(--mu)">oggi</text>`:''}
+<path d="${line}" fill="none" stroke="${cc(c)}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+${ab.map(([i,v])=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="var(--no)"/>`).join('')}${un.map(([i,v])=>`<circle cx="${X(i)}" cy="${Y(v)}" r="3.5" fill="var(--sf)" stroke="var(--wa)" stroke-width="2"/>`).join('')}
+<text x="${ml}" y="${H-8}" font-size="10" fill="var(--mu)">${dd(L[0].d)}</text><text x="${W-mr}" y="${H-8}" text-anchor="end" font-size="10" fill="var(--mu)">${dd(L[n-1].d)}</text></svg>`;
+}
+function weekBars(){
+  const now=new Date(),td=ymd(now),map=new Map();
+  S.courses.forEach(c=>{if(c.arch)return;c.lessons.forEach(l=>{if(l.d>td)return;const m=ymd(mondayOf(new Date(l.d+'T12:00'))),o=map.get(m)||{p:0,a:0,u:0},x=sx(l);if(x===1)o.p++;else if(x===2)o.a++;else if(ended(l,now))o.u++;map.set(m,o)})});
+  const ks=[...map.keys()].sort();if(!ks.length)return'<p class="meta">Ancora nessuna lezione svolta.</p>';
+  const mx=Math.max(...ks.map(k=>map.get(k).p+map.get(k).a+map.get(k).u),1),hh=v=>Math.round(110*v/mx);
+  return `<div class="wbs">${ks.map(k=>{const o=map.get(k),d=new Date(k+'T12:00').toLocaleDateString('it-IT',{day:'numeric',month:'short'});return `<div class="wc" title="Settimana dal ${d}: ${o.p} presenti, ${o.a} assenti, ${o.u} da segnare"><div class="col"><i class="p" style="height:${hh(o.p)}px"></i><i class="a" style="height:${hh(o.a)}px"></i><i class="u" style="height:${hh(o.u)}px"></i></div><small>${d}</small></div>`}).join('')}</div><div class="lg"><span><i style="border-color:#6DB3AB"></i>Presenti</span><span><i style="border-color:var(--no)"></i>Assenti</span><span><i style="border-color:var(--wa);opacity:.5"></i>Da segnare</span></div>`;
+}
+function renderStats(){
+  const box=$('stats');if(!box)return;
+  const act=S.courses.filter(c=>!c.arch);
+  if(!S.courses.length){box.innerHTML='<p class="meta">Importa un calendario e segna qualche lezione: qui vedrai l\'andamento delle presenze.</p>';return}
+  const sk=streaks();
+  if(!act.find(c=>c.id===statCourse))statCourse=(act[0]||{}).id||'';
+  const c=S.courses.find(x=>x.id===statCourse);
+  const ov=act.map(c=>{const k=calc(c),f=v=>fv(k,v),pP=k.T?Math.min(100,100*k.P/k.T):0,pM=k.T?Math.min(100,100*k.M/k.T):0;return `<div class="ov"><div class="ovn"><span class="dt" style="background:${cc(c)}"></span>${esc(c.name)}</div><div class="ovb"><i style="width:${pP}%;background:${cc(c)}"></i><s style="left:${pM}%"></s></div><small class="meta">${f(k.P)} presenze su ${f(k.M)} richieste${k.P>=k.M?' 🎉':''}</small></div>`}).join('');
+  box.innerHTML=`<div class="scards"><div class="sc"><b>🔥 ${sk.cur}</b><span>serie attuale</span></div><div class="sc"><b>🏅 ${sk.best}</b><span>record</span></div><div class="sc"><b>${sk.tot}</b><span>presenze segnate</span></div></div>
+<p class="meta">La serie conta le lezioni frequentate di fila: un'assenza segnata la azzera, le lezioni non segnate non la spezzano.</p>
+<h3 class="dh">Situazione per insegnamento</h3>${ov||'<p class="meta">Nessun insegnamento attivo.</p>'}<p class="meta">La lineetta scura è il minimo da raggiungere.</p>
+${c?`<h3 class="dh">Andamento</h3><label>Insegnamento<select id="stc">${act.map(x=>`<option value="${x.id}"${x.id===statCourse?' selected':''}>${esc(x.name)}</option>`).join('')}</select></label>${lineChart(c)}<div class="lg"><span><i style="border-color:${cc(c)}"></i>Presenze segnate</span><span><i style="border-color:var(--mu);border-top-style:dashed"></i>Ritmo per arrivare al minimo</span><span><i style="border-color:var(--no)"></i>● assenza</span><span>○ da segnare</span></div>`:''}
+<h3 class="dh">Lezioni per settimana</h3>${weekBars()}
+<div class="row" style="justify-content:flex-start"><button class="btn pri" data-act="exp">📤 Esporta le mie presenze</button></div>`;
+}
+function exportDlg(){
+  dlg.innerHTML=`<h3>Esporta le mie presenze</h3>
+<p class="meta">Il PDF è un riepilogo personale compilato da te: non ha valore ufficiale. Fanno fede solo i registri dell'università.</p>
+<label>Insegnamento<select id="exc"><option value="*">Tutti (compresi quelli archiviati)</option>${S.courses.map(c=>`<option value="${c.id}">${esc(c.name)}${c.arch?' (archivio)':''}</option>`).join('')}</select></label>
+<div class="row" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn pri" data-act="pdf">Crea PDF (stampa)</button><button class="btn" data-act="csv">Scarica CSV (Excel)</button></div>
+<p class="meta">Con "Crea PDF" si apre la stampa del browser: scegli "Salva come PDF". Se il telefono non offre questa scelta, usa il computer.</p>
+<div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`;
+  if(!dlg.open)dlg.showModal();
+}
+function csvExport(cid){
+  const now=new Date(),q=s=>`"${String(s==null?'':s).replace(/"/g,'""')}"`,rows=[['Insegnamento','Modulo','Data','Inizio','Fine','Aula','Docenti','Stato','Nota','Archiviato'].map(q).join(';')];
+  S.courses.filter(c=>cid==='*'||c.id===cid).forEach(c=>[...c.lessons].sort(byDate).forEach(l=>{const x=sx(l),st=x===1?'presente':x===2?'assente':ended(l,now)?'da segnare':'non ancora svolta';rows.push([c.name,l.m||'',l.d.split('-').reverse().join('/'),l.s||'',l.e||'',l.au||'',l.dc||'',st,l.nt||'',c.arch?'sì':'no'].map(q).join(';'))}));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'}));a.download=`inaula-presenze-${ymd(new Date())}.csv`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+function pdfReport(cid){
+  const now=new Date(),cs=S.courses.filter(c=>cid==='*'||c.id===cid),u=auth.currentUser||{};
+  const sum=cs.map(c=>{const k=calc(c),f=v=>fv(k,v),es=k.P>=k.M?'Soglia raggiunta':k.margin<0?'Soglia non raggiungibile':'In corso';return `<tr><td>${esc(c.name)}${c.arch?' (archivio)':''}</td><td>${f(k.T)}</td><td>${f(k.P)}</td><td>${f(k.A)}</td><td>${f(k.U)}</td><td>${f(k.M)}</td><td>${es}</td></tr>`}).join('');
+  const det=cs.map(c=>`<div class="pgb"><h2>${esc(c.name)}</h2><table><thead><tr><th>Data</th><th>Orario</th><th>Modulo</th><th>Aula</th><th>Stato</th><th>Nota</th></tr></thead><tbody>${[...c.lessons].sort(byDate).map(l=>{const x=sx(l);return `<tr><td>${fmtD(l.d)}</td><td>${l.s?l.s+(l.e?'–'+l.e:''):''}</td><td>${esc(l.m||'')}</td><td>${esc((l.au||'').split(' - ')[0])}</td><td>${x===1?'Presente':x===2?'Assente':ended(l,now)?'Da segnare':'—'}</td><td>${esc(l.nt||'')}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+  $('printarea').innerHTML=`<h1>Riepilogo presenze</h1><p>${esc(S.name||'')}${u.email?' — '+esc(u.email):''}<br>Generato il ${now.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})} alle ${hm(now)} con InAula</p><p class="dis">Documento personale compilato dall'utente: non ha valore ufficiale. Fanno fede solo i registri delle presenze dell'università.</p><table><thead><tr><th>Insegnamento</th><th>Lezioni</th><th>Presenze</th><th>Assenze</th><th>Da segnare</th><th>Minimo richiesto</th><th>Esito</th></tr></thead><tbody>${sum}</tbody></table>${det}`;
+  if(dlg.open)dlg.close();setTimeout(()=>window.print(),150);
+}
+window.addEventListener('afterprint',()=>{const p=document.getElementById('printarea');if(p)p.innerHTML=''});
 function renderCard(id){
   const el=document.querySelector(`[data-card="${id}"]`);if(!el)return render();
   const sc=el.querySelector('.ls')?.scrollTop||0,t=document.createElement('div');
   t.innerHTML=card(S.courses.find(c=>c.id===id));
   const n=t.firstElementChild;el.replaceWith(n);
   const l=n.querySelector('.ls');if(l)l.scrollTop=sc;
-  renderTop();
+  renderTop();if(tab==='stats')renderStats();
 }
 function courseDlg(c){
   const ci=c&&PAL[c.ci]?c.ci:nextColor();
@@ -669,7 +810,7 @@ function openGuide(s){
 }
 let undoSnap=null,toastT=null;
 function showToast(msg){const t=$('toast');t.innerHTML=`<span>${esc(msg)}</span><button class="lnk" data-act="undo" type="button">Annulla</button>`;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true;undoSnap=null},6000)}
-function mark(c,l,v){undoSnap=clone(S);l.x=sx(l)===v?0:v;delete l.p;save();renderCard(c.id);showToast(l.x===1?'Segnata come presente':l.x===2?'Segnata come assente':'Segno rimosso')}
+function mark(c,l,v){undoSnap=clone(S);l.x=sx(l)===v?0:v;delete l.p;checkCele();save();renderCard(c.id);showToast(l.x===1?'Segnata come presente':l.x===2?'Segnata come assente':'Segno rimosso')}
 function openLegal(s){
   const g=$('lg');
   if(s){g.querySelectorAll('details.gs').forEach(d=>{d.open=d.id==='ls_'+s})}
@@ -726,7 +867,7 @@ function feedbackDlg(t){
 <label>Messaggio<textarea id="fx" rows="6" maxlength="1000" placeholder="Scrivi qui…"></textarea></label>
 <div class="meta" id="fc">0 / 1000</div>
 <label class="ck" style="align-items:flex-start"><input type="checkbox" id="fe"> <span>Voglio una risposta: includi il mio nome e la mia email.</span></label>
-<p class="meta">Non scrivere dati sulla salute o su altre persone. Il messaggio arriva solo a chi gestisce InAula.</p>
+<p class="meta">Non scrivere dati sulla salute o su altre persone. Il messaggio arriva solo a chi gestisce InAula.${CONTACT_EMAIL?` Puoi anche scrivere a <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`:''}</p>
 <div id="fm" class="note" hidden role="alert"></div>
 <div class="row"><button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="fsend">Invia</button></div>`;
   dlg.showModal();
@@ -826,8 +967,8 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,c=S.courses.find(x=>x.id===b.dataset.c);
   if((a==='mp'||a==='ma')&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)mark(c,l,a==='mp'?1:2)}
-  else if(a==='bp'&&c){undoSnap=clone(S);const now=new Date();let n=0;c.lessons.forEach(l=>{if(sx(l)===0&&ended(l,now)){l.x=1;delete l.p;n++}});save();renderCard(c.id);showToast(`${n} lezioni segnate come presenti`)}
-  else if(a==='bt'){undoSnap=clone(S);const td=ymd(new Date());let n=0;S.courses.forEach(c=>{if(!c.arch)c.lessons.forEach(l=>{if(l.d===td&&sx(l)===0){l.x=1;delete l.p;n++}})});save();render();showToast(`${n} lezioni segnate come presenti`)}
+  else if(a==='bp'&&c){undoSnap=clone(S);const now=new Date();let n=0;c.lessons.forEach(l=>{if(sx(l)===0&&ended(l,now)){l.x=1;delete l.p;n++}});checkCele();save();renderCard(c.id);showToast(`${n} lezioni segnate come presenti`)}
+  else if(a==='bt'){undoSnap=clone(S);const td=ymd(new Date());let n=0;S.courses.forEach(c=>{if(!c.arch)c.lessons.forEach(l=>{if(l.d===td&&sx(l)===0){l.x=1;delete l.p;n++}})});checkCele();save();render();showToast(`${n} lezioni segnate come presenti`)}
   else if(a==='undo'){if(undoSnap){S=undoSnap;undoSnap=null;$('toast').hidden=true;save();render()}}
   else if(a==='dl'&&c)delLesson(c,b.dataset.l);
   else if(a==='el'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)lessonDlg(c,l)}
@@ -864,6 +1005,9 @@ document.addEventListener('click',e=>{
   else if(a==='lnk')readLink();
   else if(a==='fb'){feedbackDlg(b.dataset.s);if(!dlg.open)dlg.showModal()}
   else if(a==='fsend')sendFb();
+  else if(a==='exp')exportDlg()
+  else if(a==='csv')csvExport($('exc').value)
+  else if(a==='pdf')pdfReport($('exc').value)
   else if(a==='tab')showTab(b.dataset.s)
   else if(a==='hm'){homeMode=b.dataset.s;renderTop()}
   else if(a==='wk'){weekOff=b.dataset.s==='0'?0:weekOff+ +b.dataset.s;renderTop()}
@@ -908,6 +1052,7 @@ document.addEventListener('paste',e=>{if(e.target.id==='il')setTimeout(readLink,
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='thr'){S.thr=Math.min(100,Math.max(1,Math.round(+t.value)||66));save();render()}
+  else if(t.id==='stc'){statCourse=t.value;renderStats()}
   else if(t.name==='thm')setTheme(t.value)
   else if(t.id==='ff'&&t.files[0]){srcLink='';t.files[0].text().then(showMap)}
   else if(t.id==='ft2'){srcLink='';showMap(t.value)}
@@ -962,7 +1107,7 @@ onAuthStateChanged(auth,u=>{
   ref=doc(fs,'users',u.uid);setSync('pending');
   unsub=onSnapshot(ref,{includeMetadataChanges:true},sn=>{
     const pend=dirty||writing||sn.metadata.hasPendingWrites;
-    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}if(sn.exists()&&!daily&&!sn.metadata.fromCache){daily=true;setTimeout(checkDaily,1200)}if(sn.exists()&&!loaded){loaded=true;renderTop()}}
+    if(!pend){if(sn.exists())adopt(sn.data());else{S={thr:66,courses:[]};render()}if(sn.exists()&&!daily&&!sn.metadata.fromCache){daily=true;setTimeout(checkDaily,1200)}if(sn.exists()&&!loaded){loaded=true;celMigrate();renderTop()}}
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
   },()=>setSync('err'));
 });
