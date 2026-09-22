@@ -225,6 +225,12 @@ header.hero{display:block}
   #printarea .dis{font-size:9pt;border:1px solid #888;padding:6px 8px;margin:8px 0}
   #printarea .pgb{break-inside:avoid-page}
 }
+.themeb{position:fixed;left:14px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:38px;height:38px;border-radius:50%;border:0;background:var(--sf);box-shadow:var(--sh);font-size:1.1rem;line-height:1;cursor:pointer;z-index:6;padding:0}
+#auth .themeb{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+#themetip{position:fixed;left:60px;bottom:calc(94px + env(safe-area-inset-bottom,0px));z-index:7;background:var(--ink);color:var(--bg);border-radius:999px;padding:6px 12px;font-size:.82rem}
+#themetip[hidden]{display:none}
+.credit{margin:22px 0 0;text-align:center;font-size:.78rem;color:var(--mu);white-space:pre-line}
+#auth .credit{margin-bottom:56px}
 </style>
 </head>
 <body>
@@ -266,8 +272,7 @@ header.hero{display:block}
 <h3 class="dh">Impostazioni</h3>
 <div class="mcard">
   <label class="thr">Soglia minima di presenze <input id="thr" type="number" min="1" max="100" value="66"> %</label>
-  <div class="meta" style="margin:10px 0 4px">Aspetto</div>
-  <div class="rd"><label class="ck"><input type="radio" name="thm" value="auto" checked> Automatico</label><label class="ck"><input type="radio" name="thm" value="light"> Chiaro</label><label class="ck"><input type="radio" name="thm" value="dark"> Scuro</label></div>
+
 </div>
 <div class="menu" style="margin-top:12px">
   <button class="mi" data-act="acct"><i>👤</i>Il mio account</button>
@@ -278,6 +283,7 @@ header.hero{display:block}
   <button class="mi" data-act="legal" data-s="c"><i>✉️</i>Contatti</button>
   <button class="mi" id="out"><i>🚪</i>Esci</button>
 </div>
+<p class="credit"></p>
 </section>
 <nav id="nav" aria-label="Navigazione principale">
   <button data-act="tab" data-s="home" class="on"><span>🏠</span>Oggi</button>
@@ -286,6 +292,7 @@ header.hero{display:block}
   <button data-act="guide"><span>❓</span>Guida</button>
   <button data-act="tab" data-s="menu"><span>☰</span>Menu</button>
 </nav>
+<button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
 <div class="fabs"><button class="fab fb" data-act="fb">💬 Scrivici</button></div>
 </main>
 <main id="auth">
@@ -303,7 +310,10 @@ header.hero{display:block}
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
   <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
+  <button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
+  <p class="credit"></p>
 </main>
+<div id="themetip" role="status" hidden></div>
 <div id="toast" role="status" hidden></div>
 <div id="cele" hidden aria-live="polite"></div>
 <div id="printarea"></div>
@@ -469,7 +479,7 @@ const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomai
 const IMPORT_PROXY="";
 // Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
 const CONTACT_EMAIL="inaulaweb@gmail.com";
-const APP_VER="2026-09-20-c3";
+const APP_VER="1.0";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const KEY='presenze-v1';
@@ -608,6 +618,10 @@ function renderTop(){
 }
 function showTab(t){tab=t;['home','courses','stats','menu'].forEach(k=>{$('v-'+k).hidden=k!==t});if(t==='stats')renderStats();document.querySelectorAll('#nav [data-act="tab"]').forEach(b=>b.classList.toggle('on',b.dataset.s===t));window.scrollTo(0,0)}
 const START=`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
+const THN={auto:'Automatico',light:'Chiaro',dark:'Scuro'},THI={auto:'🌗',light:'☀️',dark:'🌙'};
+function curTheme(){try{return localStorage.getItem('inaula-theme')||'auto'}catch(e){return'auto'}}
+function themeUi(tip,btn){const v=curTheme();document.querySelectorAll('.themeb').forEach(b=>{b.textContent=THI[v];b.title='Tema: '+THN[v]});if(tip){const t=$('themetip');t.textContent='Tema: '+THN[v];t.hidden=false;if(btn){const r=btn.getBoundingClientRect();t.style.left=(r.right+8)+'px';t.style.bottom=(innerHeight-r.bottom+6)+'px'}clearTimeout(themeT);themeT=setTimeout(()=>{t.hidden=true},1600)}}
+let themeT=null;
 function setTheme(v){try{v==='auto'?localStorage.removeItem('inaula-theme'):localStorage.setItem('inaula-theme',v)}catch(e){}if(v==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',v)}
 const PAL=[['Verde acqua','#6DB3AB'],['Lilla','#A29CDB'],['Azzurro','#7FB0DC'],['Sabbia','#E2BC7C'],['Salvia','#98C08E'],['Orchidea','#BE9BD6'],['Pesca','#E0A48F'],['Ardesia','#8FB0BF']];
 function nextColor(){const n=PAL.map(()=>0);S.courses.forEach(c=>{if(n[c.ci]!==undefined)n[c.ci]++});return n.indexOf(Math.min(...n))}
@@ -1013,6 +1027,7 @@ document.addEventListener('click',e=>{
   else if(a==='lnk')readLink();
   else if(a==='fb'){feedbackDlg(b.dataset.s);if(!dlg.open)dlg.showModal()}
   else if(a==='fsend')sendFb();
+  else if(a==='theme'){const o=['auto','light','dark'];setTheme(o[(o.indexOf(curTheme())+1)%3]);themeUi(true,b)}
   else if(a==='exp')exportDlg()
   else if(a==='csv')csvExport($('exc').value)
   else if(a==='pdf')pdfReport($('exc').value)
@@ -1086,9 +1101,10 @@ $('lf').onsubmit=async e=>{
     try{await setPersistence(auth,$('rem').checked?browserLocalPersistence:browserSessionPersistence)}catch(_){}
     if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
     else{
-      const cr=await createUserWithEmailAndPassword(auth,em,pw);
-      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],name:$('nm').value.trim().slice(0,40),code:$('cd').value.trim()})}
+      const cr=await createUserWithEmailAndPassword(auth,em,pw),nm2=$('nm').value.trim().slice(0,40);
+      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],name:nm2,code:$('cd').value.trim()})}
       catch(e){try{await cr.user.delete()}catch(_){}throw{code:e.code==='permission-denied'?'bad-code':'fs/'+(e.code||'errore')}}
+      S={thr:66,courses:[],name:nm2};loaded=true;render();
     }
   }catch(e){msg.textContent=ERR[e.code]||('Errore: '+(e.code||e.message||'sconosciuto'))}
   $('go').disabled=false;
@@ -1119,7 +1135,8 @@ onAuthStateChanged(auth,u=>{
     setSync(pend?'pending':(sn.metadata.fromCache?'off':'ok'));
   },()=>setSync('err'));
 });
-(()=>{let v='auto';try{v=localStorage.getItem('inaula-theme')||'auto'}catch(e){}const r=document.querySelector(`input[name=thm][value=${v}]`);if(r)r.checked=true})();
+themeUi(false);
+document.querySelectorAll('.credit').forEach(e=>{e.textContent=`Sito web creato da Gaia Alessandro · 2026\nInAula · versione ${APP_VER}`});
 document.querySelectorAll('.ce').forEach(e=>{e.innerHTML=CONTACT_EMAIL?`<a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>`:'<i>(indirizzo email in arrivo)</i>'});
 render();
 </script>
