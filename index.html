@@ -251,82 +251,6 @@ header.hero{display:block}
 .authct{text-align:center;margin:0 0 14px}
 .authcard .loginbox{max-width:none;margin-top:0}
 @media (max-width:480px){.phone-frame{width:132px}}
-
-/* --- STILI BANNER CAFFE & DONAZIONI --- */
-.coffee-card {
-  margin: 18px 0;
-  padding: 16px 18px;
-  background: color-mix(in srgb, var(--sf) 85%, #FAF5EF);
-  border: 1px solid color-mix(in srgb, var(--wa) 30%, var(--ln));
-  border-radius: 20px;
-  box-shadow: var(--sh);
-}
-.coffee-card-inner {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-.coffee-icon {
-  font-size: 1.6rem;
-  line-height: 1;
-}
-.coffee-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  margin: 0 0 2px 0;
-  color: var(--ink);
-}
-.coffee-desc {
-  font-size: 0.88rem;
-  color: var(--mu);
-  margin: 0;
-  line-height: 1.35;
-}
-.coffee-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.btn-coffee {
-  flex: 1;
-  min-width: 130px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.88rem;
-  text-decoration: none;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-  border: none;
-  box-shadow: var(--btnsh);
-  cursor: pointer;
-}
-.btn-coffee:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-.btn-paypal {
-  background-color: #0070BA;
-  color: #FFFFFF !important;
-}
-.btn-satispay {
-  background-color: #FF4B4B;
-  color: #FFFFFF !important;
-}
-.coffee-card-login {
-  max-width: 420px;
-  margin: 22px auto 0 auto;
-  text-align: center;
-}
-.coffee-card-login .coffee-card-inner {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
 </style>
 </head>
 <body>
@@ -344,26 +268,6 @@ header.hero{display:block}
 <section class="today" id="today"></section>
 <div id="startcard"></div>
 <div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
-
-<!-- BANNER CAFFÈ DASHBOARD -->
-<div class="coffee-card">
-  <div class="coffee-card-inner">
-    <span class="coffee-icon">☕</span>
-    <div>
-      <div class="coffee-title">Ti piace InAula? Sostieni il progetto!</div>
-      <p class="coffee-desc">InAula è un progetto gratuito e senza pubblicità. Se ti è utile, puoi offrirmi un caffè per sostenere il mio lavoro!</p>
-    </div>
-  </div>
-  <div class="coffee-buttons">
-    <a href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener" class="btn-coffee btn-paypal">
-      ☕ PayPal
-    </a>
-    <a href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA?" target="_blank" rel="noopener" class="btn-coffee btn-satispay">
-      ⚡ Satispay
-    </a>
-  </div>
-</div>
-
 </section>
 <section id="v-courses" hidden>
 <h2 class="vt">Insegnamenti</h2>
@@ -454,25 +358,6 @@ header.hero{display:block}
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
 </section>
-
-<!-- BANNER CAFFÈ LOGIN -->
-<div class="coffee-card coffee-card-login">
-  <div class="coffee-card-inner">
-    <span class="coffee-icon">☕</span>
-    <div>
-      <div class="coffee-title">Ti piace InAula?</div>
-      <p class="coffee-desc">InAula è una web app gratuita. Se vuoi sostenere lo sviluppo e il tempo dedicato, puoi offrirmi un caffè!</p>
-    </div>
-  </div>
-  <div class="coffee-buttons">
-    <a href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener" class="btn-coffee btn-paypal">
-      ☕ PayPal
-    </a>
-    <a href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA?" target="_blank" rel="noopener" class="btn-coffee btn-satispay">
-      ⚡ Satispay
-    </a>
-  </div>
-</div>
 
 <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 <button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
@@ -637,9 +522,12 @@ header.hero{display:block}
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,EmailAuthProvider,reauthenticateWithCredential,updatePassword,verifyBeforeUpdateEmail,deleteUser,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,deleteDoc,addDoc,collection,serverTimestamp,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+// ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
+// ⬆⬆ FINE ⬆⬆
+// Indirizzo del servizio di appoggio per leggere il link dell'orario (facoltativo, vedi guida di configurazione). Lascia vuoto se non serve.
 const IMPORT_PROXY="";
+// Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
 const CONTACT_EMAIL="inaulaweb@gmail.com";
 const APP_VER="1.0";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
@@ -673,7 +561,7 @@ const p2=n=>String(n).padStart(2,'0');
 const ymd=D=>`${D.getFullYear()}-${p2(D.getMonth()+1)}-${p2(D.getDate())}`;
 const hm=D=>p2(D.getHours())+':'+p2(D.getMinutes());
 const fmtD=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
-const sx=l=>l.x!==undefined?l.x:(l.p?1:0);
+const sx=l=>l.x!==undefined?l.x:(l.p?1:0);   // 1 presente, 2 assente, 0 da segnare
 const ended=(l,now)=>new Date(l.d+'T'+(l.e||'23:59'))<now;
 
 const durMin=(l,c)=>{if(l.s&&l.e){const f=x=>{const[a,b]=x.split(':');return+a*60+ +b},d=f(l.e)-f(l.s);if(d>0)return d}return Math.round((c.hd||2)*60)};
@@ -873,7 +761,7 @@ function csvExport(cid){
 function reportBody(cid){
   const now=new Date(),cs=S.courses.filter(c=>cid==='*'||c.id===cid),u=auth.currentUser||{};
   const sum=cs.map(c=>{const k=calc(c),f=v=>fv(k,v),es=k.P>=k.M?'Soglia raggiunta':k.margin<0?'Soglia non raggiungibile':'In corso';return `<tr><td>${esc(c.name)}${c.arch?' (archivio)':''}</td><td>${f(k.T)}</td><td>${f(k.P)}</td><td>${f(k.A)}</td><td>${f(k.U)}</td><td>${f(k.M)}</td><td>${es}</td></tr>`}).join('');
-  const det=cs.map(c=>`<div class="pgb"><h2>${esc(c.name)}</h2><table><thead><tr><th>Data</th><th>Orario</th><th>Modulo</th><th>Aula</th><th>Stato</th><th>Nota</th></tr></thead><tbody>${[...c.lessons].sort(byDate).map(l=>{const x=sx(l);return `<tr><td>${fmtD(l.d)}</td><td>${l.s?l.s+(l.e?'–'+l.e:''):''}</td><td>${esc(l.m||'')}</td><td>${esc((l.au||'').split(' - ')[0])}</td><td>${x===1?'Presente':x===2?'Assente':ended(l,now)?'Da segnare':'—'}</td><td>${esc(l.nt|| me='')}</td></tr>`}).join('')}</tbody></table></div>`).join('');
+  const det=cs.map(c=>`<div class="pgb"><h2>${esc(c.name)}</h2><table><thead><tr><th>Data</th><th>Orario</th><th>Modulo</th><th>Aula</th><th>Stato</th><th>Nota</th></tr></thead><tbody>${[...c.lessons].sort(byDate).map(l=>{const x=sx(l);return `<tr><td>${fmtD(l.d)}</td><td>${l.s?l.s+(l.e?'–'+l.e:''):''}</td><td>${esc(l.m||'')}</td><td>${esc((l.au||'').split(' - ')[0])}</td><td>${x===1?'Presente':x===2?'Assente':ended(l,now)?'Da segnare':'—'}</td><td>${esc(l.nt||'')}</td></tr>`}).join('')}</tbody></table></div>`).join('');
   return `<h1>Riepilogo presenze</h1><p>${esc(S.name||'')}${u.email?' — '+esc(u.email):''}<br>Generato il ${now.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})} alle ${hm(now)} con InAula</p><p class="dis">Documento personale compilato dall'utente: non ha valore ufficiale. Fanno fede solo i registri delle presenze dell'università.</p><table><thead><tr><th>Insegnamento</th><th>Lezioni</th><th>Presenze</th><th>Assenze</th><th>Da segnare</th><th>Minimo richiesto</th><th>Esito</th></tr></thead><tbody>${sum}</tbody></table>${det}`;
 }
 const REPORT_CSS='body{font:11pt/1.4 system-ui,-apple-system,Segoe UI,sans-serif;color:#000;background:#fff;margin:18px}h1{font-size:18pt;margin:0 0 4px}h2{font-size:13pt;margin:16px 0 6px}table{width:100%;border-collapse:collapse;margin:6px 0}th,td{border:1px solid #888;padding:3px 6px;font-size:9.5pt;text-align:left;vertical-align:top}th{background:#eee}.dis{font-size:9pt;border:1px solid #888;padding:6px 8px;margin:8px 0}.pgb{break-inside:avoid-page}.np{margin:0 0 14px}.np button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid #888;background:#f4f4f4;cursor:pointer}@media print{.np{display:none}}';
