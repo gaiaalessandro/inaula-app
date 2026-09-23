@@ -231,6 +231,26 @@ header.hero{display:block}
 #themetip[hidden]{display:none}
 .credit{margin:22px 0 0;text-align:center;font-size:.78rem;color:var(--mu);white-space:pre-line}
 #auth .credit{margin-bottom:56px}
+#auth{max-width:960px}
+.hero2{max-width:640px;margin:18px auto 0;text-align:center}
+.hero2 .logo{height:112px;display:block;margin:0 auto}
+.claim{font-size:clamp(1.6rem,4.4vw,2.5rem);font-weight:800;line-height:1.15;margin:16px 0 8px}
+.sub.big{font-size:1.05rem;max-width:52ch;margin:0 auto}
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
+.btn.lg{padding:13px 24px;font-size:1.02rem}
+.phones{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
+.phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22)}
+.phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px}
+.phone-frame img{width:100%;height:auto;display:block;border-radius:21px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;max-width:920px;margin:40px auto 10px;text-align:left}
+.feat{background:var(--sf);border-radius:18px;padding:16px 16px 15px;box-shadow:var(--sh)}
+.feat .fi{font-size:1.5rem;display:block;margin-bottom:6px}
+.feat h3{margin:0 0 4px;font-size:.98rem}
+.feat p{margin:0;color:var(--mu);font-size:.87rem}
+.authcard{max-width:420px;margin:42px auto 0;background:var(--sf);border-radius:24px;padding:26px 22px 22px;box-shadow:var(--sh)}
+.authct{text-align:center;margin:0 0 14px}
+.authcard .loginbox{max-width:none;margin-top:0}
+@media (max-width:480px){.phone-frame{width:132px}}
 </style>
 </head>
 <body>
@@ -296,8 +316,36 @@ header.hero{display:block}
 <div class="fabs"><button class="fab fb" data-act="fb">💬 Scrivici</button></div>
 </main>
 <main id="auth">
-  <h1 class="brand"><img class="logo" src="logo.png" alt="InAula"></h1>
-  <p class="sub">Accedi per ritrovare le tue presenze da qualsiasi dispositivo.</p>
+<section class="hero2">
+  <img class="logo" src="logo.png" alt="InAula">
+  <h1 class="claim">Le tue presenze, sotto controllo.</h1>
+  <p class="sub big">InAula tiene il conto delle lezioni per te: importi l'orario, segni chi c'era, e sai sempre quante ne puoi ancora saltare prima di perdere la frequenza.</p>
+  <div class="cta-row">
+    <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account gratis</button>
+    <button class="btn lg" type="button" data-act="cta" data-s="in">Ho già un account</button>
+  </div>
+  <p class="meta">Gratuito, senza pubblicità. Creato da una studentessa di Medicina per i suoi compagni di corso.</p>
+</section>
+
+<section class="phones">
+  <div class="phone-frame"><img src="landing-1.png" width="1370" height="2372" alt="Schermata Oggi di InAula, con le lezioni della giornata e i pulsanti per segnare presente o assente" loading="lazy"></div>
+  <div class="phone-frame"><img src="landing-2.png" width="1370" height="2750" alt="Schermata Statistiche di InAula, con la serie di presenze e il grafico dell'andamento verso il minimo richiesto" loading="lazy"></div>
+</section>
+
+<section class="feat-grid">
+<div class="feat"><span class="fi">📥</span><h3>Importa l'orario in un attimo</h3><p>Incolla il link dell'orario dell'università: lezioni, aule e docenti arrivano da soli.</p></div>
+<div class="feat"><span class="fi">✓</span><h3>Segna le presenze con un tocco</h3><p>Un ✓ o una ✕ per ogni lezione, dal telefono o dal computer, in qualsiasi momento.</p></div>
+<div class="feat"><span class="fi">📅</span><h3>Oggi, domani, settimana</h3><p>Vedi sempre cosa hai in programma, con orari, aula e docenti a colpo d'occhio.</p></div>
+<div class="feat"><span class="fi">📊</span><h3>La soglia sempre sott'occhio</h3><p>Un grafico ad anello mostra quante presenze ti mancano e quante assenze puoi ancora fare.</p></div>
+<div class="feat"><span class="fi">🧮</span><h3>"Posso saltare questa lezione?"</h3><p>Il simulatore risponde subito, prima che tu debba decidere.</p></div>
+<div class="feat"><span class="fi">🔥</span><h3>Serie e piccoli traguardi</h3><p>Una serie di presenze di fila e una festa quando raggiungi la soglia: motivazione in più.</p></div>
+<div class="feat"><span class="fi">🔄</span><h3>Si accorge dei cambi d'orario</h3><p>Se l'università sposta o cancella una lezione, InAula te lo segnala e propone di aggiornare.</p></div>
+<div class="feat"><span class="fi">📤</span><h3>Esporta quando vuoi</h3><p>Un PDF o un CSV con tutte le tue presenze, utile per un docente o la segreteria.</p></div>
+<div class="feat"><span class="fi">🔒</span><h3>I tuoi dati restano tuoi</h3><p>Solo tu vedi le tue presenze. Le scarichi o le cancelli quando vuoi, dal tuo account.</p></div>
+</section>
+
+<section id="authcard" class="authcard">
+  <h2 class="vt authct">Accedi o crea il tuo account</h2>
   <form class="loginbox" id="lf" novalidate>
     <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
     <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
@@ -309,9 +357,11 @@ header.hero{display:block}
     <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go" type="submit">Accedi</button><button class="btn" id="sw" type="button">Crea un account</button></div>
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
-  <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
-  <button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
-  <p class="credit"></p>
+</section>
+
+<p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
+<button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
+<p class="credit"></p>
 </main>
 <div id="themetip" role="status" hidden></div>
 <div id="toast" role="status" hidden></div>
@@ -1039,6 +1089,7 @@ document.addEventListener('click',e=>{
   else if(a==='upd'){if(b.dataset.s==='rev'&&updDiff)renderUpd();else updateNow()}
   else if(a==='upapply'){const sel=new Set([...dlg.querySelectorAll('input[data-u]:checked')].map(x=>+x.dataset.u));dlg.close();applyUpd(sel)}
   else if(a==='unlink'){S.lk=null;updDiff=null;S.courses.forEach(c=>{delete c.gk});save();render();amsg('Orario scollegato.',1)}
+  else if(a==='cta'){authMode(b.dataset.s);document.getElementById('authcard').scrollIntoView({behavior:'smooth',block:'start'})}
   else if(a==='guide')openGuide(b.dataset.s);
   else if(a==='legal')openLegal(b.dataset.s);
   else if(a==='lclose')$('lg').close();
