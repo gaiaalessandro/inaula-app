@@ -235,7 +235,7 @@ header.hero{display:block}
 .hero2{max-width:640px;margin:18px auto 0;text-align:center}
 .hero2 .logo{height:112px;display:block;margin:0 auto}
 .claim{font-size:clamp(1.6rem,4.4vw,2.5rem);font-weight:800;line-height:1.15;margin:16px 0 8px}
-.sub.big{font-size:1.05rem;max-width:52ch;margin:0 auto}
+.sub.big{font-size:1.15rem;max-width:34ch;margin:10px auto 0;line-height:1.4}
 .cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
 .phones{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
@@ -251,6 +251,10 @@ header.hero{display:block}
 .authct{text-align:center;margin:0 0 14px}
 .authcard .loginbox{max-width:none;margin-top:0}
 @media (max-width:480px){.phone-frame{width:132px}}
+.coffee{margin:26px auto 0;max-width:460px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,color-mix(in srgb,#E2BC7C 62%,var(--wa) 8%),color-mix(in srgb,#E2A96B 55%,var(--wa) 14%));border-radius:20px;padding:16px 18px;box-shadow:var(--sh);text-align:left}
+.coffee p{margin:0}
+.coffee .links{display:flex;gap:8px;flex-wrap:wrap}
+.coffee .links a{text-decoration:none;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -263,6 +267,7 @@ header.hero{display:block}
   <p class="streak" id="streak"></p>
   <p class="meta"><span class="syn">Connessione…</span></p>
 </header>
+<div class="coffee"><div><b>☕️ Ti piace InAula?</b><br><span class="meta">Offrimi un caffè per sostenere il progetto: facoltativo, arriva a me per intero.</span></div><div class="links"><a class="btn pri" href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener">PayPal</a><a class="btn" href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA" target="_blank" rel="noopener">Satispay</a></div></div>
 <div id="namecard"></div>
 <div id="warn"></div>
 <section class="today" id="today"></section>
@@ -319,12 +324,12 @@ header.hero{display:block}
 <section class="hero2">
   <img class="logo" src="logo.png" alt="InAula">
   <h1 class="claim">Le tue presenze, sotto controllo.</h1>
-  <p class="sub big">InAula tiene il conto delle lezioni per te: importi l'orario, segni chi c'era, e sai sempre quante ne puoi ancora saltare prima di perdere la frequenza.</p>
+  <p class="sub big">Non perdere il conto delle presenze: ci pensa InAula.</p>
   <div class="cta-row">
     <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account gratis</button>
     <button class="btn lg" type="button" data-act="cta" data-s="in">Ho già un account</button>
   </div>
-  <p class="meta">Gratuito, senza pubblicità. Creato da una studentessa di Medicina per i suoi compagni di corso.</p>
+  <p class="meta">Gratuito, senza pubblicità.</p>
 </section>
 
 <section class="phones">
@@ -343,6 +348,8 @@ header.hero{display:block}
 <div class="feat"><span class="fi">📤</span><h3>Esporta quando vuoi</h3><p>Un PDF o un CSV con tutte le tue presenze, utile per un docente o la segreteria.</p></div>
 <div class="feat"><span class="fi">🔒</span><h3>I tuoi dati restano tuoi</h3><p>Solo tu vedi le tue presenze. Le scarichi o le cancelli quando vuoi, dal tuo account.</p></div>
 </section>
+
+<div class="coffee"><div><b>☕️ Ti piace InAula?</b><br><span class="meta">Offrimi un caffè per sostenere il progetto: del tutto facoltativo, arriva a me per intero.</span></div><div class="links"><a class="btn pri" href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener">PayPal</a><a class="btn" href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA" target="_blank" rel="noopener">Satispay</a></div></div>
 
 <section id="authcard" class="authcard">
   <h2 class="vt authct">Accedi o crea il tuo account</h2>
