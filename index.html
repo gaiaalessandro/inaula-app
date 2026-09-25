@@ -178,7 +178,7 @@ dialog h4{margin:14px 0 4px;font-size:1rem}
 .dh::first-letter{text-transform:uppercase}
 .wk{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px}
 .wk .btn{padding:6px 16px}
-#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 20px));display:flex;justify-content:space-around;gap:4px;background:var(--sf);border-radius:24px;box-shadow:0 6px 24px rgba(11,43,74,.20);padding:6px;z-index:8}
+#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(520px,calc(100% - 20px));display:flex;justify-around:space-around;gap:4px;background:var(--sf);border-radius:24px;box-shadow:0 6px 24px rgba(11,43,74,.20);padding:6px;z-index:8}
 #nav button{flex:1;border:0;background:none;color:var(--mu);font:inherit;font-size:.72rem;padding:6px 2px;border-radius:18px;cursor:pointer;display:grid;gap:2px;justify-items:center}
 #nav button span{font-size:1.3rem;line-height:1}
 #nav button.on{background:color-mix(in srgb,#6DB3AB 24%,var(--sf));color:var(--ink);font-weight:700}
@@ -239,7 +239,7 @@ header.hero{display:block}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 12px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
 .phones{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
-.phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22)}
+.phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:99px;box-shadow:0 16px 34px rgba(11,43,74,.22)}
 .phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px}
 .phone-frame img{width:100%;height:auto;display:block;border-radius:21px}
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;max-width:920px;margin:40px auto 10px;text-align:left}
@@ -320,7 +320,7 @@ header.hero{display:block}
 
 .coffee-card-login {
   max-width: 420px;
-  margin: 22px auto 0 auto;
+  margin: 32px auto 0 auto;
   text-align: center;
 }
 .coffee-card-login .coffee-card-inner {
@@ -343,10 +343,8 @@ header.hero{display:block}
 <div id="namecard"></div>
 <div id="warn"></div>
 <section class="today" id="today"></section>
-<div id="startcard"></div>
-<div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
 
-<!-- BANNER CAFFÈ DASHBOARD -->
+<!-- BANNER CAFFÈ DASHBOARD (SUBITO SOTTO OGGI) -->
 <div class="coffee-card">
   <div class="coffee-card-inner">
     <span class="coffee-icon">☕</span>
@@ -364,6 +362,9 @@ header.hero{display:block}
     </a>
   </div>
 </div>
+
+<div id="startcard"></div>
+<div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
 </section>
 
 <section id="v-courses" hidden>
@@ -415,7 +416,7 @@ header.hero{display:block}
 <section class="hero2">
   <img class="logo" src="logo.png" alt="InAula">
   <h1 class="claim">Organizza le tue presenze in modo semplice e veloce.</h1>
-  <p class="sub big">InAula calcola per te le lezioni, la soglia minima di frequenza e le assenze ancora a tua disposizione. Importa il tuo orario universitario con un clic e mantieni sempre il controllo.</p>
+  <p class="sub big">Non perdere il conto delle presenze: ci pensa InAula</p>
   <div class="cta-row">
     <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account gratis</button>
     <button class="btn lg" type="button" data-act="cta" data-s="in">Ho già un account</button>
@@ -440,22 +441,7 @@ header.hero{display:block}
 <div class="feat"><span class="fi">🔒</span><h3>I tuoi dati restano tuoi</h3><p>Solo tu vedi le tue presenze. Le scarichi o le cancelli quando vuoi, dal tuo account.</p></div>
 </section>
 
-<section id="authcard" class="authcard">
-  <h2 class="vt authct">Accedi o crea il tuo account</h2>
-  <form class="loginbox" id="lf" novalidate>
-    <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
-    <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
-    <label id="nameRow" hidden>Come ti chiami?<input id="nm" autocomplete="given-name" maxlength="40" placeholder="Il tuo nome"></label>
-    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
-    <label class="ck"><input id="rem" type="checkbox" checked> Ricordami su questo dispositivo</label>
-    <label class="ck" id="tosRow" hidden style="align-items:flex-start"><input id="tos" type="checkbox"><span>Ho letto l'<button class="lnk" type="button" data-act="legal" data-s="p" style="padding:0">informativa privacy</button> e i <button class="lnk" type="button" data-act="legal" data-s="t" style="padding:0">termini</button>.</span></label>
-    <p id="amsg" class="meta" role="alert"></p>
-    <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go" type="submit">Accedi</button><button class="btn" id="sw" type="button">Crea un account</button></div>
-    <button class="lnk" id="fg" type="button">Password dimenticata?</button>
-  </form>
-</section>
-
-<!-- BANNER CAFFÈ LOGIN -->
+<!-- BANNER CAFFÈ LOGIN (SOTTO LE CARATTERISTICHE E SOPRA LE CREDENZIALI) -->
 <div class="coffee-card coffee-card-login">
   <div class="coffee-card-inner">
     <span class="coffee-icon">☕</span>
@@ -473,6 +459,21 @@ header.hero{display:block}
     </a>
   </div>
 </div>
+
+<section id="authcard" class="authcard">
+  <h2 class="vt authct">Accedi o crea il tuo account</h2>
+  <form class="loginbox" id="lf" novalidate>
+    <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
+    <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
+    <label id="nameRow" hidden>Come ti chiami?<input id="nm" autocomplete="given-name" maxlength="40" placeholder="Il tuo nome"></label>
+    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
+    <label class="ck"><input id="rem" type="checkbox" checked> Ricordami su questo dispositivo</label>
+    <label class="ck" id="tosRow" hidden style="align-items:flex-start"><input id="tos" type="checkbox"><span>Ho letto l'<button class="lnk" type="button" data-act="legal" data-s="p" style="padding:0">informativa privacy</button> e i <button class="lnk" type="button" data-act="legal" data-s="t" style="padding:0">termini</button>.</span></label>
+    <p id="amsg" class="meta" role="alert"></p>
+    <div class="row" style="justify-content:flex-start;margin-top:4px"><button class="btn pri" id="go" type="submit">Accedi</button><button class="btn" id="sw" type="button">Crea un account</button></div>
+    <button class="lnk" id="fg" type="button">Password dimenticata?</button>
+  </form>
+</section>
 
 <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 <button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
