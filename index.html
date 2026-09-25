@@ -21,14 +21,14 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gaiaalessandro.github.io/inaula-app/">
 <meta property="og:title" content="InAula – Organizza le tue presenze universitarie">
-<meta property="og:description" content="Non perdere il conto delle presenze: ci pensa InAula. Gratuito e senza pubblicità.">
+<meta property="og:description" content="Non perdere il conto delle presenze: ci pensa InAula.">
 <meta property="og:image" content="https://gaiaalessandro.github.io/inaula-app/og-image.png">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://gaiaalessandro.github.io/inaula-app/">
 <meta name="twitter:title" content="InAula – Organizza le tue presenze universitarie">
-<meta name="twitter:description" content="Non perdere il conto delle presenze: ci pensa InAula. Gratuito e senza pubblicità.">
+<meta name="twitter:description" content="Non perdere il conto delle presenze: ci pensa InAula.">
 <meta name="twitter:image" content="https://gaiaalessandro.github.io/inaula-app/og-image.png">
 
 <style>
@@ -40,7 +40,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 'Bricolage Grotesque',system-ui,sans-serif}
 main{max-width:1100px;margin:0 auto;padding:22px 16px 64px}
-header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-space-between}
 h1{font-size:clamp(1.7rem,4.5vw,2.4rem);margin:0;letter-spacing:-.02em;line-height:1.05}
 .brand{margin:0;line-height:0}
 .logo{height:76px;width:auto;max-width:100%;border-radius:14px;display:block}
@@ -256,10 +256,13 @@ header.hero{display:block}
 .sub.big{font-size:1.1rem;max-width:56ch;margin:0 auto;text-align:center;line-height:1.5}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 12px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
-.phones{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
-.phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22)}
-.phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px}
-.phone-frame img{width:100%;height:auto;display:block;border-radius:21px}
+
+/* LAYOUT TELEFONI PERFETTAMENTE CENTRATI */
+.phones{display:flex;gap:22px;justify-content:center;align-items:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
+.phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px;flex:none}
+.phone-frame img{width:100%;height:auto;display:block;border-radius:21px;object-fit:cover;object-position:center}
+
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;max-width:920px;margin:40px auto 10px;text-align:left}
 .feat{background:var(--sf);border-radius:18px;padding:16px 16px 15px;box-shadow:var(--sh)}
 .feat .fi{font-size:1.5rem;display:block;margin-bottom:6px}
@@ -268,7 +271,7 @@ header.hero{display:block}
 .authcard{max-width:420px;margin:42px auto 0;background:var(--sf);border-radius:24px;padding:26px 22px 22px;box-shadow:var(--sh)}
 .authct{text-align:center;margin:0 0 14px}
 .authcard .loginbox{max-width:none;margin-top:0}
-@media (max-width:480px){.phone-frame{width:132px}}
+@media (max-width:480px){.phone-frame{width:140px}}
 
 /* BANNER CAFFÈ */
 .coffee-card {
@@ -436,10 +439,9 @@ header.hero{display:block}
   <h1 class="claim">Organizza le tue presenze in modo semplice e veloce.</h1>
   <p class="sub big">Non perdere il conto delle presenze: ci pensa InAula</p>
   <div class="cta-row">
-    <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account gratis</button>
+    <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account</button>
     <button class="btn lg" type="button" data-act="cta" data-s="in">Ho già un account</button>
   </div>
-  <p class="meta">Gratuito e senza pubblicità.</p>
 </section>
 
 <section class="phones">
