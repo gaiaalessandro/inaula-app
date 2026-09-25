@@ -87,7 +87,7 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .st>li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700}
 .gimg{display:block;max-width:100%;height:auto;margin:10px 0 0;border:1px solid var(--ln);border-radius:10px}
 .sub{margin:8px 0;padding-left:22px}.sub li{margin:6px 0}
-.note{border-left:4px solid var(--wa);background:var(--bg);padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.92rem}
+.note{border-left:4px solid var(--wa);background:var(--bg);padding:99px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.92rem}
 .q{border-top:1px solid var(--ln)}.q>summary{cursor:pointer;padding:10px 0;font-weight:600;font-size:1rem;color:var(--ink)}.q p{margin:0 0 10px}
 .archv{margin-top:26px}
 .archv>summary{font-weight:600;color:var(--ink);font-size:1rem;padding:8px 0}
@@ -232,11 +232,11 @@ header.hero{display:block}
 .credit{margin:22px 0 0;text-align:center;font-size:.78rem;color:var(--mu);white-space:pre-line}
 #auth .credit{margin-bottom:56px}
 #auth{max-width:960px}
-.hero2{max-width:640px;margin:18px auto 0;text-align:center}
-.hero2 .logo{height:112px;display:block;margin:0 auto}
-.claim{font-size:clamp(1.6rem,4.4vw,2.5rem);font-weight:800;line-height:1.15;margin:16px 0 8px}
-.sub.big{font-size:1.15rem;max-width:34ch;margin:10px auto 0;line-height:1.4}
-.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 10px}
+.hero2{max-width:680px;margin:28px auto 0;text-align:center;display:flex;flex-direction:column;align-items:center}
+.hero2 .logo{height:120px;display:block;margin:0 auto}
+.claim{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;line-height:1.15;margin:18px 0 10px;text-align:center}
+.sub.big{font-size:1.1rem;max-width:56ch;margin:0 auto;text-align:center;line-height:1.5}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 12px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
 .phones{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
 .phone-frame{width:190px;border-radius:30px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22)}
@@ -251,10 +251,83 @@ header.hero{display:block}
 .authct{text-align:center;margin:0 0 14px}
 .authcard .loginbox{max-width:none;margin-top:0}
 @media (max-width:480px){.phone-frame{width:132px}}
-.coffee{margin:26px auto 0;max-width:460px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,color-mix(in srgb,#E2BC7C 62%,var(--wa) 8%),color-mix(in srgb,#E2A96B 55%,var(--wa) 14%));border-radius:20px;padding:16px 18px;box-shadow:var(--sh);text-align:left}
-.coffee p{margin:0}
-.coffee .links{display:flex;gap:8px;flex-wrap:wrap}
-.coffee .links a{text-decoration:none;color:var(--ink)}
+
+/* BANNER CAFFÈ */
+.coffee-card {
+  margin: 18px 0;
+  padding: 16px 18px;
+  background: color-mix(in srgb, var(--sf) 88%, #FAF5EF);
+  border: 1px solid color-mix(in srgb, var(--wa) 30%, var(--ln));
+  border-radius: 22px;
+  box-shadow: var(--sh);
+}
+.coffee-card-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.coffee-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.coffee-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0 0 2px 0;
+  color: var(--ink);
+}
+.coffee-desc {
+  font-size: 0.88rem;
+  color: var(--mu);
+  margin: 0;
+  line-height: 1.35;
+}
+.coffee-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-coffee {
+  flex: 1;
+  min-width: 130px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  border: none;
+  box-shadow: var(--btnsh);
+  cursor: pointer;
+}
+.btn-coffee:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.btn-paypal {
+  background-color: #0070BA;
+  color: #FFFFFF !important;
+}
+.btn-satispay {
+  background-color: #FF4B4B;
+  color: #FFFFFF !important;
+}
+
+.coffee-card-login {
+  max-width: 420px;
+  margin: 22px auto 0 auto;
+  text-align: center;
+}
+.coffee-card-login .coffee-card-inner {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -267,13 +340,32 @@ header.hero{display:block}
   <p class="streak" id="streak"></p>
   <p class="meta"><span class="syn">Connessione…</span></p>
 </header>
-<div class="coffee"><div><b>☕️ Ti piace InAula?</b><br><span class="meta">Offrimi un caffè per sostenere il progetto: facoltativo, arriva a me per intero.</span></div><div class="links"><a class="btn pri" href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener">PayPal</a><a class="btn" href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA" target="_blank" rel="noopener">Satispay</a></div></div>
 <div id="namecard"></div>
 <div id="warn"></div>
 <section class="today" id="today"></section>
 <div id="startcard"></div>
 <div class="fbcard"><div><b>💬 Cosa vorresti che InAula facesse per te?</b><br><span class="meta">Scrivi una funzione che ti sarebbe utile oppure segnala un problema: ti leggo davvero.</span></div><button class="btn pri" data-act="fb">Scrivi un messaggio</button></div>
+
+<!-- BANNER CAFFÈ DASHBOARD -->
+<div class="coffee-card">
+  <div class="coffee-card-inner">
+    <span class="coffee-icon">☕</span>
+    <div>
+      <div class="coffee-title">Ti piace InAula? Sostieni il progetto!</div>
+      <p class="coffee-desc">InAula è un progetto gratuito e privo di pubblicità. Se ti aiuta a gestire la tua frequenza, puoi offrirmi un caffè per sostenere il mio lavoro e i costi di gestione!</p>
+    </div>
+  </div>
+  <div class="coffee-buttons">
+    <a href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener" class="btn-coffee btn-paypal">
+      ☕ PayPal
+    </a>
+    <a href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA?" target="_blank" rel="noopener" class="btn-coffee btn-satispay">
+      ⚡ Satispay
+    </a>
+  </div>
+</div>
 </section>
+
 <section id="v-courses" hidden>
 <h2 class="vt">Insegnamenti</h2>
 <div class="bar2"><button class="btn pri" data-act="new">Nuovo insegnamento</button><button class="btn" data-act="imp">Importa calendario</button></div>
@@ -297,7 +389,6 @@ header.hero{display:block}
 <h3 class="dh">Impostazioni</h3>
 <div class="mcard">
   <label class="thr">Soglia minima di presenze <input id="thr" type="number" min="1" max="100" value="66"> %</label>
-
 </div>
 <div class="menu" style="margin-top:12px">
   <button class="mi" data-act="acct"><i>👤</i>Il mio account</button>
@@ -323,13 +414,13 @@ header.hero{display:block}
 <main id="auth">
 <section class="hero2">
   <img class="logo" src="logo.png" alt="InAula">
-  <h1 class="claim">Le tue presenze, sotto controllo.</h1>
-  <p class="sub big">Non perdere il conto delle presenze: ci pensa InAula.</p>
+  <h1 class="claim">Organizza le tue presenze in modo semplice e veloce.</h1>
+  <p class="sub big">InAula calcola per te le lezioni, la soglia minima di frequenza e le assenze ancora a tua disposizione. Importa il tuo orario universitario con un clic e mantieni sempre il controllo.</p>
   <div class="cta-row">
     <button class="btn pri lg" type="button" data-act="cta" data-s="up">Crea un account gratis</button>
     <button class="btn lg" type="button" data-act="cta" data-s="in">Ho già un account</button>
   </div>
-  <p class="meta">Gratuito, senza pubblicità.</p>
+  <p class="meta">Gratuito e senza pubblicità.</p>
 </section>
 
 <section class="phones">
@@ -349,8 +440,6 @@ header.hero{display:block}
 <div class="feat"><span class="fi">🔒</span><h3>I tuoi dati restano tuoi</h3><p>Solo tu vedi le tue presenze. Le scarichi o le cancelli quando vuoi, dal tuo account.</p></div>
 </section>
 
-<div class="coffee"><div><b>☕️ Ti piace InAula?</b><br><span class="meta">Offrimi un caffè per sostenere il progetto: del tutto facoltativo, arriva a me per intero.</span></div><div class="links"><a class="btn pri" href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener">PayPal</a><a class="btn" href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA" target="_blank" rel="noopener">Satispay</a></div></div>
-
 <section id="authcard" class="authcard">
   <h2 class="vt authct">Accedi o crea il tuo account</h2>
   <form class="loginbox" id="lf" novalidate>
@@ -365,6 +454,25 @@ header.hero{display:block}
     <button class="lnk" id="fg" type="button">Password dimenticata?</button>
   </form>
 </section>
+
+<!-- BANNER CAFFÈ LOGIN -->
+<div class="coffee-card coffee-card-login">
+  <div class="coffee-card-inner">
+    <span class="coffee-icon">☕</span>
+    <div>
+      <div class="coffee-title">Ti piace InAula?</div>
+      <p class="coffee-desc">InAula è una web app completamente gratuita. Se vuoi sostenere lo sviluppo e il tempo dedicato al progetto, puoi offrirmi un caffè!</p>
+    </div>
+  </div>
+  <div class="coffee-buttons">
+    <a href="https://paypal.me/GaiaAlessandro" target="_blank" rel="noopener" class="btn-coffee btn-paypal">
+      ☕ PayPal
+    </a>
+    <a href="https://web.satispay.com/download/qrcode/S6Y-CON--C19DB7F9-E3EB-4F30-AA04-2DF764540FEA?" target="_blank" rel="noopener" class="btn-coffee btn-satispay">
+      ⚡ Satispay
+    </a>
+  </div>
+</div>
 
 <p class="foot"><button class="lnk" data-act="legal" data-s="p">Privacy</button> · <button class="lnk" data-act="legal" data-s="t">Termini</button> · <button class="lnk" data-act="legal" data-s="c">Contatti</button></p>
 <button class="themeb" data-act="theme" aria-label="Cambia tema (automatico, chiaro, scuro)">🌗</button>
@@ -442,7 +550,7 @@ header.hero{display:block}
 <li>Apri il <b>Menu</b> (in basso a destra) e premi <b>Importa calendario</b>.<img class="gimg" src="guida-5.png" width="780" height="615" alt="Menu di InAula con il pulsante Importa calendario evidenziato" loading="lazy"></li>
 <li>Nella finestra che si apre segui i numeri:<img class="gimg" src="guida-6.png" width="780" height="1566" alt="Finestra Importa calendario con quattro punti numerati" loading="lazy">
 <ol class="sub"><li><b>Incolla il link</b> copiato dall'università: si legge da solo. (Se non parte, premi <b>Leggi il link</b>.)</li>
-<li>Scegli come contare la frequenza: <b>per insegnamento intero</b> (la soglia vale sul totale dei moduli) oppure <b>per singoli moduli</b> (ogni modulo ha la sua soglia).</li>
+<li>Scegli come contare la frequenza: <b>per insegnamento intero</b> (la soglia vale sul totale dei moduli) oppure <b>per singoli moduli</b> (ogni modulo è un insegnamento a sé, con la propria soglia).</li>
 <li>Scegli se contare in <b>numero di lezioni</b> o in <b>ore</b>.</li>
 <li>Lascia "Crea nuovo insegnamento" su tutte le materie e premi <b>Importa</b>.</li></ol></li>
 <li>Compaiono le schede degli insegnamenti. Con <b>Modifica</b> puoi aggiungere i CFU.</li>
@@ -529,12 +637,9 @@ header.hero{display:block}
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,signOut,EmailAuthProvider,reauthenticateWithCredential,updatePassword,verifyBeforeUpdateEmail,deleteUser,setPersistence,browserLocalPersistence,browserSessionPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,onSnapshot,setDoc,deleteDoc,addDoc,collection,serverTimestamp,terminate,clearIndexedDbPersistence}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-// ⬇⬇ INCOLLA QUI LA CONFIGURAZIONE FIREBASE (passo 5 della guida) ⬇⬇
+
 const firebaseConfig={apiKey:"AIzaSyDJxzbPHlRxm4reFOZfM2FDnc-p0LrzXP0",authDomain:"inaula-app.firebaseapp.com",projectId:"inaula-app",appId:"1:95884169990:web:951a4f02ec6be636c90487"};
-// ⬆⬆ FINE ⬆⬆
-// Indirizzo del servizio di appoggio per leggere il link dell'orario (facoltativo, vedi guida di configurazione). Lascia vuoto se non serve.
 const IMPORT_PROXY="";
-// Email di contatto per privacy e assistenza (compare nelle pagine legali). Scrivila tra le virgolette.
 const CONTACT_EMAIL="inaulaweb@gmail.com";
 const APP_VER="1.0";
 const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
@@ -568,7 +673,7 @@ const p2=n=>String(n).padStart(2,'0');
 const ymd=D=>`${D.getFullYear()}-${p2(D.getMonth()+1)}-${p2(D.getDate())}`;
 const hm=D=>p2(D.getHours())+':'+p2(D.getMinutes());
 const fmtD=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
-const sx=l=>l.x!==undefined?l.x:(l.p?1:0);   // 1 presente, 2 assente, 0 da segnare
+const sx=l=>l.x!==undefined?l.x:(l.p?1:0);
 const ended=(l,now)=>new Date(l.d+'T'+(l.e||'23:59'))<now;
 
 const durMin=(l,c)=>{if(l.s&&l.e){const f=x=>{const[a,b]=x.split(':');return+a*60+ +b},d=f(l.e)-f(l.s);if(d>0)return d}return Math.round((c.hd||2)*60)};
@@ -1148,13 +1253,11 @@ document.addEventListener('toggle',e=>{
 const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
 let mode='in';
 function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('nameRow').hidden=m!=='up';$('tosRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
-$('sw').onclick=()=>authMode(mode==='up'?'in':'up');
-$('lf').onsubmit=async e=>{
+$('sw').onclick=()=>authMode(mode==='up'?'in':'up');$('lf').onsubmit=async e=>{
   e.preventDefault();
   const em=$('em').value.trim(),pw=$('pw').value,msg=$('amsg');
   if(!em||pw.length<6){msg.textContent='Inserisci email e una password di almeno 6 caratteri.';return}
-  if(mode==='up'){if($('nm').value.trim().length<2){msg.textContent='Scrivi il tuo nome.';$('nm').focus();return}if(!$('tos').checked){msg.textContent='Per registrarti conferma di aver letto informativa privacy e termini.';return}}
-  $('go').disabled=true;msg.textContent='';
+  if(mode==='up'){if($('nm').value.trim().length<2){msg.textContent='Scrivi il tuo nome.';$('nm').focus();return}if(!$('tos').checked){msg.textContent='Per registrarti conferma di aver letto informativa privacy e termini.';return}}$('go').disabled=true;msg.textContent='';
   try{
     try{await setPersistence(auth,$('rem').checked?browserLocalPersistence:browserSessionPersistence)}catch(_){}
     if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
@@ -1168,10 +1271,19 @@ $('lf').onsubmit=async e=>{
   $('go').disabled=false;
 };
 $('fg').onclick=async()=>{
-  const em=$('em').value.trim(),msg=$('amsg');
-  if(!em){msg.textContent='Scrivi la tua email qui sopra, poi premi di nuovo.';return}
-  try{await sendPasswordResetEmail(auth,em);msg.textContent='Email inviata: controlla la posta (anche lo spam).'}
-  catch(e){msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email.'}
+  let em=$('em').value.trim();
+  if(!em){
+    em=prompt("Inserisci la tua email per ricevere il link di ripristino della password:");
+    if(!em) return;
+    em=em.trim();
+  }
+  const msg=$('amsg');
+  try{
+    await sendPasswordResetEmail(auth,em);
+    msg.textContent='Email inviata a '+em+': controlla la posta (anche la cartella Spam).';
+  }catch(e){
+    msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email. Verifica l\'indirizzo e riprova.';
+  }
 };
 $('out').onclick=async()=>{
   try{clearTimeout(timer);if(dirty)await Promise.race([flush(),new Promise(r=>setTimeout(r,3000))])}catch(_){}
