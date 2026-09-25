@@ -1168,10 +1168,19 @@ $('lf').onsubmit=async e=>{
   $('go').disabled=false;
 };
 $('fg').onclick=async()=>{
-  const em=$('em').value.trim(),msg=$('amsg');
-  if(!em){msg.textContent='Scrivi la tua email qui sopra, poi premi di nuovo.';return}
-  try{await sendPasswordResetEmail(auth,em);msg.textContent='Email inviata: controlla la posta (anche lo spam).'}
-  catch(e){msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email.'}
+  let em=$('em').value.trim();
+  if(!em){
+    em=prompt("Inserisci la tua email per ricevere il link di ripristino della password:");
+    if(!em) return;
+    em=em.trim();
+  }
+  const msg=$('amsg');
+  try{
+    await sendPasswordResetEmail(auth,em);
+    msg.textContent='Email inviata a '+em+': controlla la posta (anche la cartella Spam).';
+  }catch(e){
+    msg.textContent=ERR[e.code]||'Non riesco a inviare l\'email. Verifica l\'indirizzo e riprova.';
+  }
 };
 $('out').onclick=async()=>{
   try{clearTimeout(timer);if(dirty)await Promise.race([flush(),new Promise(r=>setTimeout(r,3000))])}catch(_){}
