@@ -156,7 +156,7 @@ header{background:var(--hg);border-radius:26px;padding:16px 18px 18px;box-shadow
 .sw span{display:block;width:34px;height:34px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--ln);cursor:pointer}
 .sw input:checked+span{border-color:var(--sf);box-shadow:0 0 0 3px var(--ink)}
 .sw input:focus-visible+span{outline:2px solid var(--ok);outline-offset:3px}
-.mk{display:flex;gap:6px;flex:none}
+.mk{display:flex;gap:6px;flex-none}
 .pb,.ab{width:34px;height:34px;border-radius:50%;border:2px solid;background:none;cursor:pointer;padding:0;font-weight:700;line-height:1;display:grid;place-items:center;font-size:.95rem}
 .pb{border-color:color-mix(in srgb,var(--cc,var(--mu)) var(--dotpct),var(--dotmix));color:color-mix(in srgb,var(--cc,var(--mu)) var(--dotpct),var(--dotmix))}
 .pb:not(.on){opacity:.6}
@@ -257,11 +257,11 @@ header.hero{display:block}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 12px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
 
-/* TELEFONI RENDERIZZATI ALLA STESSA ALTEZZA E LARGHEZZA */
+/* LAYOUT TELEFONI RENDERIZZATI AD ALTEZZA E PROPORZIONE RIGIDA */
 .phones{display:flex;gap:22px;justify-content:center;align-items:center;flex-wrap:wrap;max-width:640px;margin:38px auto}
-.phone-frame{width:200px;height:420px;border-radius:32px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22);display:flex;flex-direction:column;align-items:center;overflow:hidden;flex:none}
+.phone-frame{width:200px;height:400px;border-radius:32px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22);display:flex;flex-direction:column;align-items:center;overflow:hidden;flex:none}
 .phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px;flex:none}
-.phone-frame img{width:100%;height:100%;display:block;border-radius:23px;object-fit:cover;object-position:top}
+.phone-frame img{width:100%;height:100%;max-height:100%;display:block;border-radius:23px;object-fit:cover;object-position:top;aspect-ratio:9/19.5}
 
 .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;max-width:920px;margin:40px auto 10px;text-align:left}
 .feat{background:var(--sf);border-radius:18px;padding:16px 16px 15px;box-shadow:var(--sh)}
@@ -271,7 +271,7 @@ header.hero{display:block}
 .authcard{max-width:420px;margin:42px auto 0;background:var(--sf);border-radius:24px;padding:26px 22px 22px;box-shadow:var(--sh)}
 .authct{text-align:center;margin:0 0 14px}
 .authcard .loginbox{max-width:none;margin-top:0}
-@media (max-width:480px){.phone-frame{width:145px;height:310px;border-radius:24px;padding:6px}.phone-frame img{border-radius:18px}}
+@media (max-width:480px){.phone-frame{width:140px;height:280px;border-radius:22px;padding:6px}.phone-frame img{border-radius:16px}}
 
 /* BANNER CAFFÈ */
 .coffee-card {
