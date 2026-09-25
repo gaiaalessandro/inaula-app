@@ -486,7 +486,6 @@ header.hero{display:block}
     <label>Email<input id="em" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email"></label>
     <label>Password<input id="pw" name="password" type="password" autocomplete="current-password"></label>
     <label id="nameRow" hidden>Come ti chiami?<input id="nm" autocomplete="given-name" maxlength="40" placeholder="Il tuo nome"></label>
-    <label id="codeRow" hidden>Codice di invito<input id="cd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
     <label class="ck"><input id="rem" type="checkbox" checked> Ricordami su questo dispositivo</label>
     <label class="ck" id="tosRow" hidden style="align-items:flex-start"><input id="tos" type="checkbox"><span>Ho letto l'<button class="lnk" type="button" data-act="legal" data-s="p" style="padding:0">informativa privacy</button> e i <button class="lnk" type="button" data-act="legal" data-s="t" style="padding:0">termini</button>.</span></label>
     <p id="amsg" class="meta" role="alert"></p>
@@ -531,7 +530,7 @@ header.hero{display:block}
 <ul class="sub"><li><b>Cos'è InAula.</b> Uno strumento personale e gratuito per tenere traccia delle proprie presenze alle lezioni. Non è un servizio ufficiale dell'università e non ha alcun legame con l'Università di Torino o con Cineca: i loro nomi sono usati solo per indicare da dove si importa l'orario.</li>
 <li><b>Non sostituisce il registro ufficiale.</b> Fanno fede solo i registri delle presenze dell'università. Il conteggio di InAula è indicativo e dipende da come lo imposti (percentuale, arrotondamento, lezioni o ore, insegnamento o moduli): controlla sempre le regole del tuo corso di laurea.</li>
 <li><b>Nessuna garanzia.</b> Il servizio è offerto "così com'è": può contenere errori, essere interrotto o cambiare. Nei limiti consentiti dalla legge il gestore non risponde delle conseguenze di decisioni prese in base ai dati mostrati (per esempio assenze o mancate firme).</li>
-<li><b>Account.</b> L'account è personale. Non diffondere il codice di invito, non tentare di accedere ai dati di altri utenti, non usare il servizio per attività illecite né per sovraccaricarlo. In caso di abuso l'account può essere chiuso.</li>
+<li><b>Account.</b> L'account è personale. Non usare il servizio per attività illecite né per sovraccaricarlo. In caso di abuso l'account può essere chiuso.</li>
 <li><b>Contenuti.</b> Sei responsabile di ciò che scrivi. Nelle note non inserire dati sulla salute, dati di altre persone o contenuti illeciti.</li>
 <li><b>Modifiche e chiusura.</b> Le funzioni possono cambiare. Se il servizio chiude, ne sarai avvisato e potrai scaricare i tuoi dati dal menu Account.</li>
 <li><b>Legge applicabile.</b> Legge italiana.</li></ul>
@@ -587,7 +586,7 @@ header.hero{display:block}
 <ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li><li><b>Oggi · Domani · Settimana</b>: scegli il periodo da guardare.</li></ol>
 <ul class="sub"><li>La schermata <b>Oggi</b> (in basso a sinistra) mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo. Con <b>Domani</b> e <b>Settimana</b> guardi i giorni successivi.</li>
 <li>Vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
-<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
+<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiore come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
 <li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
 <li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
 </div></details>
@@ -1271,9 +1270,9 @@ document.addEventListener('toggle',e=>{
   const d=e.target;if(d.matches&&d.matches('details.sim')){d.open?openSet.add('s'+d.dataset.c):openSet.delete('s'+d.dataset.c);return}if(d.matches&&d.matches('details.archv')){archOpen=d.open;return}if(!d.matches||!d.matches('details[data-c]'))return;
   d.open?openSet.add(d.dataset.c):openSet.delete(d.dataset.c);
 },true);
-const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','bad-code':'Il database ha rifiutato la registrazione: il codice è sbagliato oppure le regole o il documento config/invite non sono impostati bene.','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
+const ERR={'auth/invalid-credential':'Email o password non corrette.','auth/wrong-password':'Email o password non corrette.','auth/user-not-found':'Email o password non corrette.','auth/email-already-in-use':'Esiste già un account con questa email.','auth/invalid-email':'Email non valida.','auth/weak-password':'Password troppo corta (minimo 6 caratteri).','auth/too-many-requests':'Troppi tentativi: riprova tra qualche minuto.','auth/network-request-failed':'Nessuna connessione.'};
 let mode='in';
-function authMode(m){mode=m;$('codeRow').hidden=m!=='up';$('nameRow').hidden=m!=='up';$('tosRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
+function authMode(m){mode=m;$('nameRow').hidden=m!=='up';$('tosRow').hidden=m!=='up';$('go').textContent=m==='up'?'Crea account':'Accedi';$('sw').textContent=m==='up'?'Ho già un account':'Crea un account';$('pw').autocomplete=m==='up'?'new-password':'current-password';$('amsg').textContent=''}
 $('sw').onclick=()=>authMode(mode==='up'?'in':'up');$('lf').onsubmit=async e=>{
   e.preventDefault();
   const em=$('em').value.trim(),pw=$('pw').value,msg=$('amsg');
@@ -1284,8 +1283,8 @@ $('sw').onclick=()=>authMode(mode==='up'?'in':'up');$('lf').onsubmit=async e=>{
     if(mode==='in')await signInWithEmailAndPassword(auth,em,pw);
     else{
       const cr=await createUserWithEmailAndPassword(auth,em,pw),nm2=$('nm').value.trim().slice(0,40);
-      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],name:nm2,code:$('cd').value.trim()})}
-      catch(e){try{await cr.user.delete()}catch(_){}throw{code:e.code==='permission-denied'?'bad-code':'fs/'+(e.code||'errore')}}
+      try{await setDoc(doc(fs,'users',cr.user.uid),{thr:66,courses:[],name:nm2})}
+      catch(e){try{await cr.user.delete()}catch(_){}throw{code:'fs/'+(e.code||'errore')}}
       S={thr:66,courses:[],name:nm2};loaded=true;render();
     }
   }catch(e){msg.textContent=ERR[e.code]||('Errore: '+(e.code||e.message||'sconosciuto'))}
