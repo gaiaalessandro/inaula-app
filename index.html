@@ -110,7 +110,7 @@ details summary{cursor:pointer;color:var(--mu);font-size:.9rem;padding:6px 0}
 .st>li::before{content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700}
 .gimg{display:block;max-width:100%;height:auto;margin:10px 0 0;border:1px solid var(--ln);border-radius:10px}
 .sub{margin:8px 0;padding-left:22px}.sub li{margin:6px 0}
-.note{border-left:4px solid var(--wa);background:var(--bg);padding:99px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.92rem}
+.note{border-left:4px solid var(--wa);background:var(--bg);padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:.92rem}
 .q{border-top:1px solid var(--ln)}.q>summary{cursor:pointer;padding:10px 0;font-weight:600;font-size:1rem;color:var(--ink)}.q p{margin:0 0 10px}
 .archv{margin-top:26px}
 .archv>summary{font-weight:600;color:var(--ink);font-size:1rem;padding:8px 0}
@@ -1085,13 +1085,44 @@ function feedbackDlg(t){
 async function sendFb(){
   const txt=$('fx').value.trim(),m=$('fm'),btn=document.querySelector('[data-act="fsend"]');
   if(txt.length<5){m.hidden=false;m.textContent='Scrivi almeno qualche parola.';return}
-  const u=auth.currentUser;if(!u)return;
-  const d={type:document.querySelector('input[name=ft]:checked').value,text:txt,uid:u.uid,ver:APP_VER,ua:navigator.userAgent.slice(0,140),createdAt:serverTimestamp()};
-  if($('fe').checked){d.email=u.email;d.name=(S.name||'').slice(0,40)}
+  
+  const TELEGRAM_TOKEN = "8502065842:AAGp_A_L4oy_zPjk7rOxBh9VWlPj2u7PDUw";
+  const CHAT_ID = "1392948576";
+  const type = document.querySelector('input[name=ft]:checked').value;
+  
+  let userLabel = "Anonimo";
+  if($('fe').checked && auth.currentUser){
+    userLabel = `${S.name || 'Utente'} (${auth.currentUser.email})`;
+  }
+
+  const messageText = `📩 *NUOVA SEGNALAZIONE INAULA*\n\n` +
+                      `📌 *Tipo:* ${type}\n` +
+                      `👤 *Utente:* ${userLabel}\n` +
+                      `💬 *Messaggio:* ${txt}\n\n` +
+                      `🕒 *Data:* ${new Date().toLocaleString('it-IT')}`;
+
   btn.disabled=true;btn.textContent='Invio…';m.hidden=true;
-  const slow=setTimeout(()=>{m.hidden=false;m.style.borderLeftColor='var(--mu)';m.textContent='Se non hai rete, il messaggio partirà appena torni online.'},6000);
-  try{await addDoc(collection(fs,'feedback'),d);clearTimeout(slow);dlg.innerHTML='<h3>Grazie!</h3><p>Il tuo messaggio è stato inviato.</p><div class="row"><button class="btn pri" data-act="cancel">Chiudi</button></div>'}
-  catch(e){clearTimeout(slow);btn.disabled=false;btn.textContent='Invia';m.hidden=false;m.style.borderLeftColor='var(--no)';m.textContent=e.code==='permission-denied'?'Non riesco a inviare il messaggio in questo momento. Riprova più tardi.':'Invio non riuscito: '+(e.code||'errore')}
+  
+  try{
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: messageText,
+        parse_mode: 'Markdown'
+      })
+    });
+
+    if(res.ok){
+      dlg.innerHTML='<h3>Grazie!</h3><p>Il tuo messaggio è stato inviato direttamente su Telegram.</p><div class="row"><button class="btn pri" data-act="cancel">Chiudi</button></div>';
+    }else{
+      throw new Error('Telegram API error');
+    }
+  }catch(e){
+    btn.disabled=false;btn.textContent='Invia';m.hidden=false;m.style.borderLeftColor='var(--no)';
+    m.textContent='Invio non riuscito. Controlla la tua connessione e riprova.';
+  }
 }
 function diffCal(text){
   const{ev}=parseICS(text),by=S.lk?S.lk.by:true,g={};
