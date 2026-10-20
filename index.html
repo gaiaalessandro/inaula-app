@@ -516,8 +516,8 @@ header.hero{display:block}
 <p class="meta">Ultimo aggiornamento: 25 settembre 2026</p>
 <p><b>Titolare del trattamento.</b> Gaia Alessandro. Contatto: <span class="ce"></span>. InAula è un progetto personale, gratuito e senza scopo di lucro, non affiliato all'Università di Torino né a Cineca.</p>
 <p><b>Quali dati tratta.</b></p>
-<ul class="sub"><li>Email e nome che inserisci alla registrazione. La password che scegli viene salvata in forma cifrata tramite Firebase Authentication (Google): il gestore di InAula non la conoce né può leggerla in chiaro.</li>
-<li>I messaggi che ci invii dal modulo Suggerimenti (con nome ed email solo se scegli di ricevere una risposta).</li>
+<ul class="sub"><li>Email e nome che inserisci alla registrazione. La password che scegli viene salvata in forma cifrata tramite Firebase Authentication (Google): il gestore di InAula non la conosce né può leggerla in chiaro.</li>
+<li>I messaggi che ci invii dal modulo Suggerimenti (con il tuo nome e la tua email di registrazione).</li>
 <li>Il link del tuo orario, solo se scegli di ricordarlo per aggiornare l'orario (puoi scollegarlo dal menu Account).</li>
 <li>I dati che inserisci o importi: insegnamenti, CFU, lezioni con date e orari, aule e docenti indicati nel calendario, presenze e assenze, note, impostazioni (soglia, colori).</li>
 <li>Dati tecnici di connessione (per esempio l'indirizzo IP) registrati dai fornitori del servizio per farlo funzionare e proteggerlo.</li></ul>
@@ -526,7 +526,7 @@ header.hero{display:block}
 <p><b>Cosa non facciamo.</b> Nessuna pubblicità, nessuna profilazione, nessuna vendita o cessione dei dati a terzi, nessuno strumento di statistica sugli utenti.</p>
 <p><b>Chi tratta i dati per conto del titolare.</b> Google (Firebase Authentication e Cloud Firestore) per l'accesso e l'archiviazione; GitHub (GitHub Pages) per la pubblicazione del sito. Il gestore accede ai dati dalla console del progetto solo per manutenzione, sicurezza o per rispondere a una tua richiesta.</p>
 <p><b>Dove sono i dati.</b> Sui server di Google situati negli Stati Uniti. Il trasferimento avviene con le garanzie previste dal GDPR offerte dal fornitore (per esempio le clausole contrattuali standard).</p>
-<p><b>Per quanto tempo.</b> Finché l'account existe. Con "Elimina il mio account" cancelli account e dati; copie tecniche di sicurezza presso il fornitore possono restare per un breve periodo. Se il servizio dovesse chiudere ti verrà dato un avviso e potrai scaricare i tuoi dati.</p>
+<p><b>Per quanto tempo.</b> Finché l'account esiste. Con "Elimina il mio account" cancelli account e dati; copie tecniche di sicurezza presso il fornitore possono restare per un breve periodo. Se il servizio dovesse chiudere ti verrà dato un avviso e potrai scaricare i tuoi dati.</p>
 <p><b>I tuoi diritti.</b> Accesso, rettifica, cancellazione, limitazione, portabilità e opposizione. Molti li eserciti da solo dal menu <b>Account</b> (modifica il nome, scarica i tuoi dati, elimina l'account); per gli altri scrivi a <span class="ce"></span>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>
 <p><b>Cookie e tecnologie simili.</b> InAula usa solo strumenti tecnici necessari: la memoria del browser per mantenere l'accesso (se scegli "Ricordami") una copia locale dei tuoi dati per usare il sito anche senza rete e la tua preferenza di aspetto (chiaro o scuro). Nessun cookie di profilazione o di statistica. Il carattere del sito è ospitato dal sito stesso, non viene caricato da servizi esterni.</p>
 <p><b>Chi può usarlo.</b> Il servizio è destinato a studenti maggiorenni.</p>
@@ -592,7 +592,7 @@ header.hero{display:block}
 <ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li><li><b>Oggi · Domani · Settimana</b>: scegli il periodo da guardare.</li></ol>
 <ul class="sub"><li>La schermata <b>Oggi</b> (in basso a sinistra) mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo. Con <b>Domani</b> e <b>Settimana</b> guardi i giorni successivi.</li>
 <li>Vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
-<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiore come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
+<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
 <li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
 <li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
 </div></details>
@@ -1006,7 +1006,7 @@ function showMap(text,by){
   ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m})});
   const names=Object.keys(g).sort();pending={names,g};
   if(!names.length){imp.innerHTML='<p class="meta">Nessun evento trovato: controlla che il file sia un calendario .ics.</p>';return}
-  imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<p class="meta" style="margin:10px 0 2px"><b>Come conti la frequenza?</b></p><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="c"${by?' checked':''}> Per insegnamento intero: le lezioni di tutti i moduli si sommano e la soglia vale sul totale</label><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="m"${by?'':' checked'}> Per singoli moduli: ogni modulo è un insegnamento a sé, con la propria soglia</label>`:'')+`<label>Conta le presenze in<select id="iu"><option value="l"${iu==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${iu==='h'?' selected':''}>Ore di lezione</option></select></label><p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
+  imp.innerHTML=(ev.some(x=>x.n.includes(' - '))?`<p class="meta" style="margin:10px 0 2px"><b>Come conti la frequenza?</b></p><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="c"${by?' checked':''}> Per insegnamento intero: le lezioni di tutti i moduli si sommano e la soglia vale sul totale</label><label class="ck" style="align-items:flex-start"><input type="radio" name="gm" value="m"${by?'':' checked'}> Per singoli moduli: ogni modulo è un insegnamento a sé, con la propria soglia</label>`:'')+`<label>Conta le presenze in<select id="iu"><option value="l"${iu==='h'?'':' selected'}>Numero di lezioni</option><option value="h"${iu==='h'?' selected':''}>Ore di lezioni</option></select></label><p class="meta">${ev.length} eventi in ${names.length} materie${rr?`. Attenzione: ${rr} eventi ricorrenti non sono stati espansi`:''}. Scegli dove metterli:</p>`+
   names.map((n,i)=>{const low=n.toLowerCase(),m=S.courses.find(c=>!c.arch&&(low.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(low)));
     return`<div class="map"><div><b>${esc(n)}</b> <span class="meta">${g[n].length} lezioni</span></div><select data-i="${i}" aria-label="Destinazione"><option value="new">Crea nuovo insegnamento</option>${S.courses.filter(c=>!c.arch).map(c=>`<option value="${c.id}"${m&&m.id===c.id?' selected':''}>${esc(c.name)}</option>`).join('')}<option value="skip">Ignora</option></select></div>`}).join('')+
   (srcLink?`<label class="ck" style="align-items:flex-start"><input type="checkbox" id="rl"${rlOn?' checked':''}> <span>Ricorda il link, per poter aggiornare l'orario quando l'università lo cambia.</span></label>`:'')+`<div id="archbox"></div><div class="row"><button class="btn pri" data-act="doimp">Importa</button></div>`;
@@ -1076,8 +1076,7 @@ function feedbackDlg(t){
 <div class="rd"><label class="ck"><input type="radio" name="ft" value="suggerimento"${t==='problema'?'':' checked'}> Suggerimento</label><label class="ck"><input type="radio" name="ft" value="problema"${t==='problema'?' checked':''}> Segnala un problema</label></div>
 <label>Messaggio<textarea id="fx" rows="6" maxlength="1000" placeholder="Scrivi qui…"></textarea></label>
 <div class="meta" id="fc">0 / 1000</div>
-<label class="ck" style="align-items:flex-start"><input type="checkbox" id="fe"> <span>Voglio una risposta: includi il mio nome e la mia email.</span></label>
-<p class="meta">Non scrivere dati sulla salute o su altre persone. Il messaggio arriva solo a chi gestisce InAula.${CONTACT_EMAIL?` Puoi anche scrivere a <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`:''}</p>
+<p class="meta">Non scrivere dati sulla salute o su altre persone. Il messaggio arriva direttamente a chi gestisce InAula.${CONTACT_EMAIL?` Puoi anche scrivere a <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`:''}</p>
 <div id="fm" class="note" hidden role="alert"></div>
 <div class="row"><button class="btn" data-act="cancel">Annulla</button><button class="btn pri" data-act="fsend">Invia</button></div>`;
   dlg.showModal();
@@ -1086,36 +1085,59 @@ async function sendFb(){
   const txt=$('fx').value.trim(),m=$('fm'),btn=document.querySelector('[data-act="fsend"]');
   if(txt.length<5){m.hidden=false;m.textContent='Scrivi almeno qualche parola.';return}
   
+  const user = auth.currentUser;
+  if(!user){
+    m.hidden=false;
+    m.textContent='Devi essere autenticato per inviare un messaggio di supporto.';
+    return;
+  }
+
   const TELEGRAM_TOKEN = "8502065842:AAGp_A_L4oy_zPjk7rOxBh9VWlPj2u7PDUw";
   const CHAT_ID = "1392948576";
   const type = document.querySelector('input[name=ft]:checked').value;
-  
-  let userLabel = "Anonimo";
-  if($('fe').checked && auth.currentUser){
-    userLabel = `${S.name || 'Utente'} (${auth.currentUser.email})`;
-  }
-
-  const messageText = `📩 *NUOVA SEGNALAZIONE INAULA*\n\n` +
-                      `📌 *Tipo:* ${type}\n` +
-                      `👤 *Utente:* ${userLabel}\n` +
-                      `💬 *Messaggio:* ${txt}\n\n` +
-                      `🕒 *Data:* ${new Date().toLocaleString('it-IT')}`;
 
   btn.disabled=true;btn.textContent='Invio…';m.hidden=true;
-  
+
+  // 1. Salvataggio su Firestore (strutturato secondo le Security Rules)
+  try {
+    const feedbackDoc = {
+      type: type,
+      text: txt,
+      uid: user.uid,
+      createdAt: serverTimestamp(),
+      email: user.email || '',
+      ver: APP_VER
+    };
+
+    if (S.name && S.name.trim().length > 0) {
+      feedbackDoc.name = S.name.trim().slice(0, 40);
+    }
+
+    await addDoc(collection(fs, 'feedback'), feedbackDoc);
+  } catch (error) {
+    console.error("Errore durante il salvataggio su Firestore:", error);
+  }
+
+  // 2. Invio notifica Telegram
+  const telegramMessage = `💬 *Nuovo Feedback InAula*\n\n` +
+                          `📌 *Tipo:* ${type}\n` +
+                          `👤 *Nome:* ${S.name || 'Non impostato'}\n` +
+                          `📧 *Email:* ${user.email || 'Non disponibile'}\n\n` +
+                          `📝 *Messaggio:*\n${txt}`;
+
   try{
     const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: CHAT_ID,
-        text: messageText,
+        text: telegramMessage,
         parse_mode: 'Markdown'
       })
     });
 
     if(res.ok){
-      dlg.innerHTML='<h3>Grazie!</h3><p>Il tuo messaggio è stato inviato direttamente su Telegram.</p><div class="row"><button class="btn pri" data-act="cancel">Chiudi</button></div>';
+      dlg.innerHTML='<h3>Grazie!</h3><p>Il tuo messaggio è stato inviato correttamente.</p><div class="row"><button class="btn pri" data-act="cancel">Chiudi</button></div>';
     }else{
       throw new Error('Telegram API error');
     }
