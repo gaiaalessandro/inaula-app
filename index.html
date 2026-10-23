@@ -12,24 +12,20 @@
 <meta name="apple-mobile-web-app-title" content="InAula">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<!-- Titolo e Descrizione per Google (SEO) -->
 <title>InAula – Gestione e Calcolo Presenze Universitarie</title>
 <meta name="description" content="InAula è la web app gratuita per studenti universitari per tracciare le presenze, importare i calendari lezioni e calcolare le soglie d'obbligo di frequenza.">
 <meta name="keywords" content="inaula, presenze università, calcolo presenze, frequenza obbligatoria, orario lezioni, università">
 <meta name="author" content="InAula">
 <meta name="robots" content="index, follow">
 
-<!-- Canonical URL (Informa Google del dominio principale) -->
 <link rel="canonical" href="https://inaula-app.com/">
 
-<!-- Open Graph / WhatsApp, Telegram, Facebook, LinkedIn -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://inaula-app.com/">
 <meta property="og:title" content="InAula – Gestione e Calcolo Presenze Universitarie">
 <meta property="og:description" content="Traccia le tue presenze universitarie, calcola le soglie d'obbligo e importa il tuo calendario in un clic.">
 <meta property="og:image" content="https://inaula-app.com/og-image.png">
 
-<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://inaula-app.com/">
 <meta name="twitter:title" content="InAula – Gestione e Calcolo Presenze Universitarie">
@@ -262,7 +258,6 @@ header.hero{display:block}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:26px 0 12px}
 .btn.lg{padding:13px 24px;font-size:1.02rem}
 
-/* LAYOUT TELEFONI RENDERIZZATI AD ALTEZZA E PROPORZIONE RIGIDA */
 .phones{display:flex;gap:22px;justify-content:center;align-items:center;flex-wrap:wrap;max-width:880px;margin:38px auto}
 .phone-frame{width:200px;height:400px;border-radius:32px;background:linear-gradient(165deg,#17395B,#0B1B2B);padding:9px;box-shadow:0 16px 34px rgba(11,43,74,.22);display:flex;flex-direction:column;align-items:center;overflow:hidden;flex:none}
 .phone-frame::before{content:"";display:block;width:56px;height:5px;background:rgba(255,255,255,.35);border-radius:4px;margin:0 auto 7px;flex:none}
@@ -278,7 +273,6 @@ header.hero{display:block}
 .authcard .loginbox{max-width:none;margin-top:0}
 @media (max-width:480px){.phone-frame{width:140px;height:280px;border-radius:22px;padding:6px}.phone-frame img{border-radius:16px}}
 
-/* BANNER CAFFÈ */
 .coffee-card {
   margin: 18px 0;
   padding: 16px 18px;
@@ -370,7 +364,6 @@ header.hero{display:block}
 <div id="warn"></div>
 <section class="today" id="today"></section>
 
-<!-- BANNER CAFFÈ DASHBOARD -->
 <div class="coffee-card">
   <div class="coffee-card-inner">
     <span class="coffee-icon">☕</span>
@@ -467,7 +460,6 @@ header.hero{display:block}
 <div class="feat"><span class="fi">🔒</span><h3>I tuoi dati restano tuoi</h3><p>Solo tu vedi le tue presenze. Le scarichi o le cancelli quando vuoi, dal tuo account.</p></div>
 </section>
 
-<!-- BANNER CAFFÈ LOGIN -->
 <div class="coffee-card coffee-card-login">
   <div class="coffee-card-inner">
     <span class="coffee-icon">☕</span>
@@ -592,7 +584,7 @@ header.hero{display:block}
 <ol class="sub"><li><b>✓</b> = ero presente.</li><li><b>✕</b> = ero assente.</li><li><b>Oggi · Domani · Settimana</b>: scegli il periodo da guardare.</li></ol>
 <ul class="sub"><li>La schermata <b>Oggi</b> (in basso a sinistra) mostra le lezioni della giornata: le segni da lì. <b>Sono presente a tutte quelle di oggi</b> le segna in un colpo solo. Con <b>Domani</b> e <b>Settimana</b> guardi i giorni successivi.</li>
 <li>Vedi anche l'<b>aula</b> e i <b>docenti</b> di ogni lezione, se sono indicati nel calendario.</li>
-<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiono come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
+<li>Le lezioni che non segni <b>non contano come assenze</b>: quelle già finite compaiore come <b>da segnare</b>, con un promemoria in <b>Oggi</b>.</li>
 <li>Hai iniziato a usare InAula a metà semestre? Apri <b>Lezioni</b> e premi <b>Segna presenti le … passate da segnare</b>, poi correggi con ✕ quelle a cui non c'eri.</li>
 <li>Toccato per sbaglio? Per qualche secondo compare <b>Annulla</b> in basso.</li></ul>
 </div></details>
@@ -679,14 +671,30 @@ const SYNC={ok:'Sincronizzato',pending:'Salvataggio…',off:'Offline: le modific
 let lastSync=null;
 const fmtLast=d=>{const t=new Date(),y=new Date(t);y.setDate(t.getDate()-1);const hh=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');return d.toDateString()===t.toDateString()?`oggi alle ${hh}`:d.toDateString()===y.toDateString()?`ieri alle ${hh}`:`${d.toLocaleDateString('it-IT',{day:'numeric',month:'short'})} alle ${hh}`};
 const setSync=k=>{const els=document.querySelectorAll('.syn');if(!els.length)return;if(k==='ok')lastSync=new Date();const ls=lastSync?` Ultima sincronizzazione: ${fmtLast(lastSync)}.`:'';const tx=k==='ok'?`Ultima sincronizzazione: ${fmtLast(lastSync)}`:SYNC[k]+(k==='pending'?'':ls);els.forEach(e=>{e.textContent=tx})};
-function save(){if(!ref)return;dirty=true;clearTimeout(timer);timer=setTimeout(flush,400);setSync('pending')}
+
+function save(){
+  if(!ref || !loaded) return;
+  dirty=true;
+  clearTimeout(timer);
+  timer=setTimeout(flush,400);
+  setSync('pending');
+}
+
 async function flush(){
   if(writing||!dirty||!ref)return;
   const r=ref;writing=true;dirty=false;let ok=true;
-  try{await setDoc(r,clone(S))}catch(e){ok=false;dirty=true}
-  writing=false;setSync(ok?(dirty?'pending':'ok'):'err');
+  try{
+    await setDoc(r,clone(S));
+  }catch(e){
+    console.error("Errore salvataggio Firestore:", e);
+    ok=false;
+    dirty=true;
+  }
+  writing=false;
+  setSync(ok?(dirty?'pending':'ok'):'err');
   if(dirty&&ref)setTimeout(flush,ok?0:8000);
 }
+
 function adopt(d){
   const n={thr:d.thr||66,courses:clone(d.courses||[]),name:d.name||'',lk:d.lk||null};
   if(canon(n)===canon(S))return;
@@ -1092,13 +1100,13 @@ async function sendFb(){
     return;
   }
 
-  const TELEGRAM_TOKEN = "8502065842:AAGp_A_L4oy_zPjk7rOxBh9VWlPj2u7PDUw";
+ 
+  const TELEGRAM_TOKEN = "8502065842:AAFD9WYRQL7dkp_AmxOp7UG6kMGlkuageiY";
   const CHAT_ID = "1392948576";
   const type = document.querySelector('input[name=ft]:checked').value;
 
   btn.disabled=true;btn.textContent='Invio…';m.hidden=true;
 
-  // 1. Salvataggio su Firestore (strutturato secondo le Security Rules)
   try {
     const feedbackDoc = {
       type: type,
@@ -1118,7 +1126,6 @@ async function sendFb(){
     console.error("Errore durante il salvataggio su Firestore:", error);
   }
 
-  // 2. Invio notifica Telegram
   const telegramMessage = `💬 *Nuovo Feedback InAula*\n\n` +
                           `📌 *Tipo:* ${type}\n` +
                           `👤 *Nome:* ${S.name || 'Non impostato'}\n` +
