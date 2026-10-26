@@ -664,6 +664,7 @@ const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
 const fs=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const KEY='presenze-v1';
 let S={thr:66,courses:[]},pending=null;
+window.S = S;
 let ref=null,unsub=null,dirty=false,writing=false,timer=null;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const canon=v=>JSON.stringify(v,(k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort()):x);
@@ -698,7 +699,7 @@ async function flush(){
 function adopt(d){
   const n={thr:d.thr||66,courses:clone(d.courses||[]),name:d.name||'',lk:d.lk||null};
   if(canon(n)===canon(S))return;
-  S=n;render();
+  S=n;window.S=S;render();
 }
 const $=id=>document.getElementById(id),dlg=$('dlg'),openSet=new Set();
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -947,9 +948,10 @@ function courseDlg(c){
 }
 async function loadLink(u){
   const ok=t=>typeof t==='string'&&t.includes('BEGIN:VCALENDAR');
-  const get=async url=>{const r=await fetch(url,{credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw new Error('http');return r.text()};
+  const cacheBust = (url) => url + (url.includes('?') ? '&' : '?') + `_t=${Date.now()}`;
+  const get=async url=>{const r=await fetch(cacheBust(url),{credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw new Error('http');return r.text()};
   try{const t=await get(u);if(ok(t))return t}catch(_){}
-  if(IMPORT_PROXY){try{const t=await get(IMPORT_PROXY+(IMPORT_PROXY.includes('?')?'&':'?')+'u='+encodeURIComponent(u));if(ok(t))return t}catch(_){}}
+  if(IMPORT_PROXY){try{const t=await get(cacheBust(IMPORT_PROXY+(IMPORT_PROXY.includes('?')?'&':'?')+'u='+encodeURIComponent(u)));if(ok(t))return t}catch(_){}}
   throw new Error('no');
 }
 async function readLink(){
@@ -1154,35 +1156,93 @@ async function sendFb(){
   }
 }
 function diffCal(text){
-  const{ev}=parseICS(text),by=S.lk?S.lk.by:true,g={};
-  ev.forEach(x=>{const k=grp(x,by);(g[k.g]=g[k.g]||[]).push({...x,m:k.m?nice(k.m):''})});
-  const items=[],today=ymd(new Date()),ds=ev.map(x=>x.d).sort(),minD=ds[0]||'',maxD=ds[ds.length-1]||'';
-  S.courses.forEach(c=>{
-    if(c.arch||!c.gk)return;
-    const E=g[c.gk]||[];if(!E.length)return;
-    const seen=keysOf(c),evKeys=new Set(E.map(x=>x.d+'|'+x.s)),L=c.lessons.filter(l=>!l.mn);
-    const unL=L.filter(l=>!evKeys.has(l.d+'|'+l.s)&&!(l.o&&evKeys.has(l.o))&&l.d>=today&&l.d>=minD&&l.d<=maxD);
-    const unE=E.filter(x=>!seen.has(x.d+'|'+x.s)),used=new Set();
-    unL.forEach(l=>{
-      let best=null,bd=99;
-      unE.forEach((x,i)=>{if(used.has(i)||(l.m||'')!==(x.m||''))return;const dd=Math.abs((new Date(l.d)-new Date(x.d))/864e5);if(dd<=7&&dd<bd){bd=dd;best=i}});
-      if(best!==null){used.add(best);items.push({t:'mov',cid:c.id,lid:l.id,ev:unE[best]})}else items.push({t:'del',cid:c.id,lid:l.id});
-    });
-    unE.forEach((x,i)=>{if(!used.has(i))items.push({t:'add',cid:c.id,ev:x})});
-    const byK=new Map(L.map(l=>[l.d+'|'+l.s,l]));
-    E.forEach(x=>{const l=byK.get(x.d+'|'+x.s);if(l&&((x.e&&l.e&&x.e!==l.e)||(x.au&&l.au&&x.au!==l.au)||(x.dc&&l.dc&&x.dc.slice(0,200)!==l.dc)))items.push({t:'inf',cid:c.id,lid:l.id,ev:x})});
+  const { ev } = parseICS(text), by = S.lk ? S.lk.by : true, g = {};
+  
+  const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+
+  // Raggruppa le lezioni per materia/modulo dall'iCal
+  ev.forEach(x => {
+    const k = grp(x, by);
+    (g[k.g] = g[k.g] || []).push({ ...x, m: k.m ? nice(k.m) : '' });
   });
-  return{items};
+
+  const items = [];
+  const gKeys = Object.keys(g);
+
+  S.courses.forEach(c => {
+    if (c.arch) return;
+    
+    const cNorm = norm(c.name);
+    
+    // Trova tutti gli eventi dell'iCal afferenti a questo corso/modulo
+    let E = [];
+    gKeys.forEach(k => {
+      const kNorm = norm(k);
+      if (kNorm === cNorm || kNorm.includes(cNorm) || cNorm.includes(kNorm)) {
+        E = E.concat(g[k] || []);
+      }
+    });
+
+    const activeKeys = new Set(c.lessons.map(l => l.d + '|' + l.s));
+    const L = c.lessons.filter(l => !l.mn); // Lezioni sincronizzate (non create a mano)
+    
+    const evKeys = new Set(E.map(x => x.d + '|' + x.s));
+    const unL = L.filter(l => !evKeys.has(l.d + '|' + l.s) && !(l.o && evKeys.has(l.o)));
+    const unE = E.filter(x => !activeKeys.has(x.d + '|' + x.s));
+    
+    const used = new Set();
+    
+    // Finestra di recupero estesa a 180 giorni (6 mesi)
+    const MAX_DAYS_MOVE = 180;
+
+    // 1. Cerca spostamenti/recuperi entro i 180 giorni
+    unL.forEach(l => {
+      let best = null, bd = 999;
+      unE.forEach((x, i) => {
+        if (used.has(i)) return;
+        // Se il modulo coincide o è vuoto
+        if (l.m && x.m && norm(l.m) !== norm(x.m)) return;
+        
+        const dd = Math.abs((new Date(l.d) - new Date(x.d)) / 864e5);
+        if (dd <= MAX_DAYS_MOVE && dd < bd) { bd = dd; best = i; }
+      });
+      
+      if (best !== null) {
+        used.add(best);
+        items.push({ t: 'mov', cid: c.id, lid: l.id, ev: unE[best] });
+      } else {
+        items.push({ t: 'del', cid: c.id, lid: l.id });
+      }
+    });
+
+    // 2. Tutte le lezioni rimanenti del file iCal vengono segnalate come "Nuove lezioni"
+    unE.forEach((x, i) => {
+      if (!used.has(i)) items.push({ t: 'add', cid: c.id, ev: x });
+    });
+
+    // 3. Rileva variazioni di orario di fine, aula o docente
+    const byK = new Map(L.map(l => [l.d + '|' + l.s, l]));
+    E.forEach(x => {
+      const l = byK.get(x.d + '|' + x.s);
+      if (l && ((x.e && l.e && x.e !== l.e) || (x.au && l.au && x.au !== l.au) || (x.dc && l.dc && x.dc.slice(0, 200) !== l.dc))) {
+        items.push({ t: 'inf', cid: c.id, lid: l.id, ev: x });
+      }
+    });
+  });
+
+  return { items };
 }
 function renderUpd(){
   const it=updDiff.items,cn=id=>(S.courses.find(c=>c.id===id)||{}).name||'',lo=x=>{const c=S.courses.find(z=>z.id===x.cid);return c&&c.lessons.find(l=>l.id===x.lid)||{}};
-  const fl=l=>`${fmtD(l.d)}${l.s?' '+l.s+(l.e?'–'+l.e:''):''}`,room=x=>x.au?' · '+esc(x.au.split(' - ')[0]):'';
+  const fl=l=>l&&l.d?`${fmtD(l.d)}${l.s?' '+l.s+(l.e?'–'+l.e:''):''}`:'',room=x=>x.au?' · '+esc(x.au.split(' - ')[0]):'';
   const row=(i,on,html)=>`<label class="ck" style="align-items:flex-start"><input type="checkbox" data-u="${i}"${on?' checked':''}><span>${html}</span></label>`;
   const sec=(t,title,f)=>{const a=it.map((x,i)=>[x,i]).filter(([x])=>x.t===t);return a.length?`<h4>${title} (${a.length})</h4>`+a.map(([x,i])=>f(x,i)).join(''):''};
+  
   const body=sec('add','Nuove lezioni',(x,i)=>row(i,true,`<b>${esc(cn(x.cid))}</b>: ${fl(x.ev)}${room(x.ev)}`))
    +sec('mov','Spostate',(x,i)=>{const l=lo(x);return row(i,true,`<b>${esc(cn(x.cid))}</b>: da ${fl(l)} a <b>${fl(x.ev)}</b>${sx(l)?' (il tuo segno resta)':''}`)})
-   +sec('del','Non più in calendario',(x,i)=>{const l=lo(x);return row(i,sx(l)===0,`<b>${esc(cn(x.cid))}</b>: ${fl(l)}${sx(l)?' <span class="pend">(hai già segnato presenza o assenza)</span>':''}`)})
+   +sec('del','Annullate / Non più in calendario',(x,i)=>{const l=lo(x);return row(i,sx(l)===0,`<b>${esc(cn(x.cid))}</b>: ${fl(l)}${sx(l)?' <span class="pend">(hai già segnato presenza o assenza)</span>':''}`)})
    +sec('inf','Aula, orario di fine o docenti cambiati',(x,i)=>{const l=lo(x);return row(i,true,`<b>${esc(cn(x.cid))}</b>: ${fl(l)}${x.ev.au&&x.ev.au!==l.au?' · aula '+esc(x.ev.au.split(' - ')[0]):''}${x.ev.e&&x.ev.e!==l.e?' · fine '+x.ev.e:''}`)});
+
   const last=S.lk&&S.lk.at?`<p class="meta">Ultimo controllo: ${fmtLast(new Date(S.lk.at))}.</p>`:'';
   dlg.innerHTML=`<h3>Aggiorna orario</h3>`+(it.length?`<p class="meta">Ecco cosa è cambiato rispetto a InAula. Togli la spunta a ciò che non vuoi applicare.</p>${body}${last}<div class="row"><button class="btn" data-act="cancel">Più tardi</button><button class="btn pri" data-act="upapply">Applica</button></div>`:`<p><b>L'orario è aggiornato.</b> Non ci sono differenze.</p>${last}<div class="row"><button class="btn" data-act="cancel">Chiudi</button></div>`);
   if(!dlg.open)dlg.showModal();
