@@ -783,35 +783,83 @@ const lessonsOn=ds=>{const it=[];S.courses.forEach(c=>{if(!c.arch)c.lessons.forE
 function dayRow({c,l},now){const x=sx(l),pend=x===0&&ended(l,now);
   return`<li data-c="${c.id}" data-l="${l.id}" style="--cc:${cc(c)}"><span class="mk"><button class="pb${x===1?' on':''}" data-act="mp" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===1}" aria-label="Presente">✓</button><button class="ab${x===2?' on':''}" data-act="ma" data-c="${c.id}" data-l="${l.id}" aria-pressed="${x===2}" aria-label="Assente">✕</button></span><span class="lt"><b>${esc(c.name)}</b> ${l.s?`<small class="t">${l.s}${l.e?'–'+l.e:''}</small>`:''} ${l.m?`<small>${esc(l.m)}</small>`:''}${pend?' <small class="pend">da segnare</small>':''}${meta2(l,true)}</span></li>`}
 function renderTop(){
-  const now=new Date(),td=ymd(now),w=[];
+  const now = new Date(), td = ymd(now), w = [];
+
+  // 1. Controllo banner temporaneo "lezioni passate"
+  const bannerDismissed = localStorage.getItem('inaula-banner-dismissed');
+  const pastNotice = !bannerDismissed ? `<div class="warn" id="past-banner" style="margin-top:8px; border-left-color: var(--ok); position: relative;">
+    <button class="x" data-act="dismiss-banner" aria-label="Chiudi avviso" style="position: absolute; right: 8px; top: 8px; font-weight: bold; font-size: 1.1rem;">✕</button>
+    💡 <b>Ti mancano le lezioni passate?</b><br>
+    Se hai importato l'orario a corso già iniziato, il portale universitario potrebbe aver escluso le lezioni precedenti.<br>
+    <b>Come recuperarle:</b> rigenera il link iCal dal sito dell'università impostando come data di inizio il primo giorno del semestre e ri-importalo da <i>Menu → Importa calendario</i>. Le lezioni passate verranno aggiunte senza perdere le presenze già segnate!
+  </div>` : '';
+
+  // 2. Controllo insegnamenti a rischio
   for(const c of S.courses){
-    if(c.arch)continue;
-    const k=calc(c);
-    if(k.T&&k.P<k.M&&k.margin<=k.warn)w.push(`<div>⚠️ <b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
+    if(c.arch) continue;
+    const k = calc(c);
+    if(k.T && k.P < k.M && k.margin <= k.warn) {
+      w.push(`<div>⚠️ <b>${esc(c.name)}</b>: ${status(k).t.toLowerCase()}</div>`);
+    }
   }
-  let pend=0;S.courses.forEach(c=>{if(!c.arch)pend+=c.lessons.filter(l=>sx(l)===0&&ended(l,now)).length});
-  $('warn').innerHTML=(w.length?`<div class="warn">${w.join('')}</div>`:'')+(pend?`<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend===1?'lezione passata':'lezioni passate'} da segnare.</div>`:'')+(updDiff&&updDiff.items.some(x=>x.t!=='inf')?`<div class="warn" style="margin-top:8px">🔄 L'università ha modificato l'orario (${updDiff.items.filter(x=>x.t!=='inf').length} differenze). <button class="btn" data-act="upd" data-s="rev" style="margin-left:6px">Rivedi</button></div>`:'');
-  const sk=streaks();$('streak').innerHTML=sk.cur>=2?`🔥 Serie di <b>${sk.cur}</b> lezioni frequentate di fila`:'';
-  $('hello').textContent=S.name?`Ciao ${S.name.replace(/[.!\s]+$/,'')}! 👋`:'Ciao! 👋';
-  const showName=loaded&&!S.name&&!nameSkip,nc=$('namecard');
-  if(nc.dataset.on!==String(showName)){nc.dataset.on=String(showName);nc.innerHTML=showName?`<div class="fbcard" style="margin:0 0 10px"><div><b>Come ti chiami?</b><br><span class="meta">Così posso salutarti per nome.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nn" maxlength="40" placeholder="Il tuo nome" autocomplete="given-name" style="width:160px"><button class="btn pri" data-act="nsave">Salva</button><button class="lnk" data-act="nskip">Non ora</button></div></div>`:''}
-  $('startcard').innerHTML=(loaded&&!S.courses.length)?START:'';
-  const dfmt=(d,o)=>d.toLocaleDateString('it-IT',o);let head,body='';
-  if(homeMode==='sett'){
-    const mon=mondayOf(now);mon.setDate(mon.getDate()+7*weekOff);
-    const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
-    head=`<div class="wk"><button class="btn" data-act="wk" data-s="-1" aria-label="Settimana precedente">‹</button><b>${dfmt(days[0],{day:'numeric',month:'short'})} – ${dfmt(days[6],{day:'numeric',month:'short'})}</b><button class="btn" data-act="wk" data-s="1" aria-label="Settimana successiva">›</button></div>${weekOff?'<p style="margin:0 0 4px"><button class="lnk" data-act="wk" data-s="0" style="padding:0">Torna a questa settimana</button></p>':''}`;
-    let any=false;
-    days.forEach(d=>{const ds=ymd(d),it=lessonsOn(ds);if(!it.length)return;any=true;body+=`<h3 class="dh">${dfmt(d,{weekday:'long',day:'numeric',month:'long'})}${ds===td?' · oggi':''}</h3><ul class="ls">${it.map(x=>dayRow(x,now)).join('')}</ul>`});
-    if(!any)body='<p class="meta">Nessuna lezione in questa settimana.</p>';
-  }else{
-    const d=new Date(now);if(homeMode==='domani')d.setDate(d.getDate()+1);
-    const it=lessonsOn(ymd(d)),nT=it.filter(({l})=>sx(l)===0).length;
-    head=`<h2>${homeMode==='oggi'?'📅 Oggi, ':'Domani, '}${dfmt(d,{weekday:'long',day:'numeric',month:'long'})}</h2>`;
-    body=it.length?`<ul class="ls">${it.map(x=>dayRow(x,now)).join('')}</ul>${homeMode==='oggi'&&nT?`<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>`:''}`:`<p class="meta">${homeMode==='oggi'?'Oggi':'Domani'} non ci sono lezioni in calendario.</p>`;
+
+  // 3. Conteggio lezioni passate non ancora segnate
+  let pend = 0;
+  S.courses.forEach(c => {
+    if(!c.arch) pend += c.lessons.filter(l => sx(l) === 0 && ended(l, now)).length;
+  });
+
+  // 4. Inserimento avvisi nel contenitore 'warn'
+  $('warn').innerHTML = (w.length ? `<div class="warn">${w.join('')}</div>` : '')
+                      + (pend ? `<div class="warn" style="margin-top:8px">📝 Hai <b>${pend}</b> ${pend === 1 ? 'lezione passata' : 'lezioni passate'} da segnare.</div>` : '')
+                      + pastNotice
+                      + (updDiff && updDiff.items.some(x => x.t !== 'inf') ? `<div class="warn" style="margin-top:8px">🔄 L'università ha modificato l'orario (${updDiff.items.filter(x => x.t !== 'inf').length} differenze). <button class="btn" data-act="upd" data-s="rev" style="margin-left:6px">Rivedi</button></div>` : '');
+
+  // 5. Gestione header, serie (streak) e card del nome
+  const sk = streaks();
+  $('streak').innerHTML = sk.cur >= 2 ? `🔥 Serie di <b>${sk.cur}</b> lezioni frequentate di fila` : '';
+  $('hello').textContent = S.name ? `Ciao ${S.name.replace(/[.!\s]+$/, '')}! 👋` : 'Ciao! 👋';
+
+  const showName = loaded && !S.name && !nameSkip, nc = $('namecard');
+  if(nc.dataset.on !== String(showName)){
+    nc.dataset.on = String(showName);
+    nc.innerHTML = showName ? `<div class="fbcard" style="margin:0 0 10px"><div><b>Come ti chiami?</b><br><span class="meta">Così posso salutarti per nome.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nn" maxlength="40" placeholder="Il tuo nome" autocomplete="given-name" style="width:160px"><button class="btn pri" data-act="nsave">Salva</button><button class="lnk" data-act="nskip">Non ora</button></div></div>` : '';
   }
-  const seg=`<div class="seg" role="group" aria-label="Periodo">${[['oggi','Oggi'],['domani','Domani'],['sett','Settimana']].map(([k,t])=>`<button data-act="hm" data-s="${k}" class="${homeMode===k?'on':''}">${t}</button>`).join('')}</div>`;
-  $('today').innerHTML=seg+head+body;
+
+  $('startcard').innerHTML = (loaded && !S.courses.length) ? START : '';
+
+  // 6. Rendering della vista "Oggi / Domani / Settimana"
+  const dfmt = (d, o) => d.toLocaleDateString('it-IT', o);
+  let head, body = '';
+
+  if(homeMode === 'sett'){
+    const mon = mondayOf(now);
+    mon.setDate(mon.getDate() + 7 * weekOff);
+    const days = [...Array(7)].map((_, i) => { const d = new Date(mon); d.setDate(mon.getDate() + i); return d; });
+    
+    head = `<div class="wk"><button class="btn" data-act="wk" data-s="-1" aria-label="Settimana precedente">‹</button><b>${dfmt(days[0], {day:'numeric', month:'short'})} – ${dfmt(days[6], {day:'numeric', month:'short'})}</b><button class="btn" data-act="wk" data-s="1" aria-label="Settimana successiva">›</button></div>${weekOff ? '<p style="margin:0 0 4px"><button class="lnk" data-act="wk" data-s="0" style="padding:0">Torna a questa settimana</button></p>' : ''}`;
+    
+    let any = false;
+    days.forEach(d => {
+      const ds = ymd(d), it = lessonsOn(ds);
+      if(!it.length) return;
+      any = true;
+      body += `<h3 class="dh">${dfmt(d, {weekday:'long', day:'numeric', month:'long'})}${ds === td ? ' · oggi' : ''}</h3><ul class="ls">${it.map(x => dayRow(x, now)).join('')}</ul>`;
+    });
+    if(!any) body = '<p class="meta">Nessuna lezione in questa settimana.</p>';
+  } else {
+    const d = new Date(now);
+    if(homeMode === 'domani') d.setDate(d.getDate() + 1);
+    
+    const it = lessonsOn(ymd(d)), nT = it.filter(({l}) => sx(l) === 0).length;
+    head = `<h2>${homeMode === 'oggi' ? '📅 Oggi, ' : 'Domani, '}${dfmt(d, {weekday:'long', day:'numeric', month:'long'})}</h2>`;
+    body = it.length 
+      ? `<ul class="ls">${it.map(x => dayRow(x, now)).join('')}</ul>${homeMode === 'oggi' && nT ? `<button class="btn" data-act="bt" style="margin:4px 0 8px">Sono presente a tutte quelle di oggi (${nT})</button>` : ''}` 
+      : `<p class="meta">${homeMode === 'oggi' ? 'Oggi' : 'Domani'} non ci sono lezioni in calendario.</p>`;
+  }
+
+  const seg = `<div class="seg" role="group" aria-label="Periodo">${[['oggi','Oggi'],['domani','Domani'],['sett','Settimana']].map(([k,t])=>`<button data-act="hm" data-s="${k}" class="${homeMode===k?'on':''}">${t}</button>`).join('')}</div>`;
+  $('today').innerHTML = seg + head + body;
 }
 function showTab(t){tab=t;['home','courses','stats','menu'].forEach(k=>{$('v-'+k).hidden=k!==t});if(t==='stats')renderStats();document.querySelectorAll('#nav [data-act="tab"]').forEach(b=>b.classList.toggle('on',b.dataset.s===t));window.scrollTo(0,0)}
 const START=`<div class="empty start"><h2>Inizia da qui</h2><ol><li>Copia il link dell'orario dal sito dell'università <button class="lnk" data-act="guide" data-s="1" style="padding:0">come si fa?</button></li><li>Premi <b>Importa calendario</b> e incolla il link</li><li>Segna ✓ le lezioni a cui vai: il resto lo calcola InAula</li></ol><div class="bar"><button class="btn pri" data-act="guide" data-s="1">Apri la guida</button><button class="btn" data-act="imp">Importa calendario</button><button class="btn" data-act="new">Nuovo insegnamento</button></div></div>`;
@@ -966,6 +1014,12 @@ async function readLink(){
 function importDlg(){
   dlg.innerHTML=`<h3>Importa calendario</h3>
 <p class="meta">Incolla il link dell'orario copiato dal sito dell'università: viene letto e, se vuoi, puoi ricordarlo per aggiornare l'orario in seguito. <button class="lnk" type="button" data-act="guide" data-s="1" style="padding:0">Non sai come? Guarda la guida</button></p>
+
+<div class="note" style="margin:8px 0 12px 0;">
+  ⚠️ <b>Controlla la data di inizio sul sito dell'università:</b><br>
+  Il portale dell'ateneo propone di default la data di oggi. Per recuperare anche le lezioni già passate (es. quelle di ieri), assicuratevi di impostare come data di inizio il <b>primo giorno di lezione del semestre</b> prima di fare <i>"Crea iCal Link"</i>.
+</div>
+
 <label>Link dell'orario<input id="il" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…"></label>
 <div class="row" style="justify-content:flex-start;margin:0 0 6px"><button class="btn pri" type="button" id="gl" data-act="lnk">Leggi il link</button></div>
 <details class="alt"><summary>Hai il file .ics? Usalo qui</summary>
@@ -1300,6 +1354,11 @@ document.addEventListener('click',e=>{
   else if(a==='bp'&&c){undoSnap=clone(S);const now=new Date();let n=0;c.lessons.forEach(l=>{if(sx(l)===0&&ended(l,now)){l.x=1;delete l.p;n++}});checkCele();save();renderCard(c.id);showToast(`${n} lezioni segnate come presenti`)}
   else if(a==='bt'){undoSnap=clone(S);const td=ymd(new Date());let n=0;S.courses.forEach(c=>{if(!c.arch)c.lessons.forEach(l=>{if(l.d===td&&sx(l)===0){l.x=1;delete l.p;n++}})});checkCele();save();render();showToast(`${n} lezioni segnate come presenti`)}
   else if(a==='undo'){if(undoSnap){S=undoSnap;undoSnap=null;$('toast').hidden=true;save();render()}}
+    else if(a==='dismiss-banner'){
+    localStorage.setItem('inaula-banner-dismissed', 'true');
+    const b = $('past-banner');
+    if(b) b.remove();
+  }
   else if(a==='dl'&&c)delLesson(c,b.dataset.l);
   else if(a==='el'&&c){const l=c.lessons.find(x=>x.id===b.dataset.l);if(l)lessonDlg(c,l)}
   else if(a==='savel'&&c){
